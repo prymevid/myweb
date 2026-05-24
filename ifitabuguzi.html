@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RoadRules - Ifatabuguzi (Feedback &amp; Support)">
+  <title>Ifatabuguzi • RoadRules</title>
+
+  <!-- Early theme script to prevent dark mode flash on reload -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('roadRulesTheme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = saved === 'dark' || (!saved && prefersDark);
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 antialiased">
+  <!-- POLISHED OFFICIAL MENUBAR -->
+  <div class="official-topbar hidden md:block text-white/90">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8 flex items-center justify-between h-7 text-[10px] font-medium tracking-[0.6px]">
+      <div class="flex items-center gap-x-2"><span class="font-semibold">REPUBLIC OF RWANDA</span> <span class="opacity-60">•</span> <span class="opacity-80">Road Safety Education Initiative</span></div>
+      <div class="flex items-center gap-x-4 text-[9.5px] opacity-80"><span>+250 788 762 976</span></div>
+    </div>
+  </div>
+
+  <nav class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 nav-elevated">
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="px-4 sm:px-5 md:px-6 lg:px-8">
+        <div class="flex h-[70px] sm:h-[78px] items-center justify-between">
+           <a href="index.html" class="flex items-center gap-x-3 group">
+             <div class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-700 to-blue-800 text-white shadow-md ring-1 ring-blue-900/30 group-hover:scale-[1.03] transition-transform"><i class="fa-solid fa-road text-xl sm:text-2xl"></i></div>
+             <div class="leading-none"><span class="logo-font text-[23px] sm:text-[27px] font-semibold tracking-[-1.2px] text-slate-900 dark:text-white">RoadRules</span><span class="block -mt-[1px] text-[8px] sm:text-[9.5px] font-semibold tracking-[1.5px] text-blue-700 dark:text-blue-400">AMATEGEKO Y'UMUHANDA</span></div>
+           </a>
+
+          <div class="hidden md:flex items-center gap-x-1 text-[14.5px] font-medium">
+            <a href="index.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ahabanza</a>
+            <a href="imyitozo.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Imyitozo</a>
+            <a href="ibibazo.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ibibazo</a>
+            <a href="ifitabuguzi.html" class="nav-link nav-pill active px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full">Ifatabuguzi</a>
+          </div>
+
+           <div class="flex items-center gap-x-2.5 flex-shrink-0">
+            <button onclick="toggleTheme()" id="theme-toggle" class="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-all hover:border-slate-300 active:scale-[0.96]" aria-label="Toggle theme"><i id="theme-icon" class="fa-solid fa-moon text-base"></i></button>
+            <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+              <button onclick="openAuthModal('login')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Injira</button>
+              <button onclick="openAuthModal('signup')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition">Iyandikishe</button>
+            </div>
+            <button onclick="toggleMobileMenu()" id="mobile-menu-button" class="md:hidden flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Open menu"><i class="fa-solid fa-bars text-lg"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-[100000] bg-black bg-opacity-75" onclick="toggleMobileMenu()">
+      <div onclick="event.stopImmediatePropagation()" class="absolute right-0 top-0 bottom-0 w-[82%] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-700 p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-x-3"><div class="h-9 w-9 bg-blue-700 rounded-2xl flex items-center justify-center text-white"><i class="fa-solid fa-road"></i></div><span class="logo-font text-2xl font-semibold tracking-tighter">RoadRules</span></div>
+          <button onclick="toggleMobileMenu()" class="text-3xl text-slate-400 hover:text-slate-600">×</button>
+        </div>
+        <div class="space-y-1 text-[15.5px] font-medium">
+          <a href="index.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ahabanza</a>
+          <a href="imyitozo.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Imyitozo</a>
+           <a href="ibibazo.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ibibazo</a>
+          <a href="ifitabuguzi.html" class="block px-4 py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-semibold">Ifatabuguzi</a>
+        </div>
+        <div class="my-7 border-t border-slate-200 dark:border-slate-700"></div>
+        <div id="mobile-auth-area" class="space-y-3">
+          <button onclick="openAuthModal('login'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold">Injira (Login)</button>
+          <button onclick="openAuthModal('signup'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold">Iyandikishe (Sign Up)</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MIDDLE CONTENT - Minimal -->
+  <main class="min-h-[calc(100vh-280px)] max-w-screen-2xl mx-auto px-6 lg:px-8 py-16">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="inline-flex items-center gap-2 rounded-3xl bg-violet-100 dark:bg-violet-950 px-4 py-1 text-violet-700 dark:text-violet-400 text-xs font-semibold tracking-widest mb-3">
+        <i class="fa-solid fa-wallet"></i> <span>IFATABUGUZI</span>
+      </div>
+      <h1 class="text-4xl font-semibold tracking-tight">Hitamo Ifatabuguzi Rijyanye Nibyo Ufite</h1>
+      <div id="current-plan-section" class="mt-4"></div>
+
+      <!-- Pricing Cards -->
+      <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Plan 1: UBUNTU (Free) -->
+        <div id="plan-card-ubuntu" class="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 flex flex-col">
+          <div>
+            <div class="inline-block px-3 py-1 text-xs font-semibold rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">UBUNTU</div>
+            <div class="mt-4 text-4xl font-semibold">0 <span class="text-xl font-normal">RWF</span></div>
+            <div class="text-sm text-slate-500">Icyo wabona kubuntu</div>
+          </div>
+          <ul class="mt-6 space-y-3 text-sm flex-1">
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Wemerewe ikizamini cyambere kubuntu</li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Inshuro wakora Ibizamini: inshuro 1</li>
+          </ul>
+          <div id="ubuntu-plan-status" class="mt-6 w-full py-3 rounded-2xl bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 text-center text-sm font-semibold">
+            Current Plan • Active
+          </div>
+        </div>
+
+        <!-- Plan 2: 300 RWF - Inshuro 2 -->
+        <div id="plan-card-inshuro2" class="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 flex flex-col">
+          <div>
+            <div class="inline-block px-3 py-1 text-xs font-semibold rounded-2xl bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">INSHURO 2</div>
+            <div class="mt-4 text-4xl font-semibold">300 <span class="text-xl font-normal">RWF</span></div>
+            <div class="text-sm text-slate-500">Gukora ibizamini bibiri</div>
+          </div>
+          <ul class="mt-6 space-y-3 text-sm flex-1">
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Wemerewe ibizamini bibiri </li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Inshuro wakora Ibizamini: inshuro 2 </li>
+          </ul>
+          <button onclick="selectPlan('inshuro2', 300, 'Inshuro 2')"
+                  class="mt-6 w-full py-3 rounded-2xl bg-blue-600 text-white font-semibold hover:bg-blue-700">Ishyura 300 RWF</button>
+        </div>
+
+        <!-- Plan 3: 500 RWF - Inshuro 5 -->
+        <div id="plan-card-inshuro5" class="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 flex flex-col relative">
+          <div class="absolute -top-3 right-4 bg-emerald-600 text-white text-xs px-3 py-0.5 rounded-2xl">Popular</div>
+          <div>
+            <div class="inline-block px-3 py-1 text-xs font-semibold rounded-2xl bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">Icyumweru</div>
+            <div class="mt-4 text-4xl font-semibold">500 <span class="text-xl font-normal">RWF</span></div>
+            <div class="text-sm text-slate-500">Gukora ibizamini bitanu</div>
+          </div>
+          <ul class="mt-6 space-y-3 text-sm flex-1">
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Wemerewe ibizamini bitanu</li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Inshuro wakora Ibizamini: inshuro 5</li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Kubona Ibibazo n'ibisubizo by'ibizamini bitanu</li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Igihe wemerewe: Iminsi 7</li>
+          </ul>
+          <button onclick="selectPlan('inshuro5', 500, 'Icyumweru')"
+                  class="mt-6 w-full py-3 rounded-2xl bg-violet-600 text-white font-semibold hover:bg-violet-700">Ishyura 500 RWF</button>
+        </div>
+
+        <!-- Plan 4: Ukwezi (Monthly) - 1000 RWF -->
+        <div id="plan-card-ukwezi" class="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 flex flex-col">
+          <div>
+            <div class="inline-block px-3 py-1 text-xs font-semibold rounded-2xl bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">UKWEZI</div>
+            <div class="mt-4 text-4xl font-semibold">1000 <span class="text-xl font-normal">RWF</span></div>
+            <div class="text-sm text-slate-500">Access ya ukwezi wose</div>
+          </div>
+          <ul class="mt-6 space-y-3 text-sm flex-1">
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Gukora umubare w'ibizamini byose wifuza</li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Kubona Ibibazo n'ibisubizo byose</li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Igihe wemerewe: Ukwezi</li>
+          </ul>
+           <button onclick="selectPlan('ukwezi', 1000, 'Ukwezi')"
+                   class="mt-6 w-full py-3 rounded-2xl bg-amber-600 text-white font-semibold hover:bg-amber-700">Ishyura 1000 RWF</button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- PAYMENT STEP 2 MODAL -->
+  <div id="payment-step2-modal" class="hidden fixed inset-0 z-[95] items-center justify-center bg-black/70 p-4">
+    <div class="w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <!-- New Payment Header -->
+      <div class="px-6 py-5 border-b dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-slate-900">
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-emerald-600 text-white">
+            <i class="fa-solid fa-wallet text-lg"></i>
+          </div>
+          <div>
+            <div class="text-xs tracking-[1.5px] text-emerald-600 font-semibold">STEP 2 / 3</div>
+            <div class="font-semibold text-xl tracking-tight">Uburyo bwo kwishyura</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-2xl font-semibold tabular-nums" id="plan-price"></div>
+          <div class="text-xs text-slate-500 -mt-0.5">RWF • <span id="plan-name" class="font-medium"></span></div>
+        </div>
+      </div>
+
+      <!-- Payment Method Toggle -->
+      <div class="px-6 pt-5">
+        <div class="flex bg-slate-100 dark:bg-slate-800 rounded-2xl p-1 text-sm font-semibold">
+          <button id="btn-momo" onclick="switchPaymentMethod('momo')"
+                  class="flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all">
+            <i class="fa-solid fa-mobile-alt"></i>
+            <span>MoMo Pay</span>
+          </button>
+          <button id="btn-airtel" onclick="switchPaymentMethod('airtel')"
+                  class="flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all">
+            <i class="fa-solid fa-mobile-alt"></i>
+            <span>Airtel Money</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MoMo Content (Yellow theme) -->
+      <div id="momo-content" class="p-6 space-y-5 text-sm">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="font-semibold text-yellow-700 dark:text-yellow-400 flex items-center gap-2">
+              <i class="fa-solid fa-barcode"></i>
+              <span>Kubakoresha Code</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div id="ussd-code"
+                 class="flex-1 font-mono bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-900 px-4 py-3 rounded-2xl text-base font-medium"></div>
+            <button onclick="copyUSSD(this)"
+                    class="px-3 py-3 rounded-2xl bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold flex items-center gap-1 transition">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+          <div class="text-[10px] text-yellow-600 dark:text-yellow-500 mt-1">*182*8*1*1249908*PRICE#</div>
+        </div>
+
+        <div>
+          <div class="font-semibold text-yellow-700 dark:text-yellow-400 mb-1.5">Kubakoresha nimero</div>
+          <div class="flex items-center gap-2">
+            <div class="flex-1 font-mono bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-900 px-4 py-3 rounded-2xl text-base font-semibold">0788762976</div>
+            <button onclick="copyNumber(this, '0788762976')"
+                    class="px-3 py-3 rounded-2xl bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold flex items-center gap-1 transition">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-1 text-sm text-yellow-700 dark:text-yellow-400">
+          Hose amazina ni: <span class="font-bold text-yellow-800 dark:text-yellow-300">NDATIMANA Herve</span>
+        </div>
+      </div>
+
+      <!-- Airtel Money Content (Red theme) -->
+      <div id="airtel-content" class="p-6 space-y-5 text-sm hidden">
+        <div>
+          <div class="font-semibold text-red-700 dark:text-red-400 mb-1.5">Mwakishyura kuriyi nimero</div>
+          <div class="flex items-center gap-2">
+            <div class="flex-1 font-mono bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 px-4 py-3 rounded-2xl text-base font-semibold">0735610542</div>
+            <button onclick="copyNumber(this, '0735610542')"
+                    class="px-3 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold flex items-center gap-1 transition">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-1 text-sm text-red-700 dark:text-red-400">
+          Amazina ni: <span class="font-bold text-red-800 dark:text-red-300">NDATIMANA Herve</span>
+        </div>
+      </div>
+
+      <div class="px-6 pb-4 text-xs text-slate-500 dark:text-slate-400">
+        Nyuma yo kwishyura, Kanda "Nishyuye"
+      </div>
+
+      <div class="px-6 py-5 border-t dark:border-slate-700 flex gap-3">
+        <button onclick="closePaymentModal()" class="flex-1 py-3 rounded-2xl border text-sm">Funga</button>
+        <button onclick="goToStep3()" class="flex-1 py-3 rounded-2xl bg-emerald-600 text-white font-semibold text-sm">Nishyuye</button>
+      </div>
+
+      <!-- Help contact at bottom of step 2 -->
+      <div class="px-6 pb-5 text-center">
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] leading-snug text-slate-500 dark:text-slate-400">
+          <i class="fa-solid fa-headset text-[10px] mr-1 opacity-70"></i>
+          Ukeneye ubufasha? 
+          <a href="tel:0788762976" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">Duhampagare cg utwandikire kuri 0788 762 976</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAYMENT STEP 3 MODAL -->
+  <div id="payment-step3-modal" class="hidden fixed inset-0 z-[95] items-center justify-center bg-black/70 p-4">
+    <div class="w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <!-- Premium Header -->
+      <div class="px-6 py-5 border-b dark:border-slate-700 flex items-center gap-3 bg-gradient-to-r from-emerald-50 to-white dark:from-emerald-950/30 dark:to-slate-900">
+        <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-emerald-600 text-white">
+          <i class="fa-solid fa-user-check text-lg"></i>
+        </div>
+        <div>
+          <div class="text-xs tracking-[1.5px] text-emerald-600 font-semibold">STEP 3 / 3</div>
+          <div class="font-semibold text-xl tracking-tight">Andika Amazina y'uwishyuye</div>
+        </div>
+      </div>
+
+      <div class="p-6">
+        <!-- Plan Summary -->
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-4 mb-5">
+          <div class="text-xs text-slate-500">Ifatabuguzi</div>
+          <div class="flex justify-between items-end mt-1">
+            <div id="step3-plan-name" class="font-semibold text-lg"></div>
+            <div class="text-right">
+              <span id="step3-amount" class="text-2xl font-semibold tabular-nums"></span>
+              <span class="text-xs text-slate-500">RWF</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Name Input -->
+        <div>
+          <label class="text-xs font-medium text-slate-500 flex items-center gap-2 mb-1.5">
+            <i class="fa-solid fa-pen text-emerald-500"></i>
+            <span>Andika Amazina hano (Payer Full Name)</span>
+          </label>
+          <input id="payer-name" type="text" 
+                 class="w-full rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3.5 text-sm focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 transition"
+                 placeholder="Jean Pierre Habimana">
+          <div class="text-[10px] text-slate-400 mt-1">Amazina adufasha kumenya uwishyuye</div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3 mt-6">
+          <button onclick="goBackToStep2()" 
+                  class="flex-1 py-3 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            Subira inyuma
+          </button>
+          <button onclick="submitPayment()" 
+                  class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check"></i>
+            <span>Ohereza</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Help -->
+      <div class="px-6 pb-5 pt-2 border-t dark:border-slate-700 text-center">
+        <div class="text-[11px] text-slate-500 dark:text-slate-400">
+          <i class="fa-solid fa-headset text-[10px] mr-1 opacity-70"></i>
+          Ukeneye ubufasha? 
+          <a href="tel:0788762976" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">Duhampagare cg utwandikire kuri 0788 762 976</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+      <div class="py-12 md:py-14 grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-6 text-sm">
+        <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-x-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-600 text-white"><i class="fa-solid fa-road"></i></div>
+            <span class="logo-font font-semibold text-2xl tracking-tighter">RoadRules</span>
+          </div>
+          <div class="mt-4 text-xs text-slate-500 dark:text-slate-400 pr-4">Urubuga rwambere mugutsindisha abanyeshuri bakora ikizamini cya provisoir</div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">PLATFORM</div>
+          <div class="space-y-[9px] text-[13.5px]">
+             <a href="index.html" class="block footer-link">Ahabanza</a>
+             <a href="imyitozo.html" class="block footer-link">Imyitozo</a>
+              <a href="ibibazo.html" class="block footer-link">Ibibazo</a>
+             <a href="ifitabuguzi.html" class="block footer-link">Ifatabuguzi</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">SUPPORT</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Help Center</a>
+            <a href="#" class="block footer-link">Report Issue</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">LEGAL</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Privacy Policy</a>
+            <a href="#" class="block footer-link">Terms of Service</a>
+            <a href="#" class="block footer-link">Data Protection</a>
+          </div>
+        </div>
+        <div class="col-span-2 md:col-span-1">
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">CONNECT</div>
+            <div class="flex items-center gap-x-4 text-lg">
+              <a href="https://www.facebook.com/perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.tiktok.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+          <div class="mt-5 text-xs text-slate-500">© 2026 RoadRules Ltd. • Kigali, Rwanda</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AUTH MODAL injected dynamically by auth.js -->
+  <script src="auth.js"></script>
+  <script src="questions.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // ========== IFITABUGUZI PAYMENT FLOW (page specific) ==========
+    let currentPlan = null;
+
+    function selectPlan(planId, price, planName) {
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+
+      if (!user) {
+        // Not logged in → prompt login first
+        if (window.openAuthModal) {
+          window.openAuthModal('login');
+        }
+        return;
+      }
+
+      currentPlan = { id: planId, price: price, name: planName };
+
+      // Open Step 2: Payment instructions
+      showPaymentInstructions();
+      savePaymentFlow(2);
+    }
+
+    function showPaymentInstructions() {
+      const modal = document.getElementById('payment-step2-modal');
+      if (!modal || !currentPlan) return;
+
+      const ussd = `*182*8*1*1249908*${currentPlan.price}#`;
+
+      document.getElementById('plan-name').textContent = currentPlan.name;
+      document.getElementById('plan-price').textContent = currentPlan.price;
+      document.getElementById('ussd-code').textContent = ussd;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      // Apply remembered payment method (default MoMo)
+      const savedMethod = localStorage.getItem('roadRulesPreferredPaymentMethod') || 'momo';
+      switchPaymentMethod(savedMethod);
+
+      savePaymentFlow(2);
+    }
+
+    function closePaymentModal() {
+      clearPaymentFlow();
+      const m = document.getElementById('payment-step2-modal');
+      m.classList.remove('flex');
+      m.classList.add('hidden');
+    }
+
+    function closeStep3() {
+      const m = document.getElementById('payment-step3-modal');
+      m.classList.remove('flex');
+      m.classList.add('hidden');
+    }
+
+    function goBackToStep2() {
+      const step3 = document.getElementById('payment-step3-modal');
+      step3.classList.remove('flex');
+      step3.classList.add('hidden');
+      // Go back to payment instructions (step 2) with same plan
+      showPaymentInstructions();
+      savePaymentFlow(2);
+    }
+
+    // ========== PERSISTENT PAYMENT FLOW (survives reloads) ==========
+    function savePaymentFlow(step, payerName = '') {
+      if (!currentPlan) return;
+      const data = {
+        step: step,
+        plan: currentPlan,
+        payerName: payerName || '',
+        savedAt: Date.now()
+      };
+      localStorage.setItem('roadRulesActivePayment', JSON.stringify(data));
+    }
+
+    function clearPaymentFlow() {
+      localStorage.removeItem('roadRulesActivePayment');
+    }
+
+    function restorePaymentFlow() {
+      try {
+        const raw = localStorage.getItem('roadRulesActivePayment');
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (!data || !data.plan || !data.step) {
+          clearPaymentFlow();
+          return false;
+        }
+        // Optional: expire very old flows (24h)
+        if (Date.now() - (data.savedAt || 0) > 24 * 60 * 60 * 1000) {
+          clearPaymentFlow();
+          return false;
+        }
+
+        currentPlan = data.plan;
+
+        if (data.step === 2) {
+          showPaymentInstructions();
+        } else if (data.step === 3) {
+          const step3 = document.getElementById('payment-step3-modal');
+          if (!step3) return false;
+          document.getElementById('step3-plan-name').textContent = currentPlan.name;
+          document.getElementById('step3-amount').textContent = currentPlan.price;
+          const nameInput = document.getElementById('payer-name');
+          if (nameInput) nameInput.value = data.payerName || '';
+          step3.classList.remove('hidden');
+          step3.classList.add('flex');
+        }
+        return true;
+      } catch (e) {
+        clearPaymentFlow();
+        return false;
+      }
+    }
+
+    // ========== PAYMENT METHOD TOGGLE (MoMo / Airtel) ==========
+    function switchPaymentMethod(method) {
+      const momoBtn = document.getElementById('btn-momo');
+      const airtelBtn = document.getElementById('btn-airtel');
+      const momoContent = document.getElementById('momo-content');
+      const airtelContent = document.getElementById('airtel-content');
+
+      const isMomo = method === 'momo';
+
+      // Style toggles
+      if (momoBtn) {
+        momoBtn.className = isMomo 
+          ? 'flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 bg-yellow-500 text-white shadow-sm'
+          : 'flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30';
+      }
+      if (airtelBtn) {
+        airtelBtn.className = !isMomo 
+          ? 'flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 bg-red-600 text-white shadow-sm'
+          : 'flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30';
+      }
+
+      // Show/hide content
+      if (momoContent) momoContent.classList.toggle('hidden', !isMomo);
+      if (airtelContent) airtelContent.classList.toggle('hidden', isMomo);
+
+      localStorage.setItem('roadRulesPreferredPaymentMethod', method);
+    }
+
+    function copyUSSD(btn) {
+      const codeEl = document.getElementById('ussd-code');
+      if (!codeEl) return;
+      const text = codeEl.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        setTimeout(() => { btn.innerHTML = original; }, 1400);
+      });
+    }
+
+    function copyNumber(btn, number) {
+      navigator.clipboard.writeText(number).then(() => {
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        setTimeout(() => { btn.innerHTML = original; }, 1400);
+      });
+    }
+
+    function goToStep3() {
+      closePaymentModal();
+
+      const step3 = document.getElementById('payment-step3-modal');
+      document.getElementById('step3-plan-name').textContent = currentPlan.name;
+      document.getElementById('step3-amount').textContent = currentPlan.price;
+
+      step3.classList.remove('hidden');
+      step3.classList.add('flex');
+
+      const nameInput = document.getElementById('payer-name');
+      savePaymentFlow(3, nameInput ? nameInput.value : '');
+    }
+
+    async function submitPayment() {
+      const payerName = document.getElementById('payer-name').value.trim();
+      if (!payerName) {
+        alert('Nyamuneka banza wandike amazina y\'uwishyuye.');
+        return;
+      }
+
+      const user = JSON.parse(localStorage.getItem('roadRulesUser'));
+      if (!user) {
+        alert('Ongera winjire mbere yo gushyura.');
+        return;
+      }
+
+      const newSubscription = {
+        plan: currentPlan.id,
+        planName: currentPlan.name,
+        amount: currentPlan.price,
+        status: 'pending',
+        payerName: payerName,
+        paidAt: new Date().toISOString()
+      };
+
+      // Disable button, show loading
+      const step3Modal = document.getElementById('payment-step3-modal');
+      const submitBtn = step3Modal.querySelector('button:last-child');
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = 'Kohereza...';
+      submitBtn.disabled = true;
+
+      try {
+        // ✅ Write to Drive FIRST — use pendingUpgrade so active approved plan is NOT overwritten
+        const success = await window.RoadRulesAdmin.updateUserData(user.phone, {
+          pendingUpgrade: newSubscription
+        });
+
+        if (!success) throw new Error('Drive write failed');
+
+        // Only update localStorage after Drive confirms (do not touch subscription)
+        user.pendingUpgrade = newSubscription;
+        localStorage.setItem('roadRulesUser', JSON.stringify(user));
+
+        // Immediately reflect in UI (current plan + pending notice)
+        if (typeof updateCurrentPlanBanner === 'function') updateCurrentPlanBanner();
+
+        // Close step3 modal
+        step3Modal.classList.remove('flex');
+        step3Modal.classList.add('hidden');
+
+        // Payment request finished → clear the in-progress flow (user is now in "pending review" state)
+        clearPaymentFlow();
+
+        // Show pending popup (user can reload or just continue with updated banner)
+        showPendingPopup();
+      } catch (err) {
+        console.error('Payment error:', err);
+        alert('Ntibyashobotse kohereza ubwishyu. Ongera ugerageze cyangwa uvugane na support.');
+      } finally {
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+      }
+    }
+
+    function showPendingPopup() {
+      const popup = document.createElement('div');
+      popup.className = 'fixed inset-0 z-[99] flex items-center justify-center bg-black/70 p-4';
+      popup.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full overflow-hidden border border-slate-200 dark:border-slate-700">
+          <!-- Header with icon -->
+          <div class="px-6 pt-7 pb-4 text-center bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-900">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 mb-3">
+              <i class="fa-solid fa-clock text-3xl"></i>
+            </div>
+            <h3 class="font-semibold text-xl tracking-tight">Tegereza mugihe bakigenzura ubwishyu bwawe</h3>
+          </div>
+
+          <div class="p-6 text-center">
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Ubuyobozi bugiye gusuzuma ubwishyu utanze. Nibirangira uratangira gukoresha service zijyanye n'ifatabuguzi wishyuye.
+            </p>
+            <div class="mt-4 inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">
+              <i class="fa-solid fa-hourglass-half"></i>
+              <span>Uremererwa gukora ibizamini igenzura rirangiye</span>
+            </div>
+
+            <button onclick="this.closest('.fixed').remove(); location.reload()" 
+                    class="mt-6 w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-check"></i>
+              <span>Nabyakiriye</span>
+            </button>
+          </div>
+
+          <!-- Help footer -->
+          <div class="px-6 pb-5 pt-3 border-t border-slate-100 dark:border-slate-800 text-center">
+            <div class="text-[11px] text-slate-500 dark:text-slate-400">
+              <i class="fa-solid fa-headset text-[10px] mr-1 opacity-70"></i>
+              Ukeneye ubufasha? 
+              <a href="tel:0788762976" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">Duhampagare cg utwandikire kuri 0788 762 976</a>
+            </div>
+          </div>
+        </div>`;
+      document.body.appendChild(popup);
+    }
+
+    // Centralized, reliable way to get the user's current plan
+    function getCurrentSubscription() {
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+      if (!user || !user.subscription || user.subscription.status !== 'approved') {
+        return { plan: 'ubuntu', planName: 'Ubuntu Free', status: 'approved', amount: 0 };
+      }
+      return user.subscription;
+    }
+
+    function getPendingUpgradeRequest() {
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+      if (!user) return null;
+      if (user.pendingUpgrade && user.pendingUpgrade.status === 'pending') {
+        return user.pendingUpgrade;
+      }
+      // Legacy support: pending living in subscription
+      if (user.subscription && user.subscription.status === 'pending') {
+        return user.subscription;
+      }
+      return null;
+    }
+
+    function updateCurrentPlanBanner() {
+      const container = document.getElementById('current-plan-section');
+      if (!container) return;
+
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+
+      if (!user) {
+        container.innerHTML = `
+          <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-800 rounded-2xl px-5 py-3 text-sm">
+            <i class="fa-solid fa-user-lock text-slate-500"></i>
+            <span class="text-slate-600 dark:text-slate-400">Injira cyangwa iyandikishe kugira ngo ubone ifatabuguzi ryawe rigezweho.</span>
+            <button onclick="window.openAuthModal && window.openAuthModal('login')" class="ml-auto px-4 py-1.5 text-xs rounded-2xl bg-slate-900 text-white font-semibold">Injira</button>
+          </div>`;
+        updatePlanCardButtons({ plan: 'ubuntu' });
+        return;
+      }
+
+      const sub = getCurrentSubscription();
+      const pending = getPendingUpgradeRequest();
+
+      let statusColor = 'emerald';
+      let statusText = 'Active';
+
+      container.innerHTML = `
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-4">
+          <div>
+            <div class="text-xs tracking-widest text-slate-500">CURRENT PLAN</div>
+            <div class="font-semibold text-xl">${sub.planName}</div>
+          </div>
+
+          <div class="px-4 py-1 rounded-2xl bg-${statusColor}-100 dark:bg-${statusColor}-900 text-${statusColor}-700 dark:text-${statusColor}-300 text-sm font-medium">
+            ${statusText}
+          </div>
+
+          ${sub.amount > 0 ? `<div class="text-sm text-slate-500">Wishyuye ifatabuguzi rya ${sub.amount} RWF</div>` : ''}
+
+          <div class="ml-auto text-xs text-slate-500">
+            Since ${new Date(sub.paidAt || Date.now()).toLocaleDateString()}
+          </div>
+        </div>`;
+
+      // Show pending upgrade notice separately (user keeps current plan features)
+      if (pending) {
+        const pendingNotice = document.createElement('div');
+        pendingNotice.className = 'mt-3 text-sm rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/30 px-4 py-3 text-amber-700 dark:text-amber-300';
+        pendingNotice.innerHTML = `
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-clock"></i>
+            <span>Wasabye ifatabuguzi rya: <strong>${pending.planName}</strong> — mugihe ugitegereje kuribona uraba ugikoresha iryo warusanganwe.</span>
+          </div>`;
+        container.appendChild(pendingNotice);
+      }
+
+      // Highlight current plan card
+      document.querySelectorAll('[id^="plan-card-"]').forEach(el => el.classList.remove('ring-2', 'ring-emerald-500'));
+      const currentCard = document.getElementById(`plan-card-${sub.plan}`);
+      if (currentCard) {
+        currentCard.classList.add('ring-2', 'ring-emerald-500');
+      } else if (sub.plan === 'ubuntu') {
+        const ubuntuCard = document.getElementById('plan-card-ubuntu');
+        if (ubuntuCard) ubuntuCard.classList.add('ring-2', 'ring-emerald-500');
+      }
+
+      // Update buttons based on current plan
+      updatePlanCardButtons(sub);
+    }
+
+    function updatePlanCardButtons(currentSub = null) {
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+      if (!user) {
+        const ub = document.getElementById('ubuntu-plan-status');
+        if (ub) {
+          ub.className = 'mt-6';
+          ub.innerHTML = `<button onclick="window.openAuthModal && window.openAuthModal('login')" class="w-full py-2.5 text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white transition">Injira cyangwa Iyandikishe kugira ukoreshe Ubuntu</button>`;
+        }
+      }
+      const sub = currentSub || getCurrentSubscription();
+      const pending = getPendingUpgradeRequest();
+
+      const btn2 = document.querySelector('#plan-card-inshuro2 button');
+      if (btn2) {
+        if (pending && pending.plan === 'inshuro2') {
+          btn2.textContent = `Tegereza Kwemezwa`;
+          btn2.className = `mt-6 w-full py-3 rounded-2xl bg-amber-500 text-white font-semibold opacity-80 cursor-not-allowed`;
+          btn2.disabled = true;
+        } else if (sub.plan === 'inshuro2' && sub.status === 'approved') {
+          btn2.textContent = `Ongera 300 RWF`;
+          btn2.className = `mt-6 w-full py-3 rounded-2xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700`;
+        } else {
+          btn2.textContent = `Ishyura 300 RWF`;
+          btn2.className = `mt-6 w-full py-3 rounded-2xl bg-blue-600 text-white font-semibold hover:bg-blue-700`;
+          btn2.disabled = false;
+        }
+      }
+
+      const btn5 = document.querySelector('#plan-card-inshuro5 button');
+      if (btn5) {
+        if (pending && pending.plan === 'inshuro5') {
+          btn5.textContent = `Tegereza Kwemezwa`;
+          btn5.className = `mt-6 w-full py-3 rounded-2xl bg-amber-500 text-white font-semibold opacity-80 cursor-not-allowed`;
+          btn5.disabled = true;
+        } else if (sub.plan === 'inshuro5' && sub.status === 'approved') {
+          btn5.textContent = `Ongera 500 RWF`;
+          btn5.className = `mt-6 w-full py-3 rounded-2xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700`;
+        } else {
+          btn5.textContent = `Ishyura 500 RWF`;
+          btn5.className = `mt-6 w-full py-3 rounded-2xl bg-violet-600 text-white font-semibold hover:bg-violet-700`;
+          btn5.disabled = false;
+        }
+      }
+
+      const btnUk = document.querySelector('#plan-card-ukwezi button');
+      if (btnUk) {
+        if (pending && pending.plan === 'ukwezi') {
+          btnUk.textContent = `Tegereza Kwemezwa`;
+          btnUk.className = `mt-6 w-full py-3 rounded-2xl bg-amber-500 text-white font-semibold opacity-80 cursor-not-allowed`;
+          btnUk.disabled = true;
+        } else if (sub.plan === 'ukwezi' && sub.status === 'approved') {
+          btnUk.textContent = `Ongera 1000 RWF`;
+          btnUk.className = `mt-6 w-full py-3 rounded-2xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700`;
+        } else {
+          btnUk.textContent = `Ishyura 1000 RWF`;
+          btnUk.className = `mt-6 w-full py-3 rounded-2xl bg-amber-600 text-white font-semibold hover:bg-amber-700`;
+          btnUk.disabled = false;
+        }
+      }
+    }
+
+    function initializeApp(){ 
+      initTailwind(); 
+      initTheme(); 
+      initAccessibility();
+      updateCurrentPlanBanner(); 
+      // Ensure buttons are in correct state even if banner had early return
+      if (!document.getElementById('current-plan-section')?.innerHTML.includes('CURRENT PLAN')) {
+        updatePlanCardButtons();
+      }
+
+      // Restore any in-progress payment flow (survives reload / navigation)
+      restorePaymentFlow();
+
+      // Live-save the payer name while typing so it survives reload on step 3
+      const payerInput = document.getElementById('payer-name');
+      if (payerInput) {
+        payerInput.addEventListener('input', () => {
+          if (currentPlan) {
+            savePaymentFlow(3, payerInput.value);
+          }
+        });
+      }
+    } 
+    window.onload=initializeApp;
+  </script>
+</body>
+</html>

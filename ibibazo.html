@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RoadRules - Ibibazo (Questions)">
+  <title>Ibibazo • RoadRules</title>
+ 
+  <!-- Early theme script to prevent dark mode flash on reload -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('roadRulesTheme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = saved === 'dark' || (!saved && prefersDark);
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+ 
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 antialiased">
+  <!-- POLISHED OFFICIAL MENUBAR -->
+  <div class="official-topbar hidden md:block text-white/90">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8 flex items-center justify-between h-7 text-[10px] font-medium tracking-[0.6px]">
+      <div class="flex items-center gap-x-2"><span class="font-semibold">REPUBLIC OF RWANDA</span> <span class="opacity-60">•</span> <span class="opacity-80">Road Safety Education Initiative</span></div>
+      <div class="flex items-center gap-x-4 text-[9.5px] opacity-80"><span>+250 788 762 976</span></div>
+    </div>
+  </div>
+ 
+  <nav class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 nav-elevated">
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="px-4 sm:px-5 md:px-6 lg:px-8">
+        <div class="flex h-[70px] sm:h-[78px] items-center justify-between">
+           <a href="index.html" class="flex items-center gap-x-3 group">
+             <div class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-700 to-blue-800 text-white shadow-md ring-1 ring-blue-900/30 group-hover:scale-[1.03] transition-transform"><i class="fa-solid fa-road text-xl sm:text-2xl"></i></div>
+             <div class="leading-none"><span class="logo-font text-[23px] sm:text-[27px] font-semibold tracking-[-1.2px] text-slate-900 dark:text-white">RoadRules</span><span class="block -mt-[1px] text-[8px] sm:text-[9.5px] font-semibold tracking-[1.5px] text-blue-700 dark:text-blue-400">AMATEGEKO Y'UMUHANDA</span></div>
+           </a>
+ 
+          <div class="hidden md:flex items-center gap-x-1 text-[14.5px] font-medium">
+            <a href="index.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ahabanza</a>
+            <a href="imyitozo.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Imyitozo</a>
+            <a href="ibibazo.html" class="nav-link nav-pill active px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full">Ibibazo</a>
+            <a href="ifitabuguzi.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ifatabuguzi</a>
+          </div>
+ 
+           <div class="flex items-center gap-x-2.5 flex-shrink-0">
+            <button onclick="toggleTheme()" id="theme-toggle" class="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-all hover:border-slate-300 active:scale-[0.96]" aria-label="Toggle theme"><i id="theme-icon" class="fa-solid fa-moon text-base"></i></button>
+            <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+              <button onclick="openAuthModal('login')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Injira</button>
+              <button onclick="openAuthModal('signup')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition">Iyandikishe</button>
+            </div>
+            <button onclick="toggleMobileMenu()" id="mobile-menu-button" class="md:hidden flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Open menu"><i class="fa-solid fa-bars text-lg"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-[100000] bg-black bg-opacity-75" onclick="toggleMobileMenu()">
+      <div onclick="event.stopImmediatePropagation()" class="absolute right-0 top-0 bottom-0 w-[82%] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-700 p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-x-3"><div class="h-9 w-9 bg-blue-700 rounded-2xl flex items-center justify-center text-white"><i class="fa-solid fa-road"></i></div><span class="logo-font text-2xl font-semibold tracking-tighter">RoadRules</span></div>
+          <button onclick="toggleMobileMenu()" class="text-3xl text-slate-400 hover:text-slate-600">×</button>
+        </div>
+        <div class="space-y-1 text-[15.5px] font-medium">
+          <a href="index.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ahabanza</a>
+          <a href="imyitozo.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Imyitozo</a>
+           <a href="ibibazo.html" class="block px-4 py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-semibold">Ibibazo</a>
+          <a href="ifitabuguzi.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ifatabuguzi</a>
+        </div>
+        <div class="my-7 border-t border-slate-200 dark:border-slate-700"></div>
+        <div id="mobile-auth-area" class="space-y-3">
+          <button onclick="openAuthModal('login'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold">Injira (Login)</button>
+          <button onclick="openAuthModal('signup'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold">Iyandikishe (Sign Up)</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+ 
+  <!-- IBIBAZO - Full question browser (study mode) -->
+  <main class="max-w-screen-2xl mx-auto px-5 md:px-6 lg:px-8 py-10">
+    <div class="max-w-5xl mx-auto">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-3xl bg-emerald-100 dark:bg-emerald-950 px-4 py-1 text-emerald-700 dark:text-emerald-400 text-xs font-semibold tracking-widest mb-2">
+            <i class="fa-solid fa-book"></i>
+            <span>ISUZUMA 20</span>
+          </div>
+          <h1 class="text-3xl font-semibold tracking-tighter">Ibibazo n'ibisubizo byabajijwe</h1>
+          <p class="text-slate-600 dark:text-slate-400 mt-1">Reba ibizamini byakozwe n'ibisubizo byabyo. Buri kizamini gifite ibibazo 20.</p>
+        </div>
+        <div class="text-right">
+          <div id="q-count" class="text-4xl font-semibold tabular-nums text-emerald-600">20</div>
+          <div class="text-xs tracking-widest text-slate-500">ISUZUMA</div>
+        </div>
+      </div>
+ 
+      <!-- 20 static Isuzuma cards -->
+      <div id="isuzuma-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 mb-6">
+        <!-- Populated by JS: 20 fixed groups -->
+      </div>
+
+      <div class="mt-4 text-xs text-center text-slate-500">perime.rw kwisonga mugutsindisha abanyeshuri bakora ikizamini cya provisoir</div>
+ 
+      <!-- Isuzuma Modal -->
+      <div id="isuzuma-modal" onclick="if(event.target.id==='isuzuma-modal') closeIsuzumaModal()" class="hidden fixed inset-0 z-[95] bg-black/70 items-center justify-center p-3 md:p-6">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col max-h-[92vh]">
+          <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+            <div id="modal-isuzuma-title" class="font-semibold text-xl tracking-tight">Isuzuma</div>
+            <button onclick="closeIsuzumaModal()" class="text-3xl leading-none text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">×</button>
+          </div>
+
+          <div class="p-4 border-b border-slate-100 dark:border-slate-800">
+            <div class="relative">
+              <i class="fa-solid fa-search absolute left-4 top-2.5 text-slate-400 text-sm"></i>
+              <input id="modal-search" type="text" placeholder="Shakisha muri iki isuzuma..." 
+                     class="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:border-emerald-500">
+            </div>
+          </div>
+
+          <div id="modal-questions-container" class="flex-1 overflow-auto p-4 space-y-4 custom-scroll text-sm" style="max-height: 62vh;">
+            <!-- 20 questions rendered here -->
+          </div>
+
+          <div class="px-5 py-4 border-t border-slate-200 dark:border-slate-700 flex gap-3">
+            <button onclick="closeIsuzumaModal()" class="flex-1 py-2.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-medium">Funga</button>
+            <button onclick="pickRandomInCurrent()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold flex items-center justify-center gap-2">
+              <i class="fa-solid fa-random"></i> <span>Hitamo ibibazo</span>
+            </button>
+          </div>
+         </div>
+        </div>
+ 
+      </div>
+    </main>
+ 
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+      <div class="py-12 md:py-14 grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-6 text-sm">
+        <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-x-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-600 text-white"><i class="fa-solid fa-road"></i></div>
+            <span class="logo-font font-semibold text-2xl tracking-tighter">RoadRules</span>
+          </div>
+          <div class="mt-4 text-xs text-slate-500 dark:text-slate-400 pr-4">Urubuga rwambere mugutsindisha abanyeshuri bakora ikizamini cya provisoir</div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">PLATFORM</div>
+          <div class="space-y-[9px] text-[13.5px]">
+             <a href="index.html" class="block footer-link">Ahabanza</a>
+             <a href="imyitozo.html" class="block footer-link">Imyitozo</a>
+              <a href="ibibazo.html" class="block footer-link">Ibibazo</a>
+             <a href="ifitabuguzi.html" class="block footer-link">Ifatabuguzi</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">SUPPORT</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Help Center</a>
+            <a href="#" class="block footer-link">Report Issue</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">LEGAL</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Privacy Policy</a>
+            <a href="#" class="block footer-link">Terms of Service</a>
+            <a href="#" class="block footer-link">Data Protection</a>
+          </div>
+        </div>
+        <div class="col-span-2 md:col-span-1">
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">CONNECT</div>
+            <div class="flex items-center gap-x-4 text-lg">
+              <a href="https://www.facebook.com/perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.tiktok.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+          <div class="mt-5 text-xs text-slate-500">© 2026 RoadRules Ltd. • Kigali, Rwanda</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+ 
+  <!-- AUTH MODAL injected dynamically by auth.js -->
+ 
+  <script src="auth.js"></script>
+  <script src="questions.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // ========== IBIBAZO → 20 STATIC ISUZUMA (20 questions each, fixed by id order) ==========
+    let isuzumaGroups = [];
+    let currentGroupQuestions = [];
+    let currentGroupFiltered = [];
+
+    // Deterministic seeded shuffle so groups are always the same but well mixed
+    function mulberry32(seed) {
+      return function () {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    function seededShuffle(arr, seed) {
+      const rng = mulberry32(seed);
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildIsuzumaGroups() {
+      // Start from original id order, then apply a fixed-seed shuffle for good mixing
+      // This guarantees every Isuzuma gets a diverse mix of signs, rules, speed, priority, etc.
+      let master = (window.RoadRulesQuestions || []).slice().sort((a, b) => ((a.id || 0) - (b.id || 0)));
+      master = seededShuffle(master, 20260522);   // fixed seed → same groups forever
+
+      isuzumaGroups = [];
+      const size = 20;
+      for (let g = 0; g < 20; g++) {
+        const chunk = master.slice(g * size, g * size + size);
+        isuzumaGroups.push(chunk);
+      }
+    }
+
+    function renderQuestions(list, targetId = 'questions-container') {
+      const container = document.getElementById(targetId);
+      if (!container) return;
+
+      const arr = list || [];
+      if (!arr.length) {
+        container.innerHTML = `<div class="p-8 text-center text-slate-500 border border-dashed rounded-3xl">Ntabibazo byabonetse.</div>`;
+        return;
+      }
+
+      let html = '';
+      arr.forEach((q, idx) => {
+        const displayNum = idx + 1;                 // local 1-20 (or 1-19) inside this Isuzuma
+        const imageId = q.id || (idx + 1);          // original question number from JSON → used only for signs/xxx.jpg filename
+        const ansIndex = q.answer;
+        const ansLetter = ['A','B','C','D'][ansIndex] || '?';
+
+        html += `
+          <div class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-5 md:p-6 hover:border-emerald-300 dark:hover:border-emerald-800 transition">
+            <div class="flex gap-3">
+              <div class="flex-shrink-0 w-8 h-8 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-sm font-bold">${displayNum}</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-[15px] leading-snug font-semibold pr-2">${escapeHtml(q.question)}</div>
+
+                <!-- Sign image: uses the ORIGINAL question id from data (for signs/${imageId}.jpg), not the local display number -->
+                <div class="sign-image-wrap mt-3 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-100 dark:bg-slate-800" style="display:none">
+                  <img src="signs/${imageId}.jpg" 
+                       onerror="this.onerror=null; this.src='signs/${imageId}.png'; if(this.src.endsWith('.png') && this.naturalWidth===0) this.closest('.sign-image-wrap').style.display='none';"
+                       onload="this.closest('.sign-image-wrap').style.display='block'"
+                       class="w-full max-h-[210px] object-contain bg-white dark:bg-slate-950" alt="Ikimenyetso">
+                </div>
+
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-[13.5px]">
+                  ${q.options.map((opt, i) => {
+                    const isCorrect = i === ansIndex;
+                    return `
+                      <div class="flex items-start gap-2.5 ${isCorrect ? 'text-emerald-700 dark:text-emerald-400 font-medium' : 'text-slate-700 dark:text-slate-300'}">
+                        <span class="inline-block w-5 h-5 mt-px flex-shrink-0 rounded-full border text-[10px] font-bold flex items-center justify-center ${isCorrect ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950' : 'border-slate-300 dark:border-slate-600'}">
+                          ${String.fromCharCode(65 + i)}
+                        </span>
+                        <span class="pt-px">${escapeHtml(opt)}</span>
+                        ${isCorrect ? `<span class="ml-auto text-emerald-600"><i class="fa-solid fa-check"></i></span>` : ''}
+                      </div>`;
+                  }).join('')}
+                </div>
+
+                <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center text-xs">
+                  <span class="font-semibold text-emerald-600">Igisubizo cy'ukuri: <span class="font-bold">${ansLetter}</span></span>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m] || m));
+    }
+
+    function renderIsuzumaGrid() {
+      const grid = document.getElementById('isuzuma-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const access = (window.RoadRulesAccess && window.RoadRulesAccess.getMaxExamsAllowed) ? window.RoadRulesAccess.getMaxExamsAllowed() : 1;
+      const allowed = Math.min(access, 20);
+
+      isuzumaGroups.forEach((group, gi) => {
+        const num = gi + 1;
+        const count = group.length;
+        const isLocked = gi >= allowed;
+        const card = document.createElement('div');
+
+        if (isLocked) {
+          card.className = `cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-600 rounded-3xl p-4 transition flex flex-col opacity-75`;
+          card.innerHTML = `
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="text-[10px] font-semibold tracking-widest text-amber-600 dark:text-amber-400">IKIZAMINI CYA ${num}</div>
+                <div class="mt-1 text-3xl font-semibold tabular-nums">${count}</div>
+                <div class="text-xs text-slate-500">IBIBAZO</div>
+              </div>
+              <div class="w-9 h-9 rounded-2xl bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 flex items-center justify-center"><i class="fa-solid fa-lock"></i></div>
+            </div>
+            <div class="mt-auto pt-4">
+              <div class="w-full py-2 text-sm font-semibold rounded-2xl bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-200 text-center">Fungura (Upgrade)</div>
+            </div>`;
+          card.onclick = () => showLockedGroupPrompt(num);
+        } else {
+          card.className = `group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-700 rounded-3xl p-4 transition flex flex-col`;
+          card.innerHTML = `
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="text-[10px] font-semibold tracking-widest text-emerald-600 dark:text-emerald-400">IKIZAMINI CYA ${num}</div>
+                <div class="mt-1 text-3xl font-semibold tabular-nums">${count}</div>
+                <div class="text-xs text-slate-500">IBIBAZO</div>
+              </div>
+              <div class="w-9 h-9 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center"><i class="fa-solid fa-list-check"></i></div>
+            </div>
+            <div class="mt-auto pt-4">
+              <button class="w-full py-2 text-sm font-semibold rounded-2xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white group-hover:bg-emerald-600 dark:group-hover:bg-emerald-400 transition">Reba ibibazo</button>
+            </div>`;
+          card.onclick = () => openIsuzuma(gi);
+          const btn = card.querySelector('button');
+          if (btn) btn.onclick = (e) => { e.stopImmediatePropagation(); openIsuzuma(gi); };
+        }
+        grid.appendChild(card);
+      });
+    }
+
+    function showLockedGroupPrompt(num) {
+      const msg = document.createElement('div');
+      msg.className = `fixed inset-0 z-[99] flex items-center justify-center bg-black/60 p-4`;
+      const desc = num >= 6
+        ? "Iki kizamini cyemerewe abantu bose bafite ifatabuguzi ry'ukwezi."
+        : "Iki kizamini cyemerewe abantu bose bafite ifatabuguzi ry'icyumweru.";
+      msg.innerHTML = `
+        <div onclick="event.target===this&&this.remove()" class="absolute inset-0"></div>
+        <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-2xl p-6 max-w-sm w-full">
+          <div class="text-center">
+            <i class="fa-solid fa-lock text-4xl text-amber-500 mb-3"></i>
+            <div class="font-semibold text-lg">Ikizamini cya ${num} iri mu ifatabuguzi</div>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-400">${desc}</div>
+          </div>
+          <div class="mt-5 flex gap-3">
+            <button class="flex-1 py-2.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm" onclick="this.closest('.fixed').remove()">Funga</button>
+            <button class="flex-1 py-2.5 rounded-2xl bg-amber-600 text-white text-sm font-semibold" onclick="this.closest('.fixed').remove(); window.location.href='ifitabuguzi.html'">Ongera ifatabuguzi</button>
+          </div>
+        </div>`;
+      document.body.appendChild(msg);
+    }
+
+    function openIsuzuma(gi) {
+      if (!localStorage.getItem('roadRulesUser')) { openAuthModal('login'); return; }
+      currentGroupQuestions = (isuzumaGroups[gi] || []).slice();
+      currentGroupFiltered = currentGroupQuestions.slice();
+
+      const titleEl = document.getElementById('modal-isuzuma-title');
+      if (titleEl) titleEl.textContent = `Ikizamini cya ${gi + 1} • ${currentGroupQuestions.length} ibibazo`;
+
+      renderQuestions(currentGroupFiltered, 'modal-questions-container');
+
+      const searchInput = document.getElementById('modal-search');
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.oninput = () => {
+          const term = (searchInput.value || '').toLowerCase().trim();
+          if (!term) {
+            currentGroupFiltered = currentGroupQuestions.slice();
+          } else {
+            currentGroupFiltered = currentGroupQuestions.filter(q =>
+              (q.question || '').toLowerCase().includes(term) ||
+              (q.options && q.options.some(o => (o || '').toLowerCase().includes(term)))
+            );
+          }
+          renderQuestions(currentGroupFiltered, 'modal-questions-container');
+        };
+      }
+
+      const modal = document.getElementById('isuzuma-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeIsuzumaModal() {
+      const modal = document.getElementById('isuzuma-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+      const c = document.getElementById('modal-questions-container');
+      if (c) c.innerHTML = '';
+    }
+
+    function pickRandomInCurrent() {
+      if (!localStorage.getItem('roadRulesUser')) { openAuthModal('login'); return; }
+      if (!currentGroupFiltered.length) return;
+      const idx = Math.floor(Math.random() * currentGroupFiltered.length);
+      const cards = document.querySelectorAll('#modal-questions-container > div');
+      if (cards[idx]) {
+        cards[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        cards[idx].classList.add('!border-emerald-500');
+        setTimeout(() => cards[idx].classList.remove('!border-emerald-500'), 1400);
+      }
+    }
+
+    function initIbibazo() {
+      buildIsuzumaGroups();
+
+      const countEl = document.getElementById('q-count');
+      if (countEl) countEl.textContent = isuzumaGroups.length; // 20
+
+      renderIsuzumaGrid();
+
+      // Refresh grid when user logs in or plan changes (no page reload)
+      if (window.RoadRulesAuth && window.RoadRulesAuth.updateAuthUI) {
+        const _orig = window.RoadRulesAuth.updateAuthUI;
+        window.RoadRulesAuth.updateAuthUI = function () {
+          if (_orig) _orig();
+          if (typeof renderIsuzumaGrid === 'function') renderIsuzumaGrid();
+        };
+      }
+
+      console.log('%c[Ibibazo] 20 static Isuzuma groups ready (plan-gated)', 'color:#10b981');
+    }
+
+    function initializeApp(){
+      initTailwind(); initTheme(); initAccessibility();
+      initIbibazo();
+    }
+    window.onload = initializeApp;
+  </script>
+</body>
+</html>

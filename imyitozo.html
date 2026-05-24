@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RoadRules - Imyitozo (Practice)">
+  <title>Imyitozo • RoadRules</title>
+
+  <!-- Early theme script to prevent dark mode flash on reload -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('roadRulesTheme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = saved === 'dark' || (!saved && prefersDark);
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 antialiased">
+  <!-- POLISHED OFFICIAL MENUBAR -->
+  <div class="official-topbar hidden md:block text-white/90">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8 flex items-center justify-between h-7 text-[10px] font-medium tracking-[0.6px]">
+      <div class="flex items-center gap-x-2">
+        <span class="font-semibold">REPUBLIC OF RWANDA</span>
+        <span class="opacity-60">•</span>
+        <span class="opacity-80">Road Safety Education Initiative</span>
+      </div>
+      <div class="flex items-center gap-x-4 text-[9.5px] opacity-80">
+        <span>+250 788 762 976</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 nav-elevated">
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="px-4 sm:px-5 md:px-6 lg:px-8">
+        <div class="flex h-[70px] sm:h-[78px] items-center justify-between">
+           <a href="index.html" class="flex items-center gap-x-3 group">
+             <div class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-700 to-blue-800 text-white shadow-md ring-1 ring-blue-900/30 group-hover:scale-[1.03] transition-transform"><i class="fa-solid fa-road text-xl sm:text-2xl"></i></div>
+             <div class="leading-none"><span class="logo-font text-[23px] sm:text-[27px] font-semibold tracking-[-1.2px] text-slate-900 dark:text-white">RoadRules</span><span class="block -mt-[1px] text-[8px] sm:text-[9.5px] font-semibold tracking-[1.5px] text-blue-700 dark:text-blue-400">AMATEGEKO Y'UMUHANDA</span></div>
+           </a>
+
+          <div class="hidden md:flex items-center gap-x-1 text-[14.5px] font-medium">
+            <a href="index.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ahabanza</a>
+            <a href="imyitozo.html" class="nav-link nav-pill active px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full">Imyitozo</a>
+            <a href="ibibazo.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ibibazo</a>
+            <a href="ifitabuguzi.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ifatabuguzi</a>
+          </div>
+
+           <div class="flex items-center gap-x-2.5 flex-shrink-0">
+            <button onclick="toggleTheme()" id="theme-toggle" class="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-all hover:border-slate-300 active:scale-[0.96]" aria-label="Toggle theme">
+              <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
+            </button>
+
+            <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+              <button onclick="openAuthModal('login')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Injira</button>
+              <button onclick="openAuthModal('signup')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition">Iyandikishe</button>
+            </div>
+
+            <button onclick="toggleMobileMenu()" id="mobile-menu-button" class="md:hidden flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Open menu">
+              <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-[100000] bg-black bg-opacity-75" onclick="toggleMobileMenu()">
+      <div onclick="event.stopImmediatePropagation()" class="absolute right-0 top-0 bottom-0 w-[82%] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-700 p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-x-3">
+            <div class="h-9 w-9 bg-blue-700 rounded-2xl flex items-center justify-center text-white"><i class="fa-solid fa-road"></i></div>
+            <span class="logo-font text-2xl font-semibold tracking-tighter">RoadRules</span>
+          </div>
+          <button onclick="toggleMobileMenu()" class="text-3xl text-slate-400 hover:text-slate-600">×</button>
+        </div>
+        <div class="space-y-1 text-[15.5px] font-medium">
+          <a href="index.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ahabanza</a>
+          <a href="imyitozo.html" class="block px-4 py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-semibold">Imyitozo</a>
+           <a href="ibibazo.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ibibazo</a>
+          <a href="ifitabuguzi.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ifatabuguzi</a>
+        </div>
+        <div class="my-7 border-t border-slate-200 dark:border-slate-700"></div>
+        <div id="mobile-auth-area" class="space-y-3">
+          <button onclick="openAuthModal('login'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold">Injira (Login)</button>
+          <button onclick="openAuthModal('signup'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold">Iyandikishe (Sign Up)</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MIDDLE CONTENT - Minimal -->
+  <main class="min-h-[calc(100vh-280px)] max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-16">
+    <div class="max-w-5xl mx-auto">
+      <!-- Header text kept as requested -->
+      <div class="inline-flex items-center gap-2 rounded-3xl bg-emerald-100 dark:bg-emerald-950 px-4 py-1 text-emerald-700 dark:text-emerald-400 text-xs font-semibold tracking-widest mb-3">
+        <i class="fa-solid fa-graduation-cap"></i> <span>IMYITOZO</span>
+      </div>
+      <p class="mt-3 text-xl text-slate-600 dark:text-slate-400">Gerageza ubumenyi bwawe ukoresheje ibizamini by’amategeko y’umuhanda bikurikira.</p>
+
+      <!-- TABS -->
+      <div class="mt-4 md:mt-8 flex gap-2 border-b border-slate-200 dark:border-slate-700 overflow-x-auto">
+        <button onclick="showImyitozoTab(0)" id="tab-btn-0"
+                class="tab-btn px-4 md:px-6 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 whitespace-nowrap">Gukora ibizamini</button>
+        <button onclick="showImyitozoTab(1)" id="tab-btn-1"
+                class="tab-btn px-4 md:px-6 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 whitespace-nowrap">Ibizamini Wakoze</button>
+      </div>
+
+      <!-- TAB 0: EXAM SIMULATION -->
+      <div id="tab-content-0" class="mt-6">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 p-5 md:p-8">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-emerald-600 dark:text-emerald-400 text-sm font-semibold tracking-wider">SIMULATION</div>
+              <h3 class="text-2xl font-semibold mt-1">Tangira Imyitozo wihugure</h3>
+              <p class="text-slate-600 dark:text-slate-400 mt-2 max-w-md">Ibizamini by’umwimerere bifatwa n’abayobozi b’ibinyabiziga. 20 ibibazo, iminuta 20.</p>
+            </div>
+            <div class="hidden md:block text-right">
+              <div class="text-xs text-slate-500">Ibisobanuro</div>
+              <div class="mt-1 text-3xl font-semibold text-emerald-600">85%</div>
+              <div class="text-xs text-emerald-600">Average pass rate</div>
+            </div>
+          </div>
+
+           <div class="mt-6 flex flex-wrap gap-3">
+             <div class="px-4 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm">20 ibibazo</div>
+             <div class="px-4 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm">20 min</div>
+             <div class="px-4 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm">All categories</div>
+           </div>
+
+            <!-- Single entry point: one "Tangira Simulation" button + live plan limit status -->
+            <div id="exam-slots" class="mt-8"></div>
+
+            <div class="mt-3 text-[11px] text-slate-500">Buri simulation ni 20 ibibazo • 20 min. Ibisubizo bigaragara nyuma y’ikizamini. Ibizamini by’umwimerere bigenda bitewe n’ifatabuguzi ryawe.</div>
+         </div>
+       </div>
+
+      <!-- TAB 1: MY EXAMS (dynamic) -->
+      <div id="tab-content-1" class="mt-6 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Left: Quick start -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-semibold text-slate-700 dark:text-slate-200">Kora ikindi kizamini</div>
+            </div>
+            <div class="rounded-3xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 p-6">
+              <div class="text-emerald-700 dark:text-emerald-300 font-medium">20 ibibazo • 20 min • Ibisubizo by’umwimerere</div>
+              <button onclick="startNewSimulation()" class="mt-4 w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">Kora ikindi kizamini</button>
+            </div>
+          </div>
+
+          <!-- Right: Dynamic completed exams (populated by JS) -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-semibold text-slate-700 dark:text-slate-200">Ibizamini byakozwe</div>
+            </div>
+             <div class="space-y-3" id="history-list">
+               <!-- JS will inject real exam cards here via renderUserExamHistory() -->
+               <div class="text-sm text-slate-500 p-4 border rounded-3xl">Ntabizamini wakozeye.</div>
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+      <div class="py-12 md:py-14 grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-6 text-sm">
+        <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-x-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-600 text-white"><i class="fa-solid fa-road"></i></div>
+            <span class="logo-font font-semibold text-2xl tracking-tighter">RoadRules</span>
+          </div>
+          <div class="mt-4 text-xs text-slate-500 dark:text-slate-400 pr-4">Urubuga rwambere mugutsindisha abanyeshuri bakora ikizamini cya provisoir</div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">PLATFORM</div>
+          <div class="space-y-[9px] text-[13.5px]">
+             <a href="index.html" class="block footer-link">Ahabanza</a>
+             <a href="imyitozo.html" class="block footer-link">Imyitozo</a>
+              <a href="ibibazo.html" class="block footer-link">Ibibazo</a>
+             <a href="ifitabuguzi.html" class="block footer-link">Ifatabuguzi</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">SUPPORT</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Help Center</a>
+            <a href="#" class="block footer-link">Report Issue</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">LEGAL</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Privacy Policy</a>
+            <a href="#" class="block footer-link">Terms of Service</a>
+            <a href="#" class="block footer-link">Data Protection</a>
+          </div>
+        </div>
+        <div class="col-span-2 md:col-span-1">
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">CONNECT</div>
+            <div class="flex items-center gap-x-4 text-lg">
+              <a href="https://www.facebook.com/perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.tiktok.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+          <div class="mt-5 text-xs text-slate-500">© 2026 RoadRules Ltd. • Kigali, Rwanda</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AUTH MODAL injected dynamically by auth.js -->
+
+  <!-- EXAM RESULTS MODAL (frontend only) -->
+  <div id="exam-result-modal" class="hidden fixed inset-0 z-[95] items-center justify-center bg-black/70 p-4">
+    <div class="w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div class="px-6 pt-6 pb-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-xs tracking-widest text-emerald-600 font-semibold">RESULTAT</div>
+            <div id="result-exam-title" class="font-semibold text-lg">Ibizamini 3</div>
+          </div>
+          <button onclick="closeResultModal()" class="text-2xl text-slate-400 hover:text-slate-600">&times;</button>
+        </div>
+
+        <!-- Big Score -->
+        <div class="flex items-center justify-center my-6">
+          <div class="relative h-28 w-28">
+            <svg class="w-28 h-28 -rotate-90" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+              <circle id="result-progress" cx="50" cy="50" r="42" fill="none" stroke="#10b981" stroke-width="10" stroke-dasharray="264" stroke-dashoffset="80"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <div id="result-score" class="text-4xl font-bold text-emerald-600">80</div>
+              <div class="text-[10px] text-emerald-600 -mt-1">%</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="result-summary" class="text-center text-sm text-slate-600 dark:text-slate-400 mb-4"></div>
+
+        <!-- Breakdown -->
+        <div class="grid grid-cols-3 gap-3 text-center text-sm">
+          <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl py-3">
+            <div class="text-emerald-600 font-semibold" id="result-correct">32</div>
+            <div class="text-[10px] text-slate-500">Correct</div>
+          </div>
+          <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl py-3">
+            <div class="text-red-500 font-semibold" id="result-wrong">6</div>
+            <div class="text-[10px] text-slate-500">Wrong</div>
+          </div>
+          <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl py-3">
+            <div class="text-amber-500 font-semibold" id="result-skipped">2</div>
+            <div class="text-[10px] text-slate-500">Skipped</div>
+          </div>
+        </div>
+
+        <!-- Category breakdown (static for now) -->
+        <div class="mt-5">
+          <div class="text-xs font-medium text-slate-500 mb-2">By category</div>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span>Road Signs</span> <span class="font-medium text-emerald-600">9/10</span></div>
+            <div class="flex justify-between"><span>Traffic Rules</span> <span class="font-medium text-emerald-600">8/10</span></div>
+            <div class="flex justify-between"><span>Vehicle Knowledge</span> <span class="font-medium text-amber-600">7/10</span></div>
+            <div class="flex justify-between"><span>Safety & First Aid</span> <span class="font-medium text-red-500">4/6</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-200 dark:border-slate-700 px-6 py-4 flex gap-3">
+        <button onclick="closeResultModal()" class="flex-1 py-2.5 rounded-2xl border text-sm">Funga</button>
+        <button onclick="retryExam()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 text-white text-sm font-semibold">Ongera ugerageze</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW: DETAILED EXAM REVIEW MODAL ("Reba ibyo wasubije") -->
+  <div id="exam-review-modal" class="hidden fixed inset-0 z-[97] items-center justify-center bg-black/70 p-4">
+    <div class="w-full max-w-4xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col max-h-[92vh]">
+      <div class="px-6 pt-5 pb-3 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950">
+        <div>
+          <div class="text-xs tracking-widest text-emerald-600 font-semibold">KUREBA IBISUBIZO WASUBIJE</div>
+          <div id="review-exam-title" class="font-semibold text-lg">Ibizamini — Details</div>
+        </div>
+        <button onclick="closeReviewModal()" class="text-3xl leading-none text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+
+      <div id="review-questions-area" class="flex-1 overflow-auto p-5 space-y-4 text-sm">
+        <!-- JS injects question cards here -->
+      </div>
+
+      <div class="border-t px-6 py-4 flex gap-3 bg-white dark:bg-slate-900">
+        <button onclick="closeReviewModal()" class="flex-1 py-2.5 rounded-2xl border text-sm">Funga</button>
+        <button onclick="closeReviewModal(); showImyitozoTab(0);" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 text-white text-sm font-semibold">Kora ikindi kizamini</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS MODAL (shown before starting simulation) -->
+  <div id="exam-instructions-modal" class="hidden fixed inset-0 z-[96] items-center justify-center bg-black/70 p-4">
+    <div class="w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div class="px-6 pt-6 pb-5 text-center">
+        <div class="inline-flex items-center gap-2 rounded-full bg-emerald-100 dark:bg-emerald-950 px-3 py-1 text-emerald-700 dark:text-emerald-400 text-xs font-semibold mb-3">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>IMYITOZO</span>
+        </div>
+        <div class="text-[15px] leading-snug font-semibold text-slate-800 dark:text-slate-100">
+          Ugiye gutangira Ikizamini kigizwe n'ibibazo 20, kigakorwa iminota 20
+        </div>
+        <div class="mt-4 text-sm text-slate-600 dark:text-slate-400">
+          Urabona amanota wagize urangije ikizamini, Gutsinda ugomba kuba wakoze byibuze ibibazo 12
+        </div>
+        <div class="mt-6 text-base font-semibold text-slate-800 dark:text-slate-200">Uriteguye Gutangira?</div>
+      </div>
+      <div class="border-t border-slate-200 dark:border-slate-700 px-6 py-4 flex gap-3">
+        <button onclick="closeInstructionsModal()" class="flex-1 py-3 rounded-2xl border text-sm font-semibold">Oya, Funga</button>
+        <button onclick="startExamAfterInstructions()" class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">Yego, Tangira</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NON-CLOSABLE CORRECTING MODAL (shown until Drive save completes) -->
+  <div id="exam-correcting-modal" class="hidden fixed inset-0 z-[97] items-center justify-center bg-black/85 p-4">
+    <div class="text-center text-white">
+      <div class="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-white/30 border-t-white"></div>
+      <div class="text-2xl font-semibold tracking-wide">Turi Gukosora</div>
+      <div class="mt-1 text-sm opacity-75">Ibisubizo byawe birimo gusuzumwa...</div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="questions.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // Questions are fully embedded in questions.js (no external fetch of questions.json needed for offline use)
+    // The "id" field is used to find optional matching image: signs/{id}.jpg or signs/{id}.png
+    window.RoadRulesQuestionBank = [];
+
+    async function loadQuestions() {
+      if (window.RoadRulesQuestionBank.length > 10) return window.RoadRulesQuestionBank;
+
+      if (window.RoadRulesQuestions && window.RoadRulesQuestions.length > 10) {
+        window.RoadRulesQuestionBank = window.RoadRulesQuestions.slice();
+        return window.RoadRulesQuestionBank;
+      }
+      return window.RoadRulesQuestionBank;
+    }
+
+    window.loadQuestionsFromCSV = loadQuestions;
+    window.loadQuestions = loadQuestions;
+
+    window.pickRandomQuestions = function(count = 20) {
+      const pool = window.RoadRulesQuestionBank.length > 0 ? window.RoadRulesQuestionBank : (window.RoadRulesQuestions || []);
+      if (!pool.length) return [];
+      const shuffled = [...pool].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, count);
+    };
+  </script>
+  <script>
+    // ========== IMYITOZO TABS + FULL-PAGE EXAM + DRIVE-SYNCED RESULTS ==========
+    let currentExamQuestions = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let examTimerInterval = null;
+    let timeLeftSeconds = 20 * 60;
+    let examStartTime = null;
+    let originalMainContent = null;   // for restoring after full-page exam
+    let pendingExamResult = null;     // used to pass result through correcting modal
+
+    function showImyitozoTab(n) {
+      const tab0 = document.getElementById('tab-content-0');
+      const tab1 = document.getElementById('tab-content-1');
+      const btn0 = document.getElementById('tab-btn-0');
+      const btn1 = document.getElementById('tab-btn-1');
+
+      // Reset both buttons to inactive state
+      [btn0, btn1].forEach(b => {
+        b.classList.remove('border-emerald-600', 'text-emerald-700', 'dark:text-emerald-400');
+        b.classList.add('border-transparent', 'text-slate-500');
+      });
+
+      if (n === 0) {
+        tab0.classList.remove('hidden');
+        tab1.classList.add('hidden');
+
+        // Activate first tab
+        btn0.classList.remove('border-transparent', 'text-slate-500');
+        btn0.classList.add('border-emerald-600', 'text-emerald-700', 'dark:text-emerald-400');
+
+        // Refresh plan-based slots when user opens the simulation tab
+        setTimeout(() => { if (typeof renderExamSlots === 'function') renderExamSlots(); }, 30);
+      } else {
+        tab0.classList.add('hidden');
+        tab1.classList.remove('hidden');
+
+        // Activate second tab
+        btn1.classList.remove('border-transparent', 'text-slate-500');
+        btn1.classList.add('border-emerald-600', 'text-emerald-700', 'dark:text-emerald-400');
+
+        renderUserExamHistory();
+      }
+
+      try { localStorage.setItem('roadRulesImyitozoTab', String(n)); } catch(e){}
+    }
+
+    // ========== SINGLE PROMINENT "TANGIRA SIMULATION" + PLAN LIMIT TRACKING ==========
+    function renderExamSlots() {
+      const container = document.getElementById('exam-slots');
+      if (!container) return;
+
+      const Access = window.RoadRulesAccess || {};
+      const max = Access.getMaxExamsAllowed ? Access.getMaxExamsAllowed() : 1;
+      const done = Access.getCompletedExamCount ? Access.getCompletedExamCount() : 0;
+      const currentPlan = Access.getCurrentPlan ? Access.getCurrentPlan() : 'ubuntu';
+      const cooldownLeft = Access.getCooldownRemainingMs ? Access.getCooldownRemainingMs() : 0;
+      const canStartNow = Access.canStartExamNow ? Access.canStartExamNow() : true;
+      const canMore = Access.canStartMoreExams ? Access.canStartMoreExams() : (done < max);
+
+      let statusLine = '';
+      let btnText = 'Tangira Ikizamini';
+      let btnClass = 'bg-emerald-600 hover:bg-emerald-700 text-white';
+      let disabled = false;
+      let extraInfo = '';
+      let alwaysClickable = true; // user request: always allow click, show popup on limit
+
+      if (!canStartNow && cooldownLeft > 0) {
+        const mins = Math.ceil(cooldownLeft / 60000);
+        statusLine = `Tegereza iminota ${mins} mbere yo gutangira ikizamini gishya (rate limit).`;
+        btnText = 'Tegereza...';
+        btnClass = 'bg-amber-500 text-white cursor-not-allowed';
+        disabled = true;
+        alwaysClickable = false;
+        extraInfo = `<div class="text-[11px] text-amber-600 mt-1">Cooldown ya 2 min irimo kugenda (Ukwezi)</div>`;
+      } else if (!canMore) {
+        // Do NOT disable the button anymore — user can click and will see upgrade popup
+        statusLine = `Wageze ku mubare w’ibizamini wemerewe n’ifatabuguzi ry'ubuntu (${done}/${max}).`;
+        btnText = (max === 1 && currentPlan === 'ubuntu') ? 'Tangira Ikizamini' : 'Tangira Ikizamini';
+        btnClass = 'bg-emerald-600 hover:bg-emerald-700 text-white';
+        disabled = false;
+        extraInfo = `<div class="text-[11px] text-amber-600 mt-1">Gura Ifatabuguzi kugira ngo ukore ibindi bizamini</div>`;
+      } else {
+        if (max === 1 && currentPlan === 'ubuntu') {
+          statusLine = `Biroroshye, Ubu ikizamini cyambere wagikora ku ubuntu`;
+          btnText = 'Tangira Ikizamini ku Ubuntu';
+        } else {
+          statusLine = `Wakoze <strong>${done}/${max}</strong> ibizamini byemewe n'ifatabuguzi ryawe.`;
+        }
+      }
+
+      // Single clean action block — button is always clickable except during cooldown
+      container.innerHTML = `
+        <div class="rounded-3xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 p-6">
+          <div class="text-center">
+            <div class="text-sm text-emerald-700 dark:text-emerald-300 font-medium mb-1">
+              ${statusLine}
+            </div>
+            ${extraInfo}
+            <button onclick="${disabled ? '' : 'startNewSimulation()'}"
+                    class="mt-4 w-full py-4 text-lg rounded-2xl font-semibold transition ${btnClass} ${disabled ? 'opacity-70' : ''}"
+                    ${disabled ? 'disabled' : ''}>
+              ${btnText}
+            </button>
+            <div class="mt-2 text-[11px] text-slate-500">20 ibibazo • 20 min • Ibisubizo by’umwimerere • Buri gihe by’umwimerere</div>
+          </div>
+        </div>`;
+    }
+
+    function startExamForSlot(slotIndex) {
+      // kept for backward compatibility with the second tab button
+      startNewSimulation();
+    }
+
+    function startNewSimulation() {
+      if (!localStorage.getItem('roadRulesUser')) { openAuthModal('login'); return; }
+      // Central guard using the plan limits (RoadRulesAccess)
+      const Access = window.RoadRulesAccess || {};
+      if (Access.canStartExamNow && !Access.canStartExamNow()) {
+        const left = Math.ceil((Access.getCooldownRemainingMs() || 0) / 60000);
+        alert(`Tegereza iminota ${left} mbere yo gutangira ikizamini gishya (rate limit ya 2 min - Ukwezi plan gusa).`);
+        return;
+      }
+       if (Access.canStartMoreExams && !Access.canStartMoreExams()) {
+         showLimitReachedModal();
+         return;
+       }
+
+       // No more per-slot concept in UI — every run is a fresh random simulation
+       try { sessionStorage.removeItem('roadRulesCurrentExamSlot'); } catch(e){}
+
+       // Go to instructions then the real random exam
+       startSimulation();
+     }
+    // Premium upgrade prompt when user hits exam limit on free / low plan
+    function showLimitReachedModal() {
+      // Remove any existing one
+      const existing = document.getElementById('limit-upgrade-modal');
+      if (existing) existing.remove();
+
+      const modal = document.createElement('div');
+      modal.id = 'limit-upgrade-modal';
+      modal.className = 'fixed inset-0 z-[99] flex items-center justify-center bg-black/70 p-4';
+      modal.innerHTML = `
+        <div onclick="document.getElementById('limit-upgrade-modal').remove()" class="absolute inset-0"></div>
+        <div onclick="event.stopImmediatePropagation()" class="relative w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden">
+          <div class="px-6 pt-7 pb-5 text-center">
+            <div class="mx-auto mb-4 w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+              <i class="fa-solid fa-lock text-white text-2xl"></i>
+            </div>
+            <div class="font-semibold text-xl tracking-tight text-slate-900 dark:text-white">Wageze ku mubare wemewe</div>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Wakoze ibizamini byemewe n’ifatabuguzi ryawe. Gura Ifatabuguzi kugira ngo ukore ibizamini byinshi kandi ubone ibindi byiza.
+            </p>
+          </div>
+          <div class="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 px-6 py-4 flex flex-col sm:flex-row gap-3">
+            <a href="ifitabuguzi.html" 
+               class="flex-1 text-center py-3 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-semibold text-sm transition">
+              Gura Ifatabuguzi
+            </a>
+            <button onclick="document.getElementById('limit-upgrade-modal').remove()" 
+                    class="flex-1 py-3 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+              Funga
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    // Full page exam (not popup)
+    function startSimulation() {
+      // First show instructions modal (as requested)
+      const m = document.getElementById('exam-instructions-modal');
+      if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+      }
+    }
+
+    async function startExamAfterInstructions() {
+      const m = document.getElementById('exam-instructions-modal');
+      if (m) { m.classList.remove('flex'); m.classList.add('hidden'); }
+
+      // Final guard (in case user bypassed slots)
+      const Access = window.RoadRulesAccess || {};
+      if (Access.canStartExamNow && !Access.canStartExamNow()) {
+        const left = Math.ceil((Access.getCooldownRemainingMs() || 0) / 60000);
+        alert(`Cooldown ya Ukwezi irimo kugenda. Tegereza iminota ${left}.`);
+        return;
+      }
+       if (Access.canStartMoreExams && !Access.canStartMoreExams()) {
+         showLimitReachedModal();
+         return;
+       }
+
+       const mainArea = document.querySelector('main .max-w-5xl');
+      if (!mainArea) return;
+
+      // Load questions from embedded bank in questions.js
+      await loadQuestions();
+
+      currentExamQuestions = window.pickRandomQuestions(20);
+      if (currentExamQuestions.length < 5) {
+        alert('Ntabibazo byabonetse. Reba ko questions.js ifite amakuru.');
+        console.error('Question bank is empty. Check that questions.js loaded correctly.');
+        return;
+      }
+
+      currentQuestionIndex = 0;
+      userAnswers = new Array(currentExamQuestions.length).fill(null);
+      timeLeftSeconds = 20 * 60;
+      examStartTime = Date.now();
+
+      // Save original content so we can restore
+      originalMainContent = mainArea.innerHTML;
+
+      // Build full-page exam UI
+      mainArea.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl overflow-hidden shadow">
+          <!-- Exam Header (page style) -->
+          <div class="px-4 md:px-6 py-3 md:py-4 border-b flex flex-col md:flex-row items-start md:items-center gap-y-2 md:gap-y-0 justify-between bg-slate-50 dark:bg-slate-950">
+            <div class="flex items-center gap-3">
+              <div class="h-8 w-8 md:h-9 md:w-9 bg-emerald-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-graduation-cap"></i></div>
+              <div>
+                <div class="font-semibold text-base md:text-lg">Simulation y’Ibizamini</div>
+                <div class="text-[10px] md:text-xs text-slate-500">20 ibibazo • 20 min</div>
+              </div>
+            </div>
+ 
+            <div class="flex items-center gap-2 md:gap-3 w-full md:w-auto justify-end">
+              <div id="exam-timer" 
+                   class="font-mono text-xl md:text-2xl font-semibold px-4 md:px-5 py-1 md:py-1.5 bg-slate-900 text-white rounded-2xl">20:00</div>
+ 
+              <button onclick="confirmExitExam()" 
+                      class="px-3 md:px-5 py-2 rounded-2xl border border-red-300 text-red-600 hover:bg-red-50 text-xs md:text-sm font-semibold flex items-center gap-1.5 md:gap-2">
+                <i class="fa-solid fa-times"></i> <span>Funga</span>
+              </button>
+            </div>
+          </div>
+ 
+          <!-- Progress bar -->
+          <div class="px-4 md:px-6 pt-3 pb-2 md:pt-4 md:pb-3">
+            <div class="flex justify-between text-[10px] md:text-xs text-slate-500 mb-1">
+              <span>Ibibazo <span id="q-progress">1/20</span></span>
+              <span id="q-answered">0/20 bisubije</span>
+            </div>
+            <div class="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div id="exam-progress-bar" class="h-2 bg-emerald-600 transition-all" style="width:5%"></div>
+            </div>
+          </div>
+ 
+          <!-- Question + Image + Options -->
+          <div class="p-4 md:p-6 min-h-[320px] md:min-h-[420px]" id="exam-question-area"></div>
+ 
+          <!-- Bottom nav -->
+          <div class="px-4 md:px-6 py-3 md:py-4 border-t bg-slate-50 dark:bg-slate-950 flex items-center justify-between">
+            <button onclick="prevQuestion()" class="px-4 md:px-6 py-2 md:py-2.5 rounded-2xl border text-xs md:text-sm font-semibold flex items-center gap-2">
+              <i class="fa-solid fa-arrow-left"></i> <span class="hidden sm:inline">Ibanga</span>
+            </button>
+ 
+            <div class="flex gap-1 md:gap-2">
+              <button onclick="skipQuestion()" class="px-3 md:px-5 py-2 md:py-2.5 rounded-2xl border text-xs md:text-sm font-semibold">Simbuka</button>
+              <button onclick="nextQuestion()" class="px-4 md:px-6 py-2 md:py-2.5 bg-emerald-600 text-white rounded-2xl text-xs md:text-sm font-semibold flex items-center gap-1 md:gap-2">
+                <span class="hidden sm:inline">Ibanga</span> <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      startExamTimer();
+      renderCurrentQuestion();
+    }
+
+    function closeInstructionsModal() {
+      const m = document.getElementById('exam-instructions-modal');
+      if (m) { m.classList.remove('flex'); m.classList.add('hidden'); }
+    }
+
+    function showCorrectingModal() {
+      const m = document.getElementById('exam-correcting-modal');
+      if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    }
+    function hideCorrectingModal() {
+      const m = document.getElementById('exam-correcting-modal');
+      if (m) { m.classList.remove('flex'); m.classList.add('hidden'); }
+    }
+
+    function triggerCelebration() {
+      const flowers = ['🌸','🌺','🌼','❄️','🎄','✨'];
+      const count = 72;
+      for (let i = 0; i < count; i++) {
+        const f = document.createElement('div');
+        f.className = 'rr-flower';
+        f.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+        f.style.left = (Math.random() * 100) + 'vw';
+        const size = 13 + Math.random() * 18;
+        f.style.fontSize = size + 'px';
+        const dur = 2.8 + Math.random() * 3.6;
+        f.style.animationDuration = dur + 's';
+        f.style.opacity = (0.55 + Math.random() * 0.45).toFixed(2);
+        document.body.appendChild(f);
+        // remove after animation
+        setTimeout(() => { if (f && f.parentNode) f.parentNode.removeChild(f); }, (dur + 0.6) * 1000);
+      }
+    }
+
+    function confirmExitExam() {
+      const answered = userAnswers.filter(a => a !== null).length;
+      const msg = answered > 0 
+        ? `Uragiye gusiba ibizamini. ${answered} ibibazo usubije azabazwa. Emeza?`
+        : 'Uragiye gusiba ibizamini. Emeza?';
+      if (confirm(msg)) {
+        exitExamWithoutSaving();
+      }
+    }
+
+    function exitExamWithoutSaving() {
+      clearInterval(examTimerInterval);
+      const mainArea = document.querySelector('main .max-w-5xl');
+      if (mainArea && originalMainContent) {
+        mainArea.innerHTML = originalMainContent;
+        originalMainContent = null;
+      }
+      showImyitozoTab(0);
+    }
+
+    function startExamTimer() {
+      clearInterval(examTimerInterval);
+      updateTimerDisplay();
+
+      examTimerInterval = setInterval(() => {
+        timeLeftSeconds--;
+        updateTimerDisplay();
+
+        if (timeLeftSeconds <= 0) {
+          clearInterval(examTimerInterval);
+          autoSubmitExam();
+        }
+        const t = document.getElementById('exam-timer');
+        if (t) t.classList.toggle('!bg-red-600', timeLeftSeconds < 300);
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const el = document.getElementById('exam-timer');
+      if (!el) return;
+      const m = Math.floor(timeLeftSeconds / 60);
+      const s = timeLeftSeconds % 60;
+      el.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m] || m)); }
+    function renderCurrentQuestion() {
+      const area = document.getElementById('exam-question-area');
+      if (!area || !currentExamQuestions[currentQuestionIndex]) return;
+
+      const q = currentExamQuestions[currentQuestionIndex];
+      const answered = userAnswers.filter(x => x !== null).length;
+      const pct = Math.round(((currentQuestionIndex + 1) / currentExamQuestions.length) * 100);
+
+      document.getElementById('q-progress').textContent = `${currentQuestionIndex + 1}/${currentExamQuestions.length}`;
+      document.getElementById('q-answered').textContent = `${answered}/${currentExamQuestions.length} bisubije`;
+      document.getElementById('exam-progress-bar').style.width = pct + '%';
+
+      let html = `
+        <div class="max-w-3xl mx-auto">
+          <div class="text-xs text-emerald-600 font-semibold tracking-widest">IBIBAZO ${currentQuestionIndex + 1} / ${currentExamQuestions.length}</div>
+          <div class="mt-2 text-base md:text-[17px] font-semibold leading-snug">${escapeHtml(q.question)}</div>
+      `;
+
+      // Auto image from signs/ folder using question id (e.g. signs/230.jpg or .png)
+      const imgJpg = `signs/${q.id}.jpg`;
+      const imgPng = `signs/${q.id}.png`;
+      html += `
+        <div class="mt-3 md:mt-4 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-100 dark:bg-slate-800" id="q-image-wrap" style="display:none">
+          <img src="${imgJpg}" onerror="this.onerror=null; this.src='${imgPng}'; if(this.src.endsWith('${imgPng}') && this.naturalWidth===0) this.closest('#q-image-wrap').style.display='none';"
+               onload="this.closest('#q-image-wrap').style.display='block'"
+                class="w-full max-h-[180px] md:max-h-[260px] object-contain bg-white dark:bg-slate-950" alt="">
+        </div>
+      `;
+
+      html += `<div class="mt-3 md:mt-5 space-y-2">`;
+      q.options.forEach((opt, i) => {
+        const sel = userAnswers[currentQuestionIndex] === i;
+        html += `
+          <button onclick="selectAnswer(${i})"
+                  class="w-full text-left px-4 md:px-5 py-3 md:py-[14px] rounded-2xl border text-sm flex gap-3 items-start transition ${sel ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}">
+            <span class="inline-block w-6 h-6 mt-px rounded-full border text-xs font-bold flex items-center justify-center flex-shrink-0 ${sel ? 'border-emerald-600 text-emerald-600' : 'border-slate-300'}">${String.fromCharCode(65+i)}</span>
+            <span class="flex-1">${escapeHtml(opt)}</span>
+          </button>`;
+      });
+      html += `</div></div>`;
+
+      area.innerHTML = html;
+    }
+
+    function selectAnswer(i) {
+      userAnswers[currentQuestionIndex] = i;
+      renderCurrentQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < currentExamQuestions.length - 1) {
+        currentQuestionIndex++;
+        renderCurrentQuestion();
+      } else {
+        confirmFinishExam();
+      }
+    }
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) { currentQuestionIndex--; renderCurrentQuestion(); }
+    }
+    function skipQuestion() {
+      if (currentQuestionIndex < currentExamQuestions.length - 1) {
+        currentQuestionIndex++;
+        renderCurrentQuestion();
+      } else {
+        confirmFinishExam();
+      }
+    }
+
+    function confirmFinishExam() {
+      const ans = userAnswers.filter(x => x !== null).length;
+      if (confirm(`Emeza ibizamini? ${ans}/${currentExamQuestions.length} ibibazo bisubijwe.`)) {
+        finishExam();
+      }
+    }
+
+    function autoSubmitExam() {
+      alert('Igihe cyarashize. Ibisubizo bizasubizwa.');
+      finishExam();
+    }
+
+    async function finishExam() {
+      clearInterval(examTimerInterval);
+
+      const mainArea = document.querySelector('main .max-w-5xl');
+      if (mainArea && originalMainContent) {
+        mainArea.innerHTML = originalMainContent;
+        originalMainContent = null;
+      }
+
+      // Score
+      let correct = 0, skipped = 0;
+      currentExamQuestions.forEach((q, i) => {
+        if (userAnswers[i] === null) skipped++;
+        else if (userAnswers[i] === q.answer) correct++;
+      });
+      const total = currentExamQuestions.length;
+      const wrong = total - correct - skipped;
+      const score = Math.round((correct / total) * 100);
+      const mins = Math.round((Date.now() - examStartTime) / 60000);
+
+      // Capture plan at time of exam + full answers for review feature
+      const planAtTime = (window.RoadRulesAccess && window.RoadRulesAccess.getCurrentPlan)
+        ? window.RoadRulesAccess.getCurrentPlan() : 'ubuntu';
+
+      const answersDetail = currentExamQuestions.map((q, i) => ({
+        question: q.question,
+        options: Array.isArray(q.options) ? [...q.options] : [],
+        userAnswer: userAnswers[i],      // index or null
+        correctAnswer: (typeof q.answer === 'number') ? q.answer : 0
+      }));
+
+      const result = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        score, correct, wrong, skipped, total,
+        timeUsed: `${mins} min`,
+        plan: planAtTime,
+        answersDetail
+      };
+
+      // 1. Local backup (summary + full answers)
+      saveExamResultLocal(result);
+
+      // Extra dedicated local save for the exact answers the user gave (for reliable "Reba ibyo wasubije")
+      saveDetailedAnswersLocal(result);
+
+      // === SHOW NON-CLOSABLE "Turi Gukosora" until Drive save finishes ===
+      showCorrectingModal();
+
+      // 2. Save to Google Drive and WAIT for it to finish
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+      if (user && user.phone && window.RoadRulesAdmin && typeof window.RoadRulesAdmin.updateUserData === 'function') {
+        try {
+          const full = await window.RoadRulesAdmin.getUserData(user.phone);
+          const exams = Array.isArray(full?.exams) ? full.exams : [];
+          exams.unshift(result);
+          const trimmed = exams.slice(0, 30);
+
+          const success = await window.RoadRulesAdmin.updateUserData(user.phone, { exams: trimmed });
+          if (success) {
+            console.log('%c[Exam] Performance saved to Google Drive', 'color:#10b981');
+          } else {
+            console.warn('Drive write returned false');
+          }
+        } catch (err) {
+          console.error('Failed to sync exam result to Drive', err);
+        }
+      }
+
+      // Hide correcting modal ONLY after Drive save is done
+      hideCorrectingModal();
+
+      // Record completion time for 2-min cooldown (Ukwezi plan only)
+      if (window.RoadRulesAccess && window.RoadRulesAccess.setLastExamCompletedAt) {
+        window.RoadRulesAccess.setLastExamCompletedAt();
+      }
+
+      // Now show result (with Watsinze / Watsinzwe + possible celebration)
+      showExamResult(result);
+
+      // Restore view and refresh history + slots
+      setTimeout(() => {
+        renderUserExamHistory();
+        if (typeof renderExamSlots === 'function') renderExamSlots();
+        showImyitozoTab(1);
+      }, 400);
+    }
+
+    function saveExamResultLocal(result) {
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+      const key = `roadRulesExamHistory_${user ? user.phone : 'guest'}`;
+      let h = JSON.parse(localStorage.getItem(key) || '[]');
+      h.unshift(result);
+      localStorage.setItem(key, JSON.stringify(h.slice(0, 30)));
+    }
+
+    // Dedicated localStorage save for full Q&A details (so user can always "resee what he answered"
+    // even if Drive sync is slow, fails, or history is trimmed). Keeps last ~10 detailed exams.
+    function saveDetailedAnswersLocal(examRecord) {
+      try {
+        const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+        const key = `roadRulesExamAnswers_${user ? user.phone : 'guest'}`;
+        let details = JSON.parse(localStorage.getItem(key) || '[]');
+        // store a compact detailed copy
+        const detailEntry = {
+          id: examRecord.id,
+          date: examRecord.date,
+          plan: examRecord.plan || 'unknown',
+          score: examRecord.score,
+          correct: examRecord.correct,
+          total: examRecord.total,
+          answersDetail: examRecord.answersDetail || []
+        };
+        details.unshift(detailEntry);
+        localStorage.setItem(key, JSON.stringify(details.slice(0, 10)));
+      } catch (e) {
+        console.warn('Failed to save detailed answers locally', e);
+      }
+    }
+
+    function loadUserExamHistory() {
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+      const key = `roadRulesExamHistory_${user ? user.phone : 'guest'}`;
+      return JSON.parse(localStorage.getItem(key) || '[]');
+    }
+
+    function renderUserExamHistory() {
+      const c = document.getElementById('history-list');
+      if (!c) return;
+
+      // Try to load fresh from Drive if possible
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+      if (user && user.phone && window.RoadRulesAdmin) {
+        window.RoadRulesAdmin.getUserData(user.phone).then(full => {
+          if (full && Array.isArray(full.exams) && full.exams.length > 0) {
+            renderHistoryCards(full.exams, c);
+          } else {
+            renderHistoryCards(loadUserExamHistory(), c);
+          }
+        }).catch(() => {
+          renderHistoryCards(loadUserExamHistory(), c);
+        });
+      } else {
+        renderHistoryCards(loadUserExamHistory(), c);
+      }
+    }
+
+    function renderHistoryCards(list, container) {
+      const currentPlan = (window.RoadRulesAccess && window.RoadRulesAccess.getCurrentPlan)
+        ? window.RoadRulesAccess.getCurrentPlan() : 'ubuntu';
+
+       if (!list || list.length === 0) {
+         // Clean empty state for "Ibizamini byakozwe" — no direct "Tangira simulation" CTA here
+         // (the starter lives only in the simulation area on the left)
+         if (currentPlan === 'ubuntu') {
+           container.innerHTML = `
+             <div class="rounded-3xl border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950 p-4">
+               <div class="flex items-center gap-2">
+                 <span class="px-2.5 py-0.5 text-xs rounded-full bg-sky-600 text-white font-semibold">IKIZAMINI CY'UBUNTU</span>
+                 <span class="text-sm text-slate-600 dark:text-slate-300">Ntago wakoze (1/1 y'ifatabuguzi rya Ubuntu)</span>
+               </div>
+               <div class="mt-2 text-xs text-slate-500">Tangira mu gice cya "Simulation y'Ibizami" ku mpande y'ibumoso.</div>
+             </div>`;
+         } else {
+           container.innerHTML = `<div class="text-sm text-slate-500 p-4 border rounded-3xl">Ntabizamini wakozeye.</div>`;
+         }
+         return;
+       }
+
+      let h = `<div class="space-y-3">`;
+      list.forEach(ex => {
+        const d = new Date(ex.date).toLocaleDateString('rw-RW', {month:'short', day:'numeric'});
+        const isUbuntuExam = ex.plan === 'ubuntu';
+        const badge = isUbuntuExam 
+          ? `<span class="ml-2 px-2 py-0.5 text-[10px] rounded-full bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300 font-medium">Ikizamini cy'Ubuntu</span>` 
+          : '';
+
+        const hasDetail = Array.isArray(ex.answersDetail) && ex.answersDetail.length > 0;
+
+        h += `
+          <div class="rounded-3xl border p-4 flex flex-wrap gap-y-2 justify-between items-center bg-white dark:bg-slate-900">
+            <div>
+              <div class="font-medium flex items-center">
+                Ikizamini — ${d}
+                ${badge}
+              </div>
+              <div class="text-xs text-emerald-600 mt-0.5">${ex.score}% • ${ex.correct}/${ex.total} • ${ex.timeUsed}</div>
+            </div>
+            <div class="flex gap-2">
+              ${hasDetail 
+                ? `<button onclick="showExamReview(${ex.id})" class="text-sm px-4 py-1.5 rounded-2xl border border-emerald-600 text-emerald-600 hover:bg-emerald-50">Reba ibyo wasubije</button>`
+                : `<button onclick="viewSavedExam(${ex.id})" class="text-sm px-4 py-1.5 rounded-2xl border text-slate-600">Reba uko wakoze</button>`}
+            </div>
+          </div>`;
+      });
+      h += `</div>`;
+      container.innerHTML = h;
+    }
+
+    function viewSavedExam(id) {
+      const all = loadUserExamHistory();
+      const ex = all.find(x => x.id === id);
+      if (!ex) return;
+      // Prefer detailed review if we have the answers
+      if (Array.isArray(ex.answersDetail) && ex.answersDetail.length > 0) {
+        showExamReview(id);
+      } else {
+        showExamResult(ex);
+      }
+    }
+
+    function showExamReview(id) {
+      let ex = null;
+
+      // 1. Try main history (now contains answersDetail for new exams)
+      const all = loadUserExamHistory();
+      ex = all.find(x => x.id === id);
+
+      // 2. If missing detailed answers, check the dedicated answers localStorage
+      if (!ex || !Array.isArray(ex.answersDetail) || ex.answersDetail.length === 0) {
+        try {
+          const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+          const ansKey = `roadRulesExamAnswers_${user ? user.phone : 'guest'}`;
+          const details = JSON.parse(localStorage.getItem(ansKey) || '[]');
+          const detailMatch = details.find(d => d.id === id);
+          if (detailMatch && Array.isArray(detailMatch.answersDetail) && detailMatch.answersDetail.length > 0) {
+            // merge what we have
+            ex = { ...(ex || detailMatch), answersDetail: detailMatch.answersDetail, plan: ex?.plan || detailMatch.plan };
+          }
+        } catch (e) {}
+      }
+
+      if (!ex || !Array.isArray(ex.answersDetail) || ex.answersDetail.length === 0) {
+        // fallback to summary for very old records
+        if (ex) showExamResult(ex);
+        else alert('Details ntago ziboneka kuri iki kizamini.');
+        return;
+      }
+
+      const m = document.getElementById('exam-review-modal');
+      if (!m) return;
+
+      document.getElementById('review-exam-title').textContent = 
+        `Ikizamini — ${new Date(ex.date).toLocaleDateString()}  •  Wagize ${ex.score}% (${ex.correct}/${ex.total})`;
+
+      const area = document.getElementById('review-questions-area');
+      area.innerHTML = '';
+
+      ex.answersDetail.forEach((item, idx) => {
+        const num = idx + 1;
+        const userIdx = item.userAnswer;
+        const correctIdx = item.correctAnswer;
+
+        let optionsHTML = '';
+        (item.options || []).forEach((optText, optIdx) => {
+          const isUser = userIdx === optIdx;
+          const isCorrect = correctIdx === optIdx;
+
+          let cls = 'border-slate-200 dark:border-slate-700';
+          let icon = '';
+
+          if (isCorrect) {
+            cls = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300';
+            icon = ' <i class="fa-solid fa-check ml-1"></i>';
+          } else if (isUser) {
+            cls = 'border-red-500 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300';
+            icon = ' <i class="fa-solid fa-times ml-1"></i>';
+          }
+
+          optionsHTML += `
+            <div class="px-3 py-1.5 rounded-xl border text-sm flex items-center gap-2 ${cls}">
+              <span class="font-mono text-xs w-4">${String.fromCharCode(65 + optIdx)}.</span>
+              <span class="flex-1">${optText}</span>
+              ${icon}
+            </div>`;
+        });
+
+        const skipped = userIdx === null || userIdx === undefined;
+        const headerExtra = skipped 
+          ? `<span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-700">Ntago wasubije</span>` 
+          : '';
+
+        const qHTML = `
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-900">
+            <div class="flex items-start gap-2 mb-2">
+              <div class="font-semibold text-emerald-600 w-6 shrink-0">${num}.</div>
+              <div class="flex-1 text-slate-800 dark:text-slate-100">${item.question}</div>
+              ${headerExtra}
+            </div>
+            <div class="ml-6 space-y-1">
+              ${optionsHTML || '<div class="text-slate-400">Nta mahitamo</div>'}
+            </div>
+            ${skipped ? '' : `
+              <div class="ml-6 mt-2 text-[11px] ${userIdx === correctIdx ? 'text-emerald-600' : 'text-red-600'}">
+                ${userIdx === correctIdx ? 'Wahisemo icyiza!' : 'Wahisemo ikindi — icyiza cyari: ' + String.fromCharCode(65 + correctIdx)}
+              </div>`}
+          </div>`;
+
+        area.insertAdjacentHTML('beforeend', qHTML);
+      });
+
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeReviewModal() {
+      const m = document.getElementById('exam-review-modal');
+      if (m) { m.classList.remove('flex'); m.classList.add('hidden'); }
+    }
+
+    function showExamResult(r) {
+      const m = document.getElementById('exam-result-modal');
+      if (!m) return;
+
+      const passed = r.correct >= 12;        // 12/20 required to pass
+      const highPass = r.correct >= 16;      // high score → celebration
+
+      document.getElementById('result-exam-title').textContent = `Ibizamini — ${new Date(r.date).toLocaleDateString()}`;
+      document.getElementById('result-score').textContent = r.score;
+
+      const statusHTML = passed
+        ? `<span class="inline-block text-emerald-600 font-bold text-xl">Watsinze</span>`
+        : `<span class="inline-block text-red-600 font-bold text-xl">Watsinzwe</span>`;
+      document.getElementById('result-summary').innerHTML = `${statusHTML} • ${r.score}% mu minota ${r.timeUsed}`;
+
+      document.getElementById('result-correct').textContent = r.correct;
+      document.getElementById('result-wrong').textContent = r.wrong;
+      document.getElementById('result-skipped').textContent = r.skipped || 0;
+
+      const circ = document.getElementById('result-progress');
+      circ.setAttribute('stroke-dashoffset', 264 - (264 * r.score / 100));
+
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+
+      // Celebration animation only for high passing scores (Christmas-style flowers)
+      if (passed && highPass) {
+        setTimeout(triggerCelebration, 180);
+      }
+    }
+
+    function closeResultModal() {
+      const m = document.getElementById('exam-result-modal');
+      m.classList.remove('flex'); m.classList.add('hidden');
+    }
+
+    function retryExam() {
+      closeResultModal();
+      startNewSimulation();
+    }
+
+    function initializeApp() {
+      initTailwind(); initTheme(); initAccessibility();
+      const last = parseInt(localStorage.getItem('roadRulesImyitozoTab') || '0');
+      showImyitozoTab(isNaN(last) ? 0 : last);
+      // Preload embedded questions from questions.js
+      loadQuestions();
+      // Initial render of plan-based exam slots
+      setTimeout(() => { if (typeof renderExamSlots === 'function') renderExamSlots(); }, 120);
+    }
+    window.onload = initializeApp;
+  </script>
+</body>
+</html>

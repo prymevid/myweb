@@ -1,0 +1,13 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e10]:
+    - generic [ref=e13]
+    - text: 
+  - main [ref=e31]:
+    - generic [ref=e32]
+    - generic [ref=e43]
+    - generic [ref=e56]
+    - generic [ref=e76]
+    - generic [ref=e79]
+  - contentinfo [ref=e92]:
+    - generic [ref=e94]
+  - text:  

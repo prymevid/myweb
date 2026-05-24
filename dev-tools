@@ -1,0 +1,18 @@
+const fs = require("fs");
+const vm = require("vm");
+const code = fs.readFileSync("questions.js", "utf8");
+const context = { window: {}, console: {log:()=>{}, error:()=>{}} };
+vm.createContext(context);
+vm.runInContext(code, context);
+const qs = context.window.RoadRulesQuestions || [];
+let bad = 0;
+qs.forEach((q,i) => {
+  if (!q || !q.question || !Array.isArray(q.options) || typeof q.answer !== "number") {
+    console.log("Bad at index", i, "id:", q && q.id, "keys:", q ? Object.keys(q) : null);
+    bad++;
+  } else if (q.options.length !== 4) {
+    console.log("Not 4 opts at",i, "id", q.id, "len=", q.options.length);
+    bad++;
+  }
+});
+console.log("Total questions:", qs.length, "bad:", bad);

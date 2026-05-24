@@ -1,0 +1,129 @@
+/* RoadRules - Shared Polished Styles (common.css) */
+/* Import fonts if not already */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap');
+
+:root { --font-sans: 'Inter', system_ui, sans-serif; }
+
+body { font-family: var(--font-sans); }
+
+.logo-font { font-family: 'Poppins', 'Inter', sans-serif; font-weight: 600; letter-spacing: -0.04em; }
+
+/* Official topbar */
+.official-topbar {
+  background: linear-gradient(to right, #0f172a, #1e3a5f);
+  font-size: 10.5px; letter-spacing: 0.5px;
+}
+
+/* Nav */
+.nav-link { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+.nav-link:hover { color: #0f172a; }
+.dark .nav-link:hover { color: #e0e7ff; }
+.nav-link.active { color: #1e40af; font-weight: 600; }
+.dark .nav-link.active { color: #93c5fd; }
+
+.nav-pill { padding: 6px 16px; border-radius: 9999px; transition: all 0.2s ease; }
+.nav-pill.active { background-color: #1e40af; color: white !important; box-shadow: 0 1px 3px rgb(30 64 175 / 0.3); }
+.dark .nav-pill.active { background-color: #1e3a8a; }
+
+.theme-toggle { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+.footer-link { transition: color 0.2s ease; }
+.footer-link:hover { color: #1e40af; }
+.dark .footer-link:hover { color: #93c5fd; }
+
+.polished-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+.polished-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+
+/* Premium enhancements shared */
+.premium-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); }
+.premium-shadow { box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25), 0 10px 10px -5px rgb(0 0 0 / 0.1); }
+.glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); }
+.dark .glass { background: rgba(15,23,42,0.85); backdrop-filter: blur(20px); }
+
+.section-header { font-size: 13px; letter-spacing: 2.5px; font-weight: 600; }
+
+.feature-card { transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+.feature-card:hover { box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+
+.stat-number { font-variant-numeric: tabular-nums; }
+
+.premium-btn { position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); }
+.premium-btn::after { content: ''; position: absolute; top: -50%; left: -100%; width: 50%; height: 200%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transition: 0.6s; }
+.premium-btn:hover::after { left: 250%; }
+
+.step-number { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; background: linear-gradient(145deg, #1e40af, #1e3a8a); color: white; border-radius: 9999px; box-shadow: 0 10px 15px -3px rgb(30 64 175 / 0.3); }
+
+.modern-testimonial { transition: all 0.3s cubic-bezier(0.23, 1.0, 0.32, 1); }
+
+.road-grid {
+  background-image: linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.hero-visual { box-shadow: 0 30px 60px -15px rgb(15 23 42 / 0.3), 0 0 0 1px rgba(148,163,184,0.1) inset; }
+
+.nav-elevated { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05); }
+
+/* Celebration animation */
+@keyframes rr-fall { to { transform: translateY(105vh) rotate(520deg); } }
+.rr-flower { position: fixed; top: -30px; font-size: 16px; line-height: 1; z-index: 99999; pointer-events: none; animation: rr-fall linear forwards; will-change: transform; }
+
+/* Custom scroll for ibibazo */
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+.dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
+
+/* ========== PREMIUM HELP CENTER WIDGET STYLES ========== */
+#rr-help-fab {
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
+              box-shadow 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+#rr-help-fab:hover {
+  box-shadow: 0 20px 25px -5px rgb(37 99 235 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.15);
+}
+
+#rr-help-panel {
+  animation: rr-help-enter 0.2s cubic-bezier(0.23, 1, 0.32, 1) both;
+  backdrop-filter: blur(12px);
+}
+@keyframes rr-help-enter {
+  from { opacity: 0; transform: translateY(14px) scale(0.965); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Chat bubbles & messages */
+#rr-help-messages .flex {
+  animation: rr-msg-pop 0.13s ease-out both;
+}
+@keyframes rr-msg-pop {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#rr-help-messages {
+  scrollbar-width: thin;
+}
+
+/* Suggestion chips */
+#rr-help-chips button {
+  transition: all 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+}
+#rr-help-chips button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.06);
+}
+
+/* nicer mobile sheet */
+@media (max-width: 420px) {
+  #rr-help-panel {
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0;
+    box-shadow: 0 -10px 40px rgb(0 0 0 / 0.2);
+    max-height: 78vh !important;
+  }
+}

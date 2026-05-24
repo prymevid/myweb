@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RoadRules - Ahabanza • Premium platform for Rwanda Provisoir exam preparation. Practice, prepare, and pass with confidence.">
+  <title>Ahabanza • RoadRules</title>
+
+  <!-- Early theme script to prevent dark mode flash on reload -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('roadRulesTheme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = saved === 'dark' || (!saved && prefersDark);
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* Index page specific premium extras */
+    .modern-card { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); }
+    .modern-card:hover { transform: translateY(-4px); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 antialiased">
+  <!-- POLISHED OFFICIAL MENUBAR -->
+  <div class="official-topbar hidden md:block text-white/90">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8 flex items-center justify-between h-7 text-[10px] font-medium tracking-[0.6px]">
+      <div class="flex items-center gap-x-2">
+        <span class="font-semibold">REPUBLIC OF RWANDA</span>
+        <span class="opacity-60">•</span>
+        <span class="opacity-80">Road Safety Education Initiative</span>
+      </div>
+      <div class="flex items-center gap-x-4 text-[9.5px] opacity-80">
+        <span>+250 788 762 976</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 nav-elevated">
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="px-4 sm:px-5 md:px-6 lg:px-8">
+        <div class="flex h-[70px] sm:h-[78px] items-center justify-between">
+          
+          <!-- Logo -->
+           <a href="index.html" class="flex items-center gap-x-3 group">
+             <div class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-700 to-blue-800 text-white shadow-md ring-1 ring-blue-900/30 group-hover:scale-[1.03] transition-transform"><i class="fa-solid fa-road text-xl sm:text-2xl"></i></div>
+             <div class="leading-none"><span class="logo-font text-[23px] sm:text-[27px] font-semibold tracking-[-1.2px] text-slate-900 dark:text-white">RoadRules</span><span class="block -mt-[1px] text-[8px] sm:text-[9.5px] font-semibold tracking-[1.5px] text-blue-700 dark:text-blue-400">AMATEGEKO Y'UMUHANDA</span></div>
+           </a>
+
+          <!-- Desktop Nav -->
+          <div class="hidden md:flex items-center gap-x-1 text-[14.5px] font-medium">
+            <a href="index.html" class="nav-link nav-pill active px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full">Ahabanza</a>
+            <a href="imyitozo.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Imyitozo</a>
+            <a href="ibibazo.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ibibazo</a>
+            <a href="ifitabuguzi.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ifatabuguzi</a>
+          </div>
+
+           <div class="flex items-center gap-x-2.5 flex-shrink-0">
+             <button onclick="toggleTheme()" id="theme-toggle" class="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-all hover:border-slate-300 active:scale-[0.96]" aria-label="Toggle theme">
+               <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
+             </button>
+ 
+             <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+               <button onclick="openAuthModal('login')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Injira</button>
+               <button onclick="openAuthModal('signup')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition">Iyandikishe</button>
+             </div>
+ 
+             <button onclick="toggleMobileMenu()" id="mobile-menu-button" class="md:hidden flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Open menu">
+               <i class="fa-solid fa-bars text-lg"></i>
+             </button>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-[100000] bg-black bg-opacity-75" onclick="toggleMobileMenu()">
+      <div onclick="event.stopImmediatePropagation()" class="absolute right-0 top-0 bottom-0 w-[82%] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-700 p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-x-3">
+            <div class="h-9 w-9 bg-blue-700 rounded-2xl flex items-center justify-center text-white"><i class="fa-solid fa-road"></i></div>
+            <span class="logo-font text-2xl font-semibold tracking-tighter">RoadRules</span>
+          </div>
+          <button onclick="toggleMobileMenu()" class="text-3xl text-slate-400 hover:text-slate-600">×</button>
+        </div>
+        <div class="space-y-1 text-[15.5px] font-medium">
+          <a href="index.html" class="block px-4 py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-semibold">Ahabanza</a>
+          <a href="imyitozo.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Imyitozo</a>
+           <a href="ibibazo.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ibibazo</a>
+          <a href="ifitabuguzi.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ifatabuguzi</a>
+        </div>
+        <div class="my-7 border-t border-slate-200 dark:border-slate-700"></div>
+        <div id="mobile-auth-area" class="space-y-3">
+          <button onclick="openAuthModal('login'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold">Injira (Login)</button>
+          <button onclick="openAuthModal('signup'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold">Iyandikishe (Sign Up)</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== PREMIUM AHABANZA CONTENT ==================== -->
+  <main>
+    
+    <!-- HERO - Ultra Premium -->
+    <section class="relative overflow-hidden bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+      <!-- Subtle background pattern -->
+      <div class="absolute inset-0 road-grid opacity-60 pointer-events-none"></div>
+      
+      <div class="relative z-10 max-w-screen-2xl mx-auto px-6 lg:px-8 pt-16 pb-20 md:pt-20 md:pb-24">
+        <div class="grid lg:grid-cols-12 gap-x-12 items-center">
+          
+          <!-- Left Content -->
+          <div class="lg:col-span-7 xl:col-span-7 max-w-2xl">
+            <!-- Trust Badge -->
+            <div class="inline-flex items-center gap-2.5 px-5 py-1.5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm mb-8">
+              <div class="flex items-center -space-x-1">
+                <div class="w-5 h-5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900 flex items-center justify-center"><i class="fa-solid fa-check text-[10px] text-white"></i></div>
+                <div class="w-5 h-5 rounded-full bg-blue-600 ring-2 ring-white dark:ring-slate-900"></div>
+              </div>
+              <span class="text-xs font-semibold tracking-[1.5px] text-slate-600 dark:text-slate-400">OFFICIAL • PERIME.RW 2026</span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-[56px] md:text-[72px] leading-[1.02] font-bold tracking-[-3.8px] text-slate-900 dark:text-white">
+              Kora imyitozo.<br>
+              Witegure.<br>
+              <span class="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 bg-clip-text text-transparent">Utsinde.</span>
+            </h1>
+
+            <p class="mt-6 max-w-lg text-[17px] text-slate-600 dark:text-slate-400 leading-relaxed">
+              Perime.rw ni urubuga rwo kwitorezaho ikizamini cya provisoir mu Rwanda. Uhabwa ibibazo bisa n’ibyo uzahura nabyo mu kizamini nyirizina, ugahita ubona ibisubizo n’aho wakosheje kugira ngo wikosore vuba
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="mt-9 flex flex-col sm:flex-row items-center gap-4">
+              <a href="imyitozo.html" 
+                 class="premium-btn group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-9 py-[17px] bg-slate-900 hover:bg-black text-white font-semibold rounded-3xl text-[15px] shadow-xl shadow-black/25 dark:shadow-black/50 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 transition-all active:scale-[0.985]">
+                <i class="fa-solid fa-graduation-cap text-lg transition-transform group-hover:-translate-y-px"></i>
+                <span>Tangira Imyitozo</span>
+              </a>
+              <a href="ifitabuguzi.html" 
+                 class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-[17px] border-2 border-slate-300 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-900 rounded-3xl text-slate-700 dark:text-slate-300 font-semibold text-[15px] transition-all">
+                 <i class="fa-solid fa-headset"></i>
+                 <span>Gura Ifatabuguzi</span>
+              </a>
+            </div>
+
+            <!-- Micro trust -->
+            <div class="mt-8 flex items-center gap-x-6 text-sm">
+              <div class="flex items-center gap-x-1.5 text-emerald-600 dark:text-emerald-400">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span class="font-medium text-xs tracking-wider">100% SECURE</span>
+              </div>
+              <div class="h-3 w-px bg-slate-200 dark:bg-slate-700"></div>
+              <div class="text-slate-500 dark:text-slate-400 text-xs tracking-[0.5px]">Kora imyitozo wiyungure ubumenyi</div>
+            </div>
+          </div>
+
+          <!-- Right Visual - Premium Mock Preview -->
+          <div class="lg:col-span-5 xl:col-span-5 mt-14 lg:mt-0">
+            <div class="relative mx-auto max-w-[380px] lg:max-w-none">
+              <!-- Main visual card -->
+              <div class="hero-visual bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-2 shadow-2xl">
+                <div class="rounded-[20px] overflow-hidden bg-gradient-to-br from-slate-900 to-slate-950 p-5 text-white">
+                  
+                  <!-- Mini header -->
+                  <div class="flex justify-between items-center mb-5 px-1">
+                    <div>
+                      <div class="text-xs opacity-60 tracking-widest">PERIME.RW</div>
+                      <div class="font-semibold tracking-tight">Imyitozo #47</div>
+                    </div>
+                    <div class="px-3 py-1 text-[10px] font-mono rounded-full bg-white/10 flex items-center gap-1.5">
+                      <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                      <span class="text-emerald-400 text-xs font-medium">LIVE</span>
+                    </div>
+                  </div>
+
+                   <!-- Question preview (distinct from options) -->
+                   <div class="bg-white/10 border border-white/20 rounded-2xl p-4 mb-4">
+                     <div class="flex gap-3 items-start">
+                       <div class="flex-shrink-0">
+                         <div class="w-8 h-8 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                           <i class="fa-solid fa-question-circle text-blue-400 text-lg"></i>
+                         </div>
+                       </div>
+                       <div class="text-[13.5px] leading-snug font-medium text-white/95 pt-0.5">
+                         Ikinyabiziga cyose cyangwa ibinyabiziga bigenda bigomba kugira:
+                       </div>
+                     </div>
+                   </div>
+
+                   <!-- Fake options -->
+                   <div class="space-y-2 mb-5">
+                     <div class="flex items-center gap-3 bg-white/5 hover:bg-white/10 transition-colors border border-white/10 rounded-2xl px-4 py-[10px] cursor-default text-sm">
+                       <div class="w-6 h-6 rounded-xl bg-emerald-500/90 flex items-center justify-center text-xs font-bold">A</div>
+                       <div>Umuyobozi</div>
+                     </div>
+                     <div class="flex items-center gap-3 bg-white/5 hover:bg-white/10 transition-colors border border-white/10 rounded-2xl px-4 py-[10px] cursor-default text-sm">
+                       <div class="w-6 h-6 rounded-xl bg-white/20 flex items-center justify-center text-xs font-bold">B</div>
+                       <div class="opacity-70">Umuherekeza</div>
+                     </div>
+                     <div class="flex items-center gap-3 bg-white/5 hover:bg-white/10 transition-colors border border-white/10 rounded-2xl px-4 py-[10px] cursor-default text-sm">
+                       <div class="w-6 h-6 rounded-xl bg-white/20 flex items-center justify-center text-xs font-bold">C</div>
+                       <div class="opacity-70">A na B ni ibisubizo by’ukuri</div>
+                     </div>
+                     <div class="flex items-center gap-3 bg-white/5 hover:bg-white/10 transition-colors border border-white/10 rounded-2xl px-4 py-[10px] cursor-default text-sm">
+                       <div class="w-6 h-6 rounded-xl bg-white/20 flex items-center justify-center text-xs font-bold">D</div>
+                       <div class="opacity-70">Nta gisubizo cy’ukuri kirimo</div>
+                     </div>
+                   </div>
+
+                  <div class="flex justify-between items-center px-1 text-xs">
+                    <div class="flex items-center gap-2">
+                      <div class="text-emerald-400"><i class="fa-solid fa-check-circle"></i></div>
+                      <span class="text-emerald-400 text-xs font-semibold">Correct: 18/20</span>
+                    </div>
+                    <div class="font-mono text-xs opacity-50">03:42</div>
+                  </div>
+                </div>
+              </div>
+
+               <!-- Floating badge (smaller to avoid overlapping LIVE pill) -->
+               <div class="absolute -top-2 -right-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-lg rounded-2xl px-3 py-1.5 flex items-center gap-2 text-sm">
+                 <div class="text-emerald-500"><i class="fa-solid fa-tachometer-alt"></i></div>
+                 <div class="leading-none">
+                   <div class="text-[9px] text-slate-500 dark:text-slate-400 tracking-wider">ACCURACY</div>
+                   <div class="font-semibold text-emerald-600 dark:text-emerald-400 -mt-px">94%</div>
+                 </div>
+               </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS - Premium horizontal bar -->
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8 -mt-5 relative z-10">
+      <div class="glass border border-slate-200 dark:border-slate-700 shadow-xl rounded-3xl px-6 sm:px-8 md:px-10 py-6 sm:py-7 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-5 sm:gap-x-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+          <div class="text-3xl sm:text-4xl font-semibold tabular-nums text-slate-900 dark:text-white stat-number" data-target="15280">15,280</div>
+          <div class="leading-none">
+            <div class="text-[10px] sm:text-xs uppercase tracking-[1.5px] font-semibold text-blue-600 dark:text-blue-400">Abanyeshuri</div>
+            <div class="text-[12px] sm:text-[13px] text-slate-600 dark:text-slate-400 mt-px">Registered learners</div>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+          <div class="text-3xl sm:text-4xl font-semibold tabular-nums text-slate-900 dark:text-white stat-number" data-target="94">94</div>
+          <div class="leading-none">
+            <div class="text-[10px] sm:text-xs uppercase tracking-[1.5px] font-semibold text-emerald-600 dark:text-emerald-400">Igipimo cyo gutsinda</div>
+            <div class="text-[12px] sm:text-[13px] text-slate-600 dark:text-slate-400 mt-px">Average pass rate</div>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+          <div class="text-3xl sm:text-4xl font-semibold tabular-nums text-slate-900 dark:text-white stat-number" data-target="28400">28,400</div>
+          <div class="leading-none">
+            <div class="text-[10px] sm:text-xs uppercase tracking-[1.5px] font-semibold text-blue-600 dark:text-blue-400">Imyitozo yakoze</div>
+            <div class="text-[12px] sm:text-[13px] text-slate-600 dark:text-slate-400 mt-px">Practice sessions completed</div>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+          <div class="text-3xl sm:text-4xl font-semibold tabular-nums text-slate-900 dark:text-white stat-number" data-target="100">100</div>
+          <div class="leading-none">
+            <div class="text-[10px] sm:text-xs uppercase tracking-[1.5px] font-semibold text-amber-600 dark:text-amber-400">Ibimenyetso</div>
+            <div class="text-[12px] sm:text-[13px] text-slate-600 dark:text-slate-400 mt-px">All road signs covered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section class="max-w-screen-2xl mx-auto px-6 lg:px-8 pt-20 pb-12">
+      <div class="text-center mb-10">
+        <div class="section-header text-blue-600 dark:text-blue-400 mb-3">KUKI ABANTU BAKUNDA GUKORESHA PERIME.RW</div>
+        <h2 class="text-4xl md:text-5xl font-bold tracking-[-1.8px] text-slate-900 dark:text-white">Ibyo platform itanga</h2>
+        <p class="mt-3 max-w-md mx-auto text-slate-600 dark:text-slate-400"></p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Feature 1 -->
+        <div class="feature-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-7 group">
+          <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 mb-6">
+            <i class="fa-solid fa-file-alt text-2xl"></i>
+          </div>
+          <h4 class="font-semibold text-xl tracking-tight">Ibizamini Bisa n’Iby’Ukuri</h4>
+          <p class="mt-3 text-[14.5px] text-slate-600 dark:text-slate-400 leading-relaxed">Ibipimo 300+ bya provisoir bya nyayo. Uzi ibibazo uzahura nabyo ku kizamini.</p>
+          <div class="mt-4 text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">Realistic simulation <i class="fa-solid fa-arrow-right text-xs ml-1 transition group-hover:translate-x-0.5"></i></div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-7 group">
+          <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 mb-6">
+            <i class="fa-solid fa-bolt text-2xl"></i>
+          </div>
+          <h4 class="font-semibold text-xl tracking-tight">Ibisubizo by’Umwanya</h4>
+          <p class="mt-3 text-[14.5px] text-slate-600 dark:text-slate-400 leading-relaxed">Ubona ibisubizo n’ibisobanuro vuba. Wibuke ibyo wakosheje kugira ngo wikosore.</p>
+          <div class="mt-4 text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">Instant explanations <i class="fa-solid fa-arrow-right text-xs ml-1 transition group-hover:translate-x-0.5"></i></div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-7 group">
+          <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-violet-100 dark:bg-violet-950 text-violet-600 dark:text-violet-400 mb-6">
+            <i class="fa-solid fa-chart-line text-2xl"></i>
+          </div>
+          <h4 class="font-semibold text-xl tracking-tight">Gukurikirana Iterambere</h4>
+          <p class="mt-3 text-[14.5px] text-slate-600 dark:text-slate-400 leading-relaxed">Dashboard ya premium igukurikirana amateka, igipimo, n’ibice byawe bya nkeya.</p>
+          <div class="mt-4 text-xs font-medium text-violet-600 dark:text-violet-400 flex items-center gap-1">Analytics &amp; insights <i class="fa-solid fa-arrow-right text-xs ml-1 transition group-hover:translate-x-0.5"></i></div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-7 group">
+          <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 mb-6">
+            <i class="fa-solid fa-map-signs text-2xl"></i>
+          </div>
+          <h4 class="font-semibold text-xl tracking-tight">Ibimenyetso byose</h4>
+          <p class="mt-3 text-[14.5px] text-slate-600 dark:text-slate-400 leading-relaxed">Aho wabona ibimenyetso by’umuhanda byose by’umwanya, n’ibisobanuro mu Kinyarwanda n’icyongereza.</p>
+          <div class="mt-4 text-xs font-medium text-amber-600 dark:text-amber-400 flex items-center gap-1">Complete sign library <i class="fa-solid fa-arrow-right text-xs ml-1 transition group-hover:translate-x-0.5"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 py-16">
+      <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-y-4 mb-10">
+          <div>
+            <div class="section-header text-blue-600 dark:text-blue-400">SIMPLE. EFFICIENT. EFFECTIVE.</div>
+            <h3 class="text-4xl font-bold tracking-[-1.6px] text-slate-900 dark:text-white mt-2">Uko watangira kwihugura muminota mike</h3>
+          </div>
+          <a href="imyitozo.html" class="text-sm font-medium text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1">Tangira imyitozo <i class="fa-solid fa-chevron-right text-xs"></i></a>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="flex gap-5">
+            <div class="step-number flex-shrink-0">01</div>
+            <div class="pt-1">
+              <div class="font-semibold tracking-tight text-lg">Injira cyangwa Wiyandikishe</div>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Fungura konte utangirane n'ikizamini cyambere kubuntu.</p>
+            </div>
+          </div>
+          <div class="flex gap-5">
+            <div class="step-number flex-shrink-0">02</div>
+            <div class="pt-1">
+              <div class="font-semibold tracking-tight text-lg">Gura Ifatabuguzi</div>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Hitamo ifatabuguzi rijyanye n'uburyo ushaka kwihuguramo.</p>
+            </div>
+          </div>
+          <div class="flex gap-5">
+            <div class="step-number flex-shrink-0">03</div>
+            <div class="pt-1">
+              <div class="font-semibold tracking-tight text-lg">Kora Imyitozo ihagije</div>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Banza urebe ibibazo n'ibisubizo babaza mukizamini, Utangire ukore n'imyitozo igufasha.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="max-w-screen-2xl mx-auto px-6 lg:px-8 py-20">
+      <div class="text-center mb-10">
+        <div class="section-header text-4xl text-blue-600 dark:text-blue-400">Icyo abanyeshuri bacu bavuga</div><br>
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-2">Menya uko Amategeko yafashije abantu benshi kugera ku ntego zabo</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="modern-testimonial bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-8">
+          <div class="flex gap-1 text-amber-400 mb-6"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-alt"></i></div>
+          <blockquote class="text-[15px] leading-relaxed">"Natsinze ikizamini byoroshye nyuma yo gukora imyitozo 25 kuri uru rubuga."</blockquote>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500">JN</div>
+            <div><div class="font-medium text-sm">Jean Ndayisaba</div><div class="text-xs text-slate-500">Taxi driver, Kigali</div></div>
+          </div>
+        </div>
+        
+        <div class="modern-testimonial bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-8">
+          <div class="flex gap-1 text-amber-400 mb-6"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <blockquote class="text-[15px] leading-relaxed">"Kwiga nkoresheje  imyitozo byatumye nsobanukirwa neza ibibazo by’ikizamini cy'amategeko y'umuhanda. Murakoze cyane"</blockquote>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500">AM</div>
+            <div><div class="font-medium text-sm">Aline Mukamana</div><div class="text-xs text-slate-500">Student, UR Huye</div></div>
+          </div>
+        </div>
+        
+        <div class="modern-testimonial bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-8">
+          <div class="flex gap-1 text-amber-400 mb-6"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <blockquote class="text-[15px] leading-relaxed">"Ntabwo nari nzi ko nshobora gutsinda ku nshuro yambere. perime.rw yampaye icyizere n’uburyo bwo kwitegura."</blockquote>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500">PK</div>
+            <div><div class="font-medium text-sm">Patrick Kalisa</div><div class="text-xs text-slate-500">Moto driver, Musanze</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL PREMIUM CTA -->
+    <section class="max-w-screen-2xl mx-auto px-6 lg:px-8 pb-20">
+      <div class="bg-gradient-to-br from-blue-700 to-blue-800 text-white rounded-3xl px-10 py-12 md:py-16 md:px-16 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
+        <div>
+          <div class="uppercase tracking-[3px] text-xs font-semibold text-blue-300">READY TO PASS YOUR PROVISOIR?</div>
+          <h3 class="text-4xl font-bold tracking-[-1.2px] mt-2">Ihugure nk'umusirimu ukoresheje ikoranabuhanga</h3>
+          <p class="mt-2 text-blue-200 max-w-md">Jya mu bandi ibihumbi batsindiye ikizamini ku nshuro ya mbere bakoresheje urubuga rwacu perime.rw</p>
+        </div>
+         <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+           <button id="final-signup-cta" onclick="openAuthModal('signup')" 
+                   class="premium-btn whitespace-nowrap px-10 py-4 bg-white text-blue-700 hover:bg-slate-100 active:bg-white font-semibold rounded-3xl text-lg shadow-xl transition flex-1 lg:flex-none">
+             Iyandikishe Ubu
+           </button>
+           <a href="ibibazo.html" 
+              class="whitespace-nowrap inline-flex items-center justify-center px-8 py-4 border border-white/40 hover:bg-white/10 rounded-3xl font-semibold text-lg transition flex-1 lg:flex-none">
+             Reba Ibisubizo
+           </a>
+         </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER (polished) -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+      <div class="py-12 md:py-14 grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-6 text-sm">
+        <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-x-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-600 text-white"><i class="fa-solid fa-road"></i></div>
+            <span class="logo-font font-semibold text-2xl tracking-tighter">RoadRules</span>
+          </div>
+          <div class="mt-4 text-xs text-slate-500 dark:text-slate-400 pr-4">Urubuga rwambere mugutsindisha abanyeshuri bakora ikizamini cya provisoir mu Rwanda.</div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">PLATFORM</div>
+          <div class="space-y-[9px] text-[13.5px]">
+             <a href="index.html" class="block footer-link">Ahabanza</a>
+             <a href="imyitozo.html" class="block footer-link">Imyitozo</a>
+              <a href="ibibazo.html" class="block footer-link">Ibibazo</a>
+             <a href="ifitabuguzi.html" class="block footer-link">Ifatabuguzi</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">SUPPORT</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Help Center</a>
+            <a href="#" class="block footer-link">Report Issue</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">LEGAL</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Privacy Policy</a>
+            <a href="#" class="block footer-link">Terms of Service</a>
+            <a href="#" class="block footer-link">Data Protection</a>
+          </div>
+        </div>
+        <div class="col-span-2 md:col-span-1">
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">CONNECT</div>
+            <div class="flex items-center gap-x-4 text-lg">
+              <a href="https://www.facebook.com/perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.tiktok.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+          <div class="mt-5 text-xs text-slate-500">© 2026 RoadRules Ltd. • Kigali, Rwanda</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AUTH MODAL injected dynamically by auth.js -->
+  <script src="auth.js"></script>
+  <script src="questions.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // Premium: Animated stats counters (index specific)
+    function animateStats() {
+      const stats = document.querySelectorAll('.stat-number');
+      stats.forEach(stat => {
+        const target = parseInt(stat.dataset.target);
+        const duration = 1400;
+        const start = performance.now();
+        const startVal = target > 1000 ? target - 600 : Math.floor(target * 0.3);
+
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+          let current = Math.floor(startVal + (target - startVal) * eased);
+          if (target === 94) current = Math.floor(current);
+          stat.textContent = current.toLocaleString();
+          if (progress < 1) requestAnimationFrame(update);
+          else stat.textContent = target.toLocaleString();
+        }
+        requestAnimationFrame(update);
+      });
+    }
+
+    function hidePremiumSignupIfLoggedIn() {
+      try {
+        if (localStorage.getItem('roadRulesUser')) {
+          const btn = document.getElementById('final-signup-cta');
+          if (btn) btn.style.display = 'none';
+        }
+      } catch(e) {}
+    }
+
+    function initializeApp(){ 
+      initTailwind(); 
+      initTheme(); 
+      initAccessibility(); 
+      hidePremiumSignupIfLoggedIn();
+      
+      // Trigger premium animations after load
+      setTimeout(() => {
+        const hero = document.querySelector('section');
+        if (hero) hero.classList.add('loaded');
+        animateStats();
+        // double-check in case auth UI update ran late
+        hidePremiumSignupIfLoggedIn();
+      }, 480);
+    }
+    window.onload = initializeApp;
+  </script>
+</body>
+</html>

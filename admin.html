@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RoadRules Admin Portal">
+  <title>Admin • RoadRules</title>
+
+  <!-- Early theme script to prevent dark mode flash on reload -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('roadRulesTheme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = saved === 'dark' || (!saved && prefersDark);
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 antialiased">
+  <!-- POLISHED OFFICIAL MENUBAR (Admin) -->
+  <div class="official-topbar hidden md:block text-white/90">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8 flex items-center justify-between h-7 text-[10px] font-medium tracking-[0.6px]">
+      <div class="flex items-center gap-x-2"><span class="font-semibold">REPUBLIC OF RWANDA</span> <span class="opacity-60">•</span> <span class="opacity-80">Road Safety Education Initiative</span></div>
+      <div class="flex items-center gap-x-4 text-[9.5px] opacity-80"><span>+250 788 762 976</span></div>
+    </div>
+  </div>
+
+  <nav class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 nav-elevated">
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="px-4 sm:px-5 md:px-6 lg:px-8">
+        <div class="flex h-[70px] sm:h-[78px] items-center justify-between">
+          <a href="index.html" class="flex items-center gap-x-3 group">
+            <div class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-700 to-blue-800 text-white shadow-md ring-1 ring-blue-900/30 group-hover:scale-[1.03] transition-transform"><i class="fa-solid fa-road text-xl sm:text-2xl"></i></div>
+            <div class="leading-none"><span class="logo-font text-[23px] sm:text-[27px] font-semibold tracking-[-1.2px] text-slate-900 dark:text-white">RoadRules</span><span class="block -mt-[1px] text-[8px] sm:text-[9.5px] font-semibold tracking-[1.5px] text-blue-700 dark:text-blue-400">AMATEGEKO Y'UMUHANDA</span></div>
+          </a>
+
+          <div class="hidden md:flex items-center gap-x-1 text-[14.5px] font-medium">
+            <a href="index.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ahabanza</a>
+            <a href="imyitozo.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Imyitozo</a>
+            <a href="ibibazo.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ibibazo</a>
+            <a href="ifitabuguzi.html" class="nav-link nav-pill px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">Ifatabuguzi</a>
+            <a href="admin.html" class="nav-link nav-pill active px-5 py-2 text-slate-700 dark:text-slate-300 rounded-full">Admin</a>
+          </div>
+
+           <div class="flex items-center gap-x-2.5 flex-shrink-0">
+            <button onclick="toggleTheme()" id="theme-toggle" class="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-all hover:border-slate-300 active:scale-[0.96]" aria-label="Toggle theme"><i id="theme-icon" class="fa-solid fa-moon text-base"></i></button>
+            <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+              <button onclick="openAuthModal('login')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Injira</button>
+              <button onclick="openAuthModal('signup')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition">Iyandikishe</button>
+            </div>
+            <button onclick="toggleMobileMenu()" id="mobile-menu-button" class="md:hidden flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Open menu"><i class="fa-solid fa-bars text-lg"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-[100000] bg-black bg-opacity-75" onclick="toggleMobileMenu()">
+      <div onclick="event.stopImmediatePropagation()" class="absolute right-0 top-0 bottom-0 w-[82%] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-700 p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-x-3"><div class="h-9 w-9 bg-blue-700 rounded-2xl flex items-center justify-center text-white"><i class="fa-solid fa-road"></i></div><span class="logo-font text-2xl font-semibold tracking-tighter">RoadRules</span></div>
+          <button onclick="toggleMobileMenu()" class="text-3xl text-slate-400 hover:text-slate-600">×</button>
+        </div>
+        <div class="space-y-1 text-[15.5px] font-medium">
+          <a href="index.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ahabanza</a>
+          <a href="imyitozo.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Imyitozo</a>
+           <a href="ibibazo.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ibibazo</a>
+          <a href="ifitabuguzi.html" class="block px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ifatabuguzi</a>
+          <a href="admin.html" class="block px-4 py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-semibold">Admin</a>
+        </div>
+        <div class="my-7 border-t border-slate-200 dark:border-slate-700"></div>
+        <div id="mobile-auth-area" class="space-y-3">
+          <button onclick="openAuthModal('login'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold">Injira (Login)</button>
+          <button onclick="openAuthModal('signup'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold">Iyandikishe (Sign Up)</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- DRIVER DATABASE CONTROL DASHBOARD -->
+  <main class="min-h-[calc(100vh-200px)] max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <!-- Dashboard Header -->
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+      <div>
+        <div class="flex items-center gap-3 mb-1">
+          <span class="font-mono text-xs uppercase tracking-[2px] text-blue-600">DATABASE CONTROL</span>
+          <span class="px-3 py-0.5 text-xs rounded-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 font-medium">ADMIN ONLY</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-semibold tracking-tighter">Driver Database & Activity Dashboard</h1>
+        <p class="text-sm text-slate-500">Direct control over all user files in Google Drive</p>
+      </div>
+      <div class="flex-shrink-0">
+          <button onclick="loadAllUsersFromDrive()" 
+                  class="px-4 sm:px-5 py-2.5 text-sm font-semibold rounded-2xl bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2">
+            <i class="fa-solid fa-sync"></i>
+            <span class="hidden sm:inline">Load / Refresh from Drive</span>
+            <span class="sm:hidden">Refresh</span>
+          </button>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
+        <div class="text-xs text-slate-500">LOADED USERS</div>
+        <div id="stat-loaded" class="text-3xl sm:text-4xl font-semibold mt-1 tabular-nums">0</div>
+      </div>
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
+        <div class="text-xs text-slate-500">WITH PAID PLAN</div>
+        <div id="stat-paid" class="text-3xl sm:text-4xl font-semibold mt-1 tabular-nums text-emerald-600">0</div>
+      </div>
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
+        <div class="text-xs text-slate-500">PENDING APPROVAL</div>
+        <div id="stat-pending-db" class="text-3xl sm:text-4xl font-semibold mt-1 tabular-nums text-amber-600">0</div>
+      </div>
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
+        <div class="text-xs text-slate-500">LAST SYNC</div>
+        <div id="stat-last-sync" class="text-sm font-medium mt-2 text-slate-500">Not loaded</div>
+      </div>
+    </div>
+
+    <!-- User Database Table -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl overflow-hidden">
+      <div class="px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <div class="font-semibold text-sm sm:text-base">All Driver Users (from Google Drive)</div>
+        <div class="text-[10px] sm:text-xs text-slate-400">Changes written directly to each user’s .json file</div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs sm:text-sm min-w-[500px] sm:min-w-[620px]">
+        <thead class="bg-slate-50 dark:bg-slate-800 text-xs text-slate-500">
+          <tr>
+            <th class="text-left px-3 sm:px-6 py-2.5 sm:py-3 font-medium sticky left-0 z-10 bg-slate-50 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700">Name</th>
+            <th class="text-left px-3 sm:px-6 py-2.5 sm:py-3 font-medium">Phone</th>
+            <th class="text-left px-3 sm:px-6 py-2.5 sm:py-3 font-medium">Current Plan</th>
+            <th class="text-left px-3 sm:px-6 py-2.5 sm:py-3 font-medium">Status</th>
+            <th class="text-left px-3 sm:px-6 py-2.5 sm:py-3 font-medium hidden sm:table-cell">Last Updated</th>
+            <th class="text-right px-3 sm:px-6 py-2.5 sm:py-3 font-medium sticky right-0 z-10 bg-slate-50 dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-table-body" class="divide-y divide-slate-200 dark:divide-slate-700">
+          <tr>
+            <td colspan="6" class="px-3 sm:px-6 py-8 sm:py-10 text-center text-slate-400">
+              <div class="flex flex-col items-center gap-2">
+                <div class="animate-spin h-5 w-5 border-2 border-slate-400 border-t-transparent rounded-full"></div>
+                <span>Automatically loading users from Google Drive...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="mt-4 text-xs text-amber-600 flex items-center gap-2">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      <span>Warning: All actions here write directly and permanently to Google Drive user files.</span>
+    </div>
+
+    <!-- AMATANGAZO (Announcements) MANAGEMENT - visible to all users in Konte panel -->
+    <div class="mt-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <i class="fa-solid fa-bullhorn text-amber-600"></i>
+        <div class="font-semibold">Amatangazo Management</div>
+        <div class="ml-auto text-[10px] px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300">All users see in Konte</div>
+      </div>
+      <div class="grid md:grid-cols-5 gap-4 md:gap-6">
+        <!-- Post form -->
+        <div class="md:col-span-2 space-y-2">
+          <input id="ann-title" type="text" placeholder="Umutwe w'amatangazo (Title)" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">
+          <textarea id="ann-content" rows="3" placeholder="Amakuru y'amatangazo (Content / message for users)" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"></textarea>
+          <button onclick="postAnnouncementAdmin()" class="w-full py-2.5 text-sm font-semibold rounded-2xl bg-amber-600 hover:bg-amber-700 text-white">Posta Amatangazo</button>
+        </div>
+        <!-- Current list -->
+        <div class="md:col-span-3">
+          <div class="text-xs uppercase tracking-widest text-slate-500 mb-2">Current Amatangazo (click to edit or delete)</div>
+          <div id="admin-ann-list" class="max-h-[220px] overflow-auto space-y-2 pr-1 text-sm"></div>
+          <div class="text-[10px] text-slate-400 mt-2">Changes are live for all users' Konte panels immediately.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HELP CENTER CHATBOT Q&A MANAGEMENT (powers the floating premium widget) -->
+    <div class="mt-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <i class="fa-solid fa-headset text-blue-600"></i>
+        <div class="font-semibold">Help Center Chatbot Q&amp;A</div>
+        <div class="ml-auto text-[10px] px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">Floating widget on all pages</div>
+      </div>
+      <div class="grid md:grid-cols-5 gap-4 md:gap-6">
+        <!-- Add form (now supports 3 progressive answers) -->
+        <div class="md:col-span-2 space-y-2">
+          <input id="help-q" type="text" placeholder="Ikibazo (Question - Kinyarwanda)" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">
+          <textarea id="help-a1" rows="2" placeholder="Igisubizo cya 1 (Primary answer)" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"></textarea>
+          <textarea id="help-a2" rows="2" placeholder="Igisubizo cya 2 (Alternative 1 - appears after user says Oya)" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"></textarea>
+          <textarea id="help-a3" rows="2" placeholder="Igisubizo cya 3 (Alternative 2 - final answer before question is removed)" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"></textarea>
+          <button onclick="postHelpFaqAdmin()" class="w-full py-2.5 text-sm font-semibold rounded-2xl bg-blue-600 hover:bg-blue-700 text-white">Add to Chatbot</button>
+          <div class="text-[10px] text-slate-500">After 3 answers the question disappears from chips for that user.</div>
+        </div>
+        <!-- Current list -->
+        <div class="md:col-span-3">
+          <div class="text-xs uppercase tracking-widest text-slate-500 mb-2">Current Q&amp;As (click to edit or delete) — shown as clickable questions in widget</div>
+          <div id="admin-help-list" class="max-h-[240px] overflow-auto space-y-2 pr-1 text-sm"></div>
+           <div class="text-[10px] text-slate-400 mt-2">Users will see these in the bottom-right premium help chat with typing animation.</div>
+         </div>
+       </div>
+     </div>
+
+     <!-- RUGAMBA PROACTIVE MESSAGE DELAY (admin sets time for auto "sent from support icon" notification) -->
+     <div class="mt-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
+       <div class="flex items-center gap-2 mb-3">
+         <i class="fa-solid fa-clock text-amber-600"></i>
+         <div class="font-semibold">Rugamba Proactive Message</div>
+         <div class="ml-auto text-[10px] px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300">Pops from support icon after delay</div>
+       </div>
+       <div class="flex flex-col sm:flex-row gap-3 items-end">
+         <div class="flex-1">
+           <label class="block text-xs text-slate-500 mb-1">Delay in minutes (users with Ukwezi plan will see Rugamba message sent from the headset icon)</label>
+           <input id="rugamba-delay-min" type="number" min="1" max="60" step="1" value="5" class="w-32 px-4 py-2 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">
+         </div>
+         <button onclick="saveRugambaDelayAdmin()" class="px-5 py-2.5 text-sm font-semibold rounded-2xl bg-amber-600 hover:bg-amber-700 text-white">Save Delay</button>
+       </div>
+       <div class="text-[10px] text-slate-400 mt-2">Default: 5 min. Message: “Ubu noneho ushobora kuvugana na mwarimu...” — closable, clicking opens Rugamba chat.</div>
+     </div>
+   </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+    <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+      <div class="py-12 md:py-14 grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-6 text-sm">
+        <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-x-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-600 text-white"><i class="fa-solid fa-road"></i></div>
+            <span class="logo-font font-semibold text-2xl tracking-tighter">RoadRules</span>
+          </div>
+          <div class="mt-4 text-xs text-slate-500 dark:text-slate-400 pr-4">Urubuga rwambere mugutsindisha abanyeshuri bakora ikizamini cya provisoir</div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">PLATFORM</div>
+          <div class="space-y-[9px] text-[13.5px]">
+             <a href="index.html" class="block footer-link">Ahabanza</a>
+             <a href="imyitozo.html" class="block footer-link">Imyitozo</a>
+              <a href="ibibazo.html" class="block footer-link">Ibibazo</a>
+             <a href="ifitabuguzi.html" class="block footer-link">Ifatabuguzi</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">SUPPORT</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Help Center</a>
+            <a href="#" class="block footer-link">Report Issue</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">LEGAL</div>
+          <div class="space-y-[9px] text-[13.5px]">
+            <a href="#" class="block footer-link">Privacy Policy</a>
+            <a href="#" class="block footer-link">Terms of Service</a>
+            <a href="#" class="block footer-link">Data Protection</a>
+          </div>
+        </div>
+        <div class="col-span-2 md:col-span-1">
+          <div class="font-semibold mb-3 text-xs tracking-widest text-slate-500">CONNECT</div>
+            <div class="flex items-center gap-x-4 text-lg">
+              <a href="https://www.facebook.com/perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-facebook"></i></a>
+              <a href="https://www.youtube.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.tiktok.com/@perime.rw250" class="hover:text-blue-600 transition"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+          <div class="mt-5 text-xs text-slate-500">© 2026 RoadRules Ltd. • Kigali, Rwanda</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AUTH MODAL injected dynamically by auth.js -->
+
+  <script src="auth.js"></script>
+  <script src="questions.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // ========== DRIVER DATABASE DASHBOARD (Google Drive powered) ==========
+    let loadedUsers = [];
+
+    async function loadAllUsersFromDrive() {
+      const tbody = document.getElementById('users-table-body');
+      const button = document.querySelector('button[onclick*="loadAllUsersFromDrive"]');
+
+      // Show nice loading spinner
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="px-3 sm:px-6 py-8 sm:py-10">
+            <div class="flex flex-col items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
+              <div class="animate-spin h-6 w-6 border-[3px] border-blue-500 border-t-transparent rounded-full"></div>
+              <span class="text-sm font-medium">Loading users from Google Drive...</span>
+            </div>
+          </td>
+        </tr>`;
+
+      if (button) button.disabled = true;
+
+      try {
+        const files = await window.RoadRulesAdmin.listAllUserFiles();
+        
+        loadedUsers = [];
+        const toLoad = files.slice(0, 200);
+        const results = await Promise.all(toLoad.map(async (file) => {
+          const userData = await window.RoadRulesAdmin.readUserFileById(file.id);
+          return userData ? { ...userData, _fileId: file.id } : null;
+        }));
+        loadedUsers = results.filter(Boolean);
+
+        renderUserTable();
+        updateDashboardStats();
+
+        document.getElementById('stat-last-sync').textContent = new Date().toLocaleTimeString();
+
+      } catch (err) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="px-3 sm:px-6 py-6 sm:py-8 text-center">
+              <div class="text-red-500 text-sm">Failed to load from Drive. Check browser console for details.</div>
+            </td>
+          </tr>`;
+        console.error(err);
+      } finally {
+        if (button) button.disabled = false;
+      }
+    }
+
+    function updateDashboardStats() {
+      document.getElementById('stat-loaded').textContent = loadedUsers.length;
+
+      const paid = loadedUsers.filter(u => u.subscription && u.subscription.amount > 0).length;
+      document.getElementById('stat-paid').textContent = paid;
+
+      const pending = loadedUsers.filter(u => 
+        (u.pendingUpgrade && u.pendingUpgrade.status === 'pending') || 
+        (u.subscription && u.subscription.status === 'pending')
+      ).length;
+      document.getElementById('stat-pending-db').textContent = pending;
+    }
+
+    function renderUserTable() {
+      const tbody = document.getElementById('users-table-body');
+      tbody.innerHTML = '';
+
+        if (loadedUsers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-3 sm:px-6 py-6 sm:py-8 text-center text-slate-400">No users loaded.</td></tr>`;
+        return;
+      }
+
+      loadedUsers.forEach(user => {
+        const sub = user.subscription || { planName: 'Ubuntu Free', status: 'approved' };
+        const pend = user.pendingUpgrade || null;
+
+        let planDisplay = sub.planName || 'Ubuntu Free';
+        let statusHTML = '';
+        let actionButtons = '';
+
+        if (pend && pend.status === 'pending') {
+          // Show pending upgrade request prominently
+          planDisplay = `${sub.planName || 'Ubuntu'} → <span class="text-amber-600">${pend.planName}</span>`;
+          statusHTML = `<span class="px-3 py-0.5 text-xs rounded-full bg-amber-100 text-amber-700">Pending Upgrade</span>`;
+          actionButtons = `
+            <button onclick="adminApprove('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 bg-emerald-600 text-white rounded-xl">Approve</button>
+            <button onclick="adminRejectUpgrade('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 bg-slate-500 text-white rounded-xl">Reject</button>
+          `;
+        } else if (sub.status === 'pending') {
+          // legacy pending in subscription
+          statusHTML = `<span class="px-3 py-0.5 text-xs rounded-full bg-amber-100 text-amber-700">Pending</span>`;
+          actionButtons = `
+            <button onclick="adminApprove('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 bg-emerald-600 text-white rounded-xl">Approve</button>
+            <button onclick="adminDismissPlan('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 bg-red-600 text-white rounded-xl">Dismiss</button>
+          `;
+        } else if (sub.status === 'approved' && sub.amount > 0) {
+          statusHTML = `<span class="px-3 py-0.5 text-xs rounded-full bg-emerald-100 text-emerald-700">Active Paid</span>`;
+          actionButtons = `
+            <button onclick="adminDismissPlan('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 bg-red-600 text-white rounded-xl">Dismiss Plan</button>
+          `;
+        } else {
+          statusHTML = `<span class="px-3 py-0.5 text-xs rounded-full bg-slate-200 text-slate-600">Ubuntu</span>`;
+        }
+
+        const row = document.createElement('tr');
+        row.className = 'group hover:bg-slate-50 dark:hover:bg-slate-800 text-xs sm:text-sm';
+        row.innerHTML = `
+          <td class="px-3 sm:px-6 py-2.5 sm:py-3.5 font-medium sticky left-0 z-10 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800 border-r border-slate-200 dark:border-slate-700">${user.name || '—'}</td>
+          <td class="px-3 sm:px-6 py-2.5 sm:py-3.5 font-mono text-xs">${user.phone}</td>
+          <td class="px-3 sm:px-6 py-2.5 sm:py-3.5">${planDisplay}</td>
+          <td class="px-3 sm:px-6 py-2.5 sm:py-3.5">${statusHTML}</td>
+          <td class="px-3 sm:px-6 py-2.5 sm:py-3.5 text-xs text-slate-500 hidden sm:table-cell">${user.lastUpdated ? new Date(user.lastUpdated).toLocaleDateString() : '—'}</td>
+          <td class="px-3 sm:px-6 py-2.5 sm:py-3.5 text-right whitespace-nowrap space-x-1 sm:space-x-2 sticky right-0 z-10 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800 border-l border-slate-200 dark:border-slate-700">
+            ${actionButtons}
+            <button onclick="viewUserDetails('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 border rounded-xl">View</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    async function adminApprove(phone) {
+      const user = loadedUsers.find(u => u.phone === phone);
+      if (!user) return;
+
+      let planDataToApprove;
+      let clearPending = false;
+
+      if (user.pendingUpgrade && user.pendingUpgrade.status === 'pending') {
+        planDataToApprove = user.pendingUpgrade;
+        clearPending = true;
+      } else if (user.subscription) {
+        planDataToApprove = user.subscription;
+      } else {
+        return;
+      }
+
+      // Approve the plan (sets subscription to approved version)
+      const success = await window.RoadRulesAdmin.approveUserPlan(phone, planDataToApprove);
+
+      if (success && clearPending) {
+        // Clear the pendingUpgrade request now that it is promoted
+        await window.RoadRulesAdmin.updateUserData(phone, { pendingUpgrade: undefined });
+      }
+
+      if (success) {
+        alert('Plan approved and synced to Google Drive.');
+        await loadAllUsersFromDrive(); // refresh
+      } else {
+        alert('Failed to sync to Drive.');
+      }
+    }
+
+    async function adminDismissPlan(phone) {
+      if (!confirm(`Dismiss paid plan for ${phone}? This will reset them to Ubuntu Free.`)) return;
+
+      const success = await window.RoadRulesAdmin.dismissUserPlan(phone);
+      if (success) {
+        alert('Plan dismissed. User reset to Ubuntu. Changes saved to Google Drive.');
+        await loadAllUsersFromDrive();
+      } else {
+        alert('Failed to write to Drive.');
+      }
+    }
+
+    async function adminRejectUpgrade(phone) {
+      if (!confirm(`Reject the pending upgrade request for ${phone}? Their current plan will stay unchanged.`)) return;
+
+      // Just clear the pendingUpgrade; leave existing subscription (approved plan) intact
+      const success = await window.RoadRulesAdmin.updateUserData(phone, { pendingUpgrade: undefined });
+      if (success) {
+        alert('Upgrade request rejected. User remains on their previous plan.');
+        await loadAllUsersFromDrive();
+      } else {
+        alert('Failed to update Drive.');
+      }
+    }
+
+    async function viewUserDetails(phone) {
+      const data = await window.RoadRulesAdmin.getUserData(phone);
+      if (!data) {
+        alert('Could not load user from Drive');
+        return;
+      }
+      const json = JSON.stringify(data, null, 2);
+      const win = window.open('', '_blank');
+      win.document.write(`<pre style="padding:20px; background:#111; color:#0f0; font-size:12px;">${json}</pre>`);
+    }
+
+    // ========== AMATANGAZO ADMIN FUNCTIONS (for Konte panel) ==========
+    async function loadAdminAnnouncements() {
+      const container = document.getElementById('admin-ann-list');
+      if (!container) return;
+      container.innerHTML = '<div class="text-xs text-slate-400 py-1">Loading...</div>';
+      try {
+        const anns = await (window.RoadRulesAuth && window.RoadRulesAuth.getAnnouncements ? window.RoadRulesAuth.getAnnouncements() : []);
+        if (!anns.length) {
+          container.innerHTML = '<div class="text-xs text-slate-400 border border-dashed rounded-2xl p-3">No announcements yet. Post the first one.</div>';
+          return;
+        }
+        container.innerHTML = '';
+        anns.forEach(a => {
+          const item = document.createElement('div');
+          item.className = 'group flex gap-2 items-start p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-amber-300 cursor-pointer';
+          const titleText = (a.title || 'Untitled').replace(/</g, '&lt;');
+          const preview = ((a.content || '').slice(0, 80)).replace(/</g, '&lt;');
+          item.innerHTML = `
+            <div class="flex-1 min-w-0">
+              <div class="font-medium text-sm leading-tight">${titleText}</div>
+              <div class="text-xs text-slate-500 line-clamp-1 mt-0.5">${preview}</div>
+            </div>
+            <div class="flex flex-col gap-1 pt-0.5 opacity-70 group-hover:opacity-100">
+              <button title="Edit" class="edit-btn text-blue-600 hover:text-blue-700"><i class="fa-solid fa-edit text-xs"></i></button>
+              <button title="Delete" class="del-btn text-red-600 hover:text-red-700"><i class="fa-solid fa-trash text-xs"></i></button>
+            </div>
+          `;
+          // attach safe listeners
+          item.querySelector('.edit-btn').addEventListener('click', (ev) => {
+            ev.stopImmediatePropagation();
+            editAnnouncementAdmin(a.id, a.title || '', a.content || '');
+          });
+          item.querySelector('.del-btn').addEventListener('click', (ev) => {
+            ev.stopImmediatePropagation();
+            deleteAnnouncementAdmin(a.id);
+          });
+          item.addEventListener('click', () => editAnnouncementAdmin(a.id, a.title || '', a.content || ''));
+          container.appendChild(item);
+        });
+      } catch (e) {
+        container.innerHTML = '<div class="text-xs text-red-500">Failed to load.</div>';
+      }
+    }
+
+    async function postAnnouncementAdmin() {
+      const titleEl = document.getElementById('ann-title');
+      const contentEl = document.getElementById('ann-content');
+      const t = (titleEl && titleEl.value || '').trim();
+      const c = (contentEl && contentEl.value || '').trim();
+      if (!t || !c) { alert('Umutwe n\'amakuru byombi birakenewe.'); return; }
+      const ok = await window.RoadRulesAdmin.postAnnouncement(t, c);
+      if (ok) {
+        if (titleEl) titleEl.value = '';
+        if (contentEl) contentEl.value = '';
+        await loadAdminAnnouncements();
+        // toast like feedback
+        const fb = document.createElement('div');
+        fb.className = 'fixed bottom-4 right-4 px-4 py-2 rounded-2xl bg-emerald-600 text-white text-sm shadow';
+        fb.textContent = 'Amatangazo yoherejwe. Abakoresha bazabona mu Konte yabo.';
+        document.body.appendChild(fb);
+        setTimeout(() => fb.remove(), 2800);
+      }
+    }
+
+    async function editAnnouncementAdmin(id, oldTitle, oldContent) {
+      // Premium inline editor (allows editing title OR message independently)
+      const container = document.getElementById('admin-ann-list');
+      if (!container) return;
+
+      // Find the item that was clicked (by matching text or we re-render after)
+      // For simplicity and robustness we temporarily replace the whole list with an edit card for this item
+      const originalHTML = container.innerHTML;
+
+      container.innerHTML = `
+        <div class="border border-amber-300 dark:border-amber-700 rounded-3xl p-4 bg-white dark:bg-slate-900 shadow-inner">
+          <div class="flex items-center gap-2 mb-3 text-amber-700 dark:text-amber-400">
+            <i class="fa-solid fa-edit"></i>
+            <span class="font-semibold text-sm">Hindura Amatangazo (title or message independently)</span>
+          </div>
+          <input id="edit-ann-title" type="text" value="${(oldTitle||'').replace(/"/g,'&quot;')}" class="w-full mb-2 px-3 py-2 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Umutwe">
+          <textarea id="edit-ann-content" rows="4" class="w-full px-3 py-2 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Amakuru">${(oldContent||'').replace(/</g,'&lt;')}</textarea>
+          <div class="grid grid-cols-3 gap-2 mt-3">
+            <button id="save-title" class="py-2 text-sm font-semibold rounded-2xl bg-blue-600 text-white hover:bg-blue-700">Save Title Only</button>
+            <button id="save-body" class="py-2 text-sm font-semibold rounded-2xl bg-blue-600 text-white hover:bg-blue-700">Save Message Only</button>
+            <button id="save-both" class="py-2 text-sm font-semibold rounded-2xl bg-amber-600 text-white hover:bg-amber-700">Save Both</button>
+          </div>
+          <button id="cancel-ann-edit" class="w-full mt-2 py-1.5 text-xs rounded-2xl border border-slate-300 dark:border-slate-600">Cancel</button>
+        </div>
+      `;
+
+      const titleBtn = container.querySelector('#save-title');
+      const bodyBtn = container.querySelector('#save-body');
+      const bothBtn = container.querySelector('#save-both');
+      const cancelBtn = container.querySelector('#cancel-ann-edit');
+      const titleInput = container.querySelector('#edit-ann-title');
+      const contentInput = container.querySelector('#edit-ann-content');
+
+      const cleanup = () => { container.innerHTML = originalHTML; loadAdminAnnouncements(); };
+
+      titleBtn.onclick = async () => {
+        const newT = titleInput.value.trim();
+        await window.RoadRulesAdmin.editAnnouncement(id, newT, null);
+        cleanup();
+      };
+      bodyBtn.onclick = async () => {
+        const newC = contentInput.value.trim();
+        await window.RoadRulesAdmin.editAnnouncement(id, null, newC);
+        cleanup();
+      };
+      bothBtn.onclick = async () => {
+        const newT = titleInput.value.trim();
+        const newC = contentInput.value.trim();
+        await window.RoadRulesAdmin.editAnnouncement(id, newT, newC);
+        cleanup();
+      };
+      cancelBtn.onclick = cleanup;
+    }
+
+    async function deleteAnnouncementAdmin(id) {
+      if (!confirm('Siba iri amatangazo? (Delete this announcement permanently?)')) return;
+      await window.RoadRulesAdmin.deleteAnnouncement(id);
+      await loadAdminAnnouncements();
+    }
+
+    // ========== HELP CENTER CHATBOT ADMIN FUNCTIONS ==========
+    async function loadAdminHelpFaqs() {
+      const container = document.getElementById('admin-help-list');
+      if (!container) return;
+      container.innerHTML = '<div class="text-xs text-slate-400 py-1">Loading...</div>';
+      try {
+        const faqs = await (window.RoadRulesAuth && window.RoadRulesAuth.getHelpFaqs ? window.RoadRulesAuth.getHelpFaqs() : []);
+        if (!faqs.length) {
+          container.innerHTML = '<div class="text-xs text-slate-400 border border-dashed rounded-2xl p-3">No Q&amp;As yet. Add the first one above — it will appear instantly in the floating help widget.</div>';
+          return;
+        }
+        container.innerHTML = '';
+        faqs.forEach(f => {
+          const item = document.createElement('div');
+          item.className = 'group flex gap-2 items-start p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-blue-300 cursor-pointer';
+          const qText = (f.question || '').replace(/</g, '&lt;').slice(0, 95);
+
+          // Show up to 3 answers (progressive)
+          const answers = (f.answers && f.answers.length) ? f.answers : (f.answer ? [f.answer] : []);
+          const preview = answers.slice(0, 3).map((a,i) => `<span class="text-amber-600 dark:text-amber-400">${i+1}.</span> ${(a||'').replace(/</g,'&lt;').slice(0,60)}`).join('<br>');
+
+          item.innerHTML = `
+            <div class="flex-1 min-w-0">
+              <div class="font-medium text-sm leading-tight text-blue-700 dark:text-blue-300">${qText}</div>
+              <div class="text-[10px] text-slate-500 line-clamp-3 mt-0.5">${preview || '—'}</div>
+            </div>
+            <div class="flex flex-col gap-1 pt-0.5 opacity-70 group-hover:opacity-100">
+              <button title="Edit" class="edit-btn text-blue-600 hover:text-blue-700"><i class="fa-solid fa-edit text-xs"></i></button>
+              <button title="Delete" class="del-btn text-red-600 hover:text-red-700"><i class="fa-solid fa-trash text-xs"></i></button>
+            </div>
+          `;
+          item.querySelector('.edit-btn').addEventListener('click', (ev) => {
+            ev.stopImmediatePropagation();
+            const firstAns = (f.answers && f.answers[0]) || f.answer || '';
+            editHelpFaqAdmin(f.id, f.question || '', firstAns, f.answers || (f.answer ? [f.answer] : []));
+          });
+          item.querySelector('.del-btn').addEventListener('click', (ev) => {
+            ev.stopImmediatePropagation();
+            deleteHelpFaqAdmin(f.id);
+          });
+          item.addEventListener('click', () => {
+            const firstAns = (f.answers && f.answers[0]) || f.answer || '';
+            editHelpFaqAdmin(f.id, f.question || '', firstAns, f.answers || (f.answer ? [f.answer] : []));
+          });
+          container.appendChild(item);
+        });
+      } catch (e) {
+        container.innerHTML = '<div class="text-xs text-red-500">Failed to load help Q&amp;As.</div>';
+      }
+    }
+
+    async function postHelpFaqAdmin() {
+      const qEl = document.getElementById('help-q');
+      const a1 = document.getElementById('help-a1');
+      const a2 = document.getElementById('help-a2');
+      const a3 = document.getElementById('help-a3');
+
+      const q = (qEl && qEl.value || '').trim();
+      const answers = [
+        (a1 && a1.value || '').trim(),
+        (a2 && a2.value || '').trim(),
+        (a3 && a3.value || '').trim()
+      ].filter(Boolean);
+
+      if (!q || answers.length === 0) { alert('Ikibazo n\'ibisubizo byombi birakenewe (byibuze igisubizo kimwe).'); return; }
+
+      const ok = await window.RoadRulesAdmin.postHelpFaq(q, answers);
+      if (ok) {
+        if (qEl) qEl.value = '';
+        if (a1) a1.value = '';
+        if (a2) a2.value = '';
+        if (a3) a3.value = '';
+        await loadAdminHelpFaqs();
+        const fb = document.createElement('div');
+        fb.className = 'fixed bottom-4 right-4 px-4 py-2 rounded-2xl bg-blue-600 text-white text-sm shadow';
+        fb.textContent = 'Q&A yoherejwe (3 answers). Izigera mu widget y\'ubufasha vuba.';
+        document.body.appendChild(fb);
+        setTimeout(() => fb.remove(), 2800);
+      }
+    }
+
+    async function editHelpFaqAdmin(id, oldQ, oldA, oldAnswersArray) {
+      const container = document.getElementById('admin-help-list');
+      if (!container) return;
+      const originalHTML = container.innerHTML;
+
+      container.innerHTML = `
+        <div class="border border-blue-300 dark:border-blue-700 rounded-3xl p-4 bg-white dark:bg-slate-900 shadow-inner">
+          <div class="flex items-center gap-2 mb-3 text-blue-700 dark:text-blue-400">
+            <i class="fa-solid fa-edit"></i>
+            <span class="font-semibold text-sm">Hindura ikibazo cyangwa igisubizo</span>
+          </div>
+          <input id="edit-help-q" type="text" value="${(oldQ||'').replace(/"/g,'&quot;')}" class="w-full mb-2 px-3 py-2 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Ikibazo">
+          <textarea id="edit-help-a" rows="5" class="w-full px-3 py-2 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Igisubizo">${(oldA||'').replace(/</g,'&lt;')}</textarea>
+          <div class="grid grid-cols-3 gap-2 mt-3">
+            <button id="save-help-q" class="py-2 text-sm font-semibold rounded-2xl bg-blue-600 text-white hover:bg-blue-700">Save Question Only</button>
+            <button id="save-help-a" class="py-2 text-sm font-semibold rounded-2xl bg-blue-600 text-white hover:bg-blue-700">Save Answer Only</button>
+            <button id="save-help-both" class="py-2 text-sm font-semibold rounded-2xl bg-blue-700 text-white hover:bg-blue-800">Save Both</button>
+          </div>
+          <button id="cancel-help-edit" class="w-full mt-2 py-1.5 text-xs rounded-2xl border border-slate-300 dark:border-slate-600">Cancel</button>
+        </div>
+      `;
+
+      const qBtn = container.querySelector('#save-help-q');
+      const aBtn = container.querySelector('#save-help-a');
+      const bothBtn = container.querySelector('#save-help-both');
+      const cancelBtn = container.querySelector('#cancel-help-edit');
+      const qInput = container.querySelector('#edit-help-q');
+      const aInput = container.querySelector('#edit-help-a');
+
+      const cleanup = () => { container.innerHTML = originalHTML; loadAdminHelpFaqs(); };
+
+      qBtn.onclick = async () => { await window.RoadRulesAdmin.editHelpFaq(id, qInput.value.trim(), null); cleanup(); };
+      aBtn.onclick = async () => { await window.RoadRulesAdmin.editHelpFaq(id, null, aInput.value.trim()); cleanup(); };
+      bothBtn.onclick = async () => {
+        const ansToSave = (oldAnswersArray && oldAnswersArray.length > 1) ? [aInput.value.trim(), ...oldAnswersArray.slice(1)] : aInput.value.trim();
+        await window.RoadRulesAdmin.editHelpFaq(id, qInput.value.trim(), ansToSave);
+        cleanup();
+      };
+      cancelBtn.onclick = cleanup;
+    }
+
+     async function deleteHelpFaqAdmin(id) {
+       if (!confirm('Siba iri kibazo cya chatbot?')) return;
+       await window.RoadRulesAdmin.deleteHelpFaq(id);
+       await loadAdminHelpFaqs();
+     }
+
+     async function loadRugambaDelaySetting() {
+       const input = document.getElementById('rugamba-delay-min');
+       if (!input) return;
+       input.disabled = true;
+       try {
+         const cfg = await (window.RoadRulesAuth && window.RoadRulesAuth.getChatbotConfig ? window.RoadRulesAuth.getChatbotConfig() : {});
+         input.value = (cfg && typeof cfg.rugambaProactiveDelayMin === 'number') ? cfg.rugambaProactiveDelayMin : 5;
+       } catch (e) {
+         input.value = 5;
+       }
+       input.disabled = false;
+     }
+
+     async function saveRugambaDelayAdmin() {
+       const input = document.getElementById('rugamba-delay-min');
+       if (!input) return;
+       const val = parseInt(input.value, 10);
+       if (!val || val < 1 || val > 60) {
+         alert('Delay must be between 1 and 60 minutes');
+         return;
+       }
+       try {
+         if (typeof showLoading === 'function') showLoading('Saving Rugamba delay...');
+         await window.RoadRulesAdmin.updateChatbotConfig({ rugambaProactiveDelayMin: val });
+         if (typeof hideLoading === 'function') hideLoading();
+         const fb = document.createElement('div');
+         fb.className = 'fixed bottom-4 right-4 px-4 py-2 rounded-2xl bg-emerald-600 text-white text-sm shadow z-[99999]';
+         fb.textContent = 'Delay saved. New users will see Rugamba message after ' + val + ' min.';
+         document.body.appendChild(fb);
+         setTimeout(() => fb.remove(), 2600);
+       } catch (e) {
+         if (typeof hideLoading === 'function') hideLoading();
+         alert('Failed to save: ' + (e.message || e));
+       }
+     }
+
+     function initializeApp(){ 
+      initTailwind(); 
+      initTheme(); 
+      initAccessibility(); 
+
+      // Auto-load users from Google Drive on page load
+      setTimeout(() => {
+        if (typeof window.RoadRulesAdmin !== 'undefined' && typeof loadAllUsersFromDrive === 'function') {
+          loadAllUsersFromDrive();
+        }
+      }, 800);
+
+      // Load announcements manager
+      setTimeout(() => {
+        if (typeof loadAdminAnnouncements === 'function') loadAdminAnnouncements();
+      }, 1200);
+
+      // Load Help Center chatbot Q&As manager
+      setTimeout(() => {
+        if (typeof loadAdminHelpFaqs === 'function') loadAdminHelpFaqs();
+      }, 1400);
+
+      console.log('%c[Admin] Driver Database Dashboard ready. Data loads automatically (manual button also available).', 'color:#64748b');
+    } 
+    window.onload=initializeApp;
+  </script>
+</body>
+</html>
