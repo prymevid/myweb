@@ -1,0 +1,258 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: REPUBLIC OF RWANDA
+      - generic [ref=e6]: •
+      - generic [ref=e7]: Road Safety Education Initiative
+    - generic [ref=e9]: +250 788 762 976
+  - navigation [ref=e10]:
+    - generic [ref=e13]:
+      - link " RoadRules AMATEGEKO Y'UMUHANDA" [ref=e14] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=e16]: 
+        - generic [ref=e17]:
+          - text: RoadRules
+          - generic [ref=e18]: AMATEGEKO Y'UMUHANDA
+      - generic [ref=e19]:
+        - link "Ahabanza" [ref=e20] [cursor=pointer]:
+          - /url: index.html
+        - link "Imyitozo" [ref=e21] [cursor=pointer]:
+          - /url: imyitozo.html
+        - link "Ibibazo" [ref=e22] [cursor=pointer]:
+          - /url: ibibazo.html
+        - link "Ifatabuguzi" [ref=e23] [cursor=pointer]:
+          - /url: ifitabuguzi.html
+      - generic [ref=e24]:
+        - button "Toggle theme" [ref=e25] [cursor=pointer]:
+          - generic [ref=e26]: 
+        - generic [ref=e27]:
+          - button "Injira" [ref=e28] [cursor=pointer]
+          - button "Iyandikishe" [ref=e29] [cursor=pointer]
+        - text: 
+    - text: 
+  - main [ref=e30]:
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - generic [ref=e35]: 
+            - generic [ref=e36]: ISUZUMA 20
+          - heading "Ibibazo n'ibisubizo byabajijwe" [level=1] [ref=e37]
+          - paragraph [ref=e38]: Hitamo isuzuma (20 ibibazo buri kimwe). Ibibazo ni static – ntibihinduka uziro uziro.
+        - generic [ref=e39]:
+          - generic [ref=e40]: "20"
+          - generic [ref=e41]: ISUZUMA
+      - generic [ref=e42]:
+        - generic [ref=e43]: Hitamo Isuzuma
+        - generic [ref=e44]: Buri isuzuma rifite 20 ibibazo (static – ntibihinduka)
+      - generic [ref=e45]:
+        - generic [ref=e46] [cursor=pointer]:
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - generic [ref=e49]: ISUZUMA 1
+              - generic [ref=e50]: "20"
+              - generic [ref=e51]: IBIBAZO
+            - generic [ref=e53]: 
+          - button "Reba ibibazo" [ref=e55]
+        - generic [ref=e56] [cursor=pointer]:
+          - generic [ref=e57]:
+            - generic [ref=e58]:
+              - generic [ref=e59]: ISUZUMA 2
+              - generic [ref=e60]: "20"
+              - generic [ref=e61]: IBIBAZO
+            - generic [ref=e63]: 
+          - button "Reba ibibazo" [ref=e65]
+        - generic [ref=e66] [cursor=pointer]:
+          - generic [ref=e67]:
+            - generic [ref=e68]:
+              - generic [ref=e69]: ISUZUMA 3
+              - generic [ref=e70]: "20"
+              - generic [ref=e71]: IBIBAZO
+            - generic [ref=e73]: 
+          - button "Reba ibibazo" [ref=e75]
+        - generic [ref=e76] [cursor=pointer]:
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - generic [ref=e79]: ISUZUMA 4
+              - generic [ref=e80]: "20"
+              - generic [ref=e81]: IBIBAZO
+            - generic [ref=e83]: 
+          - button "Reba ibibazo" [ref=e85]
+        - generic [ref=e86] [cursor=pointer]:
+          - generic [ref=e87]:
+            - generic [ref=e88]:
+              - generic [ref=e89]: ISUZUMA 5
+              - generic [ref=e90]: "20"
+              - generic [ref=e91]: IBIBAZO
+            - generic [ref=e93]: 
+          - button "Reba ibibazo" [ref=e95]
+        - generic [ref=e96] [cursor=pointer]:
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - generic [ref=e99]: ISUZUMA 6
+              - generic [ref=e100]: "20"
+              - generic [ref=e101]: IBIBAZO
+            - generic [ref=e103]: 
+          - button "Reba ibibazo" [ref=e105]
+        - generic [ref=e106] [cursor=pointer]:
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - generic [ref=e109]: ISUZUMA 7
+              - generic [ref=e110]: "20"
+              - generic [ref=e111]: IBIBAZO
+            - generic [ref=e113]: 
+          - button "Reba ibibazo" [ref=e115]
+        - generic [ref=e116] [cursor=pointer]:
+          - generic [ref=e117]:
+            - generic [ref=e118]:
+              - generic [ref=e119]: ISUZUMA 8
+              - generic [ref=e120]: "20"
+              - generic [ref=e121]: IBIBAZO
+            - generic [ref=e123]: 
+          - button "Reba ibibazo" [ref=e125]
+        - generic [ref=e126] [cursor=pointer]:
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - generic [ref=e129]: ISUZUMA 9
+              - generic [ref=e130]: "20"
+              - generic [ref=e131]: IBIBAZO
+            - generic [ref=e133]: 
+          - button "Reba ibibazo" [ref=e135]
+        - generic [ref=e136] [cursor=pointer]:
+          - generic [ref=e137]:
+            - generic [ref=e138]:
+              - generic [ref=e139]: ISUZUMA 10
+              - generic [ref=e140]: "20"
+              - generic [ref=e141]: IBIBAZO
+            - generic [ref=e143]: 
+          - button "Reba ibibazo" [ref=e145]
+        - generic [ref=e146] [cursor=pointer]:
+          - generic [ref=e147]:
+            - generic [ref=e148]:
+              - generic [ref=e149]: ISUZUMA 11
+              - generic [ref=e150]: "20"
+              - generic [ref=e151]: IBIBAZO
+            - generic [ref=e153]: 
+          - button "Reba ibibazo" [ref=e155]
+        - generic [ref=e156] [cursor=pointer]:
+          - generic [ref=e157]:
+            - generic [ref=e158]:
+              - generic [ref=e159]: ISUZUMA 12
+              - generic [ref=e160]: "20"
+              - generic [ref=e161]: IBIBAZO
+            - generic [ref=e163]: 
+          - button "Reba ibibazo" [ref=e165]
+        - generic [ref=e166] [cursor=pointer]:
+          - generic [ref=e167]:
+            - generic [ref=e168]:
+              - generic [ref=e169]: ISUZUMA 13
+              - generic [ref=e170]: "20"
+              - generic [ref=e171]: IBIBAZO
+            - generic [ref=e173]: 
+          - button "Reba ibibazo" [ref=e175]
+        - generic [ref=e176] [cursor=pointer]:
+          - generic [ref=e177]:
+            - generic [ref=e178]:
+              - generic [ref=e179]: ISUZUMA 14
+              - generic [ref=e180]: "20"
+              - generic [ref=e181]: IBIBAZO
+            - generic [ref=e183]: 
+          - button "Reba ibibazo" [ref=e185]
+        - generic [ref=e186] [cursor=pointer]:
+          - generic [ref=e187]:
+            - generic [ref=e188]:
+              - generic [ref=e189]: ISUZUMA 15
+              - generic [ref=e190]: "20"
+              - generic [ref=e191]: IBIBAZO
+            - generic [ref=e193]: 
+          - button "Reba ibibazo" [ref=e195]
+        - generic [ref=e196] [cursor=pointer]:
+          - generic [ref=e197]:
+            - generic [ref=e198]:
+              - generic [ref=e199]: ISUZUMA 16
+              - generic [ref=e200]: "20"
+              - generic [ref=e201]: IBIBAZO
+            - generic [ref=e203]: 
+          - button "Reba ibibazo" [ref=e205]
+        - generic [ref=e206] [cursor=pointer]:
+          - generic [ref=e207]:
+            - generic [ref=e208]:
+              - generic [ref=e209]: ISUZUMA 17
+              - generic [ref=e210]: "20"
+              - generic [ref=e211]: IBIBAZO
+            - generic [ref=e213]: 
+          - button "Reba ibibazo" [ref=e215]
+        - generic [ref=e216] [cursor=pointer]:
+          - generic [ref=e217]:
+            - generic [ref=e218]:
+              - generic [ref=e219]: ISUZUMA 18
+              - generic [ref=e220]: "20"
+              - generic [ref=e221]: IBIBAZO
+            - generic [ref=e223]: 
+          - button "Reba ibibazo" [ref=e225]
+        - generic [ref=e226] [cursor=pointer]:
+          - generic [ref=e227]:
+            - generic [ref=e228]:
+              - generic [ref=e229]: ISUZUMA 19
+              - generic [ref=e230]: "20"
+              - generic [ref=e231]: IBIBAZO
+            - generic [ref=e233]: 
+          - button "Reba ibibazo" [ref=e235]
+        - generic [ref=e236] [cursor=pointer]:
+          - generic [ref=e237]:
+            - generic [ref=e238]:
+              - generic [ref=e239]: ISUZUMA 20
+              - generic [ref=e240]: "19"
+              - generic [ref=e241]: IBIBAZO
+            - generic [ref=e243]: 
+          - button "Reba ibibazo" [ref=e245]
+      - generic [ref=e246]: perime.rw kwisonga mugutsindisha abanyeshuri bakora ikizamini cya provisoir
+      - text:  
+  - contentinfo [ref=e247]:
+    - generic [ref=e249]:
+      - generic [ref=e250]:
+        - generic [ref=e251]:
+          - generic [ref=e253]: 
+          - generic [ref=e254]: RoadRules
+        - generic [ref=e255]: Urubuga rwambere mugutsindisha abanyeshuri bakora ikizamini cya provisoir
+      - generic [ref=e256]:
+        - generic [ref=e257]: PLATFORM
+        - generic [ref=e258]:
+          - link "Ahabanza" [ref=e259] [cursor=pointer]:
+            - /url: index.html
+          - link "Imyitozo" [ref=e260] [cursor=pointer]:
+            - /url: imyitozo.html
+          - link "Ibibazo" [ref=e261] [cursor=pointer]:
+            - /url: ibibazo.html
+          - link "Ifatabuguzi" [ref=e262] [cursor=pointer]:
+            - /url: ifitabuguzi.html
+      - generic [ref=e263]:
+        - generic [ref=e264]: SUPPORT
+        - generic [ref=e265]:
+          - link "Help Center" [ref=e266] [cursor=pointer]:
+            - /url: "#"
+          - link "Report Issue" [ref=e267] [cursor=pointer]:
+            - /url: "#"
+      - generic [ref=e268]:
+        - generic [ref=e269]: LEGAL
+        - generic [ref=e270]:
+          - link "Privacy Policy" [ref=e271] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms of Service" [ref=e272] [cursor=pointer]:
+            - /url: "#"
+          - link "Data Protection" [ref=e273] [cursor=pointer]:
+            - /url: "#"
+      - generic [ref=e274]:
+        - generic [ref=e275]: CONNECT
+        - generic [ref=e276]:
+          - link "" [ref=e277] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e278]: 
+          - link "" [ref=e279] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e280]: 
+          - link "" [ref=e281] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e282]: 
+        - generic [ref=e283]: © 2026 RoadRules Ltd. • Kigali, Rwanda
+  - text: 

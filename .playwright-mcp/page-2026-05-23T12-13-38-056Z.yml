@@ -1,0 +1,139 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: REPUBLIC OF RWANDA
+      - generic [ref=e6]: •
+      - generic [ref=e7]: Road Safety Education Initiative
+    - generic [ref=e9]: +250 788 762 976
+  - navigation [ref=e10]:
+    - generic [ref=e13]:
+      - link " RoadRules AMATEGEKO Y'UMUHANDA" [ref=e14] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=e16]: 
+        - generic [ref=e17]:
+          - text: RoadRules
+          - generic [ref=e18]: AMATEGEKO Y'UMUHANDA
+      - generic [ref=e19]:
+        - link "Ahabanza" [ref=e20] [cursor=pointer]:
+          - /url: index.html
+        - link "Imyitozo" [ref=e21] [cursor=pointer]:
+          - /url: imyitozo.html
+        - link "Ibibazo" [ref=e22] [cursor=pointer]:
+          - /url: ibibazo.html
+        - link "Ifatabuguzi" [ref=e23] [cursor=pointer]:
+          - /url: ifitabuguzi.html
+        - link "Admin" [ref=e24] [cursor=pointer]:
+          - /url: admin.html
+      - generic [ref=e25]:
+        - button "Toggle theme" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: 
+        - generic [ref=e28]:
+          - button "Injira" [ref=e29] [cursor=pointer]
+          - button "Iyandikishe" [ref=e30] [cursor=pointer]
+        - text: 
+    - text: 
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - generic [ref=e35]: DATABASE CONTROL
+          - generic [ref=e36]: ADMIN ONLY
+        - heading "Driver Database & Activity Dashboard" [level=1] [ref=e37]
+        - paragraph [ref=e38]: Direct control over all user files in Google Drive
+      - button " Load / Refresh from Drive" [ref=e40] [cursor=pointer]:
+        - generic [ref=e41]: 
+        - generic [ref=e42]: Load / Refresh from Drive
+    - generic [ref=e43]:
+      - generic [ref=e44]:
+        - generic [ref=e45]: LOADED USERS
+        - generic [ref=e46]: "0"
+      - generic [ref=e47]:
+        - generic [ref=e48]: WITH PAID PLAN
+        - generic [ref=e49]: "0"
+      - generic [ref=e50]:
+        - generic [ref=e51]: PENDING APPROVAL
+        - generic [ref=e52]: "0"
+      - generic [ref=e53]:
+        - generic [ref=e54]: LAST SYNC
+        - generic [ref=e55]: Not loaded
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - generic [ref=e58]: All Driver Users (from Google Drive)
+        - generic [ref=e59]: Changes written directly to each user’s .json file
+      - table [ref=e61]:
+        - rowgroup [ref=e62]:
+          - row "Name Phone Current Plan Status Last Updated Actions" [ref=e63]:
+            - columnheader "Name" [ref=e64]
+            - columnheader "Phone" [ref=e65]
+            - columnheader "Current Plan" [ref=e66]
+            - columnheader "Status" [ref=e67]
+            - columnheader "Last Updated" [ref=e68]
+            - columnheader "Actions" [ref=e69]
+        - rowgroup [ref=e70]:
+          - row "Automatically loading users from Google Drive..." [ref=e71]:
+            - cell "Automatically loading users from Google Drive..." [ref=e72]:
+              - generic [ref=e75]: Automatically loading users from Google Drive...
+    - generic [ref=e76]:
+      - generic [ref=e77]: 
+      - generic [ref=e78]: "Warning: All actions here write directly and permanently to Google Drive user files."
+    - generic [ref=e79]:
+      - generic [ref=e80]:
+        - generic [ref=e81]: 
+        - generic [ref=e82]: Amatangazo Management
+        - generic [ref=e83]: All users see in Konte
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - textbox "Umutwe w'amatangazo (Title)" [ref=e86]
+          - textbox "Amakuru y'amatangazo (Content / message for users)" [ref=e87]
+          - button "Posta / Kohereza Amatangazo" [ref=e88] [cursor=pointer]
+        - generic [ref=e89]:
+          - generic [ref=e90]: Current Amatangazo (click to edit or delete)
+          - generic [ref=e91]: Changes are live for all users' Konte panels immediately.
+  - contentinfo [ref=e92]:
+    - generic [ref=e94]:
+      - generic [ref=e95]:
+        - generic [ref=e96]:
+          - generic [ref=e98]: 
+          - generic [ref=e99]: RoadRules
+        - generic [ref=e100]: Urubuga rwambere mugutsindisha abanyeshuri bakora ikizamini cya provisoir
+      - generic [ref=e101]:
+        - generic [ref=e102]: PLATFORM
+        - generic [ref=e103]:
+          - link "Ahabanza" [ref=e104] [cursor=pointer]:
+            - /url: index.html
+          - link "Imyitozo" [ref=e105] [cursor=pointer]:
+            - /url: imyitozo.html
+          - link "Ibibazo" [ref=e106] [cursor=pointer]:
+            - /url: ibibazo.html
+          - link "Ifatabuguzi" [ref=e107] [cursor=pointer]:
+            - /url: ifitabuguzi.html
+      - generic [ref=e108]:
+        - generic [ref=e109]: SUPPORT
+        - generic [ref=e110]:
+          - link "Help Center" [ref=e111] [cursor=pointer]:
+            - /url: "#"
+          - link "Report Issue" [ref=e112] [cursor=pointer]:
+            - /url: "#"
+      - generic [ref=e113]:
+        - generic [ref=e114]: LEGAL
+        - generic [ref=e115]:
+          - link "Privacy Policy" [ref=e116] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms of Service" [ref=e117] [cursor=pointer]:
+            - /url: "#"
+          - link "Data Protection" [ref=e118] [cursor=pointer]:
+            - /url: "#"
+      - generic [ref=e119]:
+        - generic [ref=e120]: CONNECT
+        - generic [ref=e121]:
+          - link "" [ref=e122] [cursor=pointer]:
+            - /url: https://www.facebook.com/perime.rw250
+            - generic [ref=e123]: 
+          - link "" [ref=e124] [cursor=pointer]:
+            - /url: https://www.youtube.com/@perime.rw250
+            - generic [ref=e125]: 
+          - link "" [ref=e126] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@perime.rw250
+            - generic [ref=e127]: 
+        - generic [ref=e128]: © 2026 RoadRules Ltd. • Kigali, Rwanda
+  - text: 

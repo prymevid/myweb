@@ -1,0 +1,101 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: REPUBLIC OF RWANDA
+      - generic [ref=e6]: •
+      - generic [ref=e7]: Road Safety Education Initiative
+    - generic [ref=e9]: +250 788 762 976
+  - navigation [ref=e10]:
+    - generic [ref=e13]:
+      - link " RoadRules AMATEGEKO Y'UMUHANDA" [ref=e14] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=e16]: 
+        - generic [ref=e17]:
+          - text: RoadRules
+          - generic [ref=e18]: AMATEGEKO Y'UMUHANDA
+      - generic [ref=e19]:
+        - link "Ahabanza" [ref=e20] [cursor=pointer]:
+          - /url: index.html
+        - link "Imyitozo" [ref=e21] [cursor=pointer]:
+          - /url: imyitozo.html
+        - link "Ibibazo" [ref=e22] [cursor=pointer]:
+          - /url: ibibazo.html
+        - link "Ifatabuguzi" [ref=e23] [cursor=pointer]:
+          - /url: ifitabuguzi.html
+      - generic [ref=e24]:
+        - button "Toggle theme" [ref=e25] [cursor=pointer]:
+          - generic [ref=e26]: 
+        - generic [ref=e27]:
+          - button "Injira" [ref=e28] [cursor=pointer]
+          - button "Iyandikishe" [ref=e29] [cursor=pointer]
+        - text: 
+    - text: 
+  - main [ref=e30]:
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - generic [ref=e35]: 
+            - generic [ref=e36]: IBIBAZO BYOSE
+          - heading "Ibibazo by’ibizamini by’umuyobozi" [level=1] [ref=e37]
+          - paragraph [ref=e38]: Soma ibibazo byose + ibisubizo byabyo. Scroll usome, shakisha, wige.
+        - generic [ref=e39]:
+          - generic [ref=e40]: "399"
+          - generic [ref=e41]: IBIBAZO
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - generic [ref=e44]: 
+          - textbox "Shakisha ibibazo (e.g. ikimenyetso, umuyobozi, umurongo...)" [ref=e45]
+        - button "Reset" [ref=e46] [cursor=pointer]
+        - button " Hitamo ibibazo" [ref=e47] [cursor=pointer]:
+          - generic [ref=e48]: 
+          - generic [ref=e49]: Hitamo ibibazo
+      - generic [ref=e51]: perime.rw kwisonga mugutsindisha abanyeshuri bakora ikizamini cya provisoir
+  - contentinfo [ref=e52]:
+    - generic [ref=e54]:
+      - generic [ref=e55]:
+        - generic [ref=e56]:
+          - generic [ref=e58]: 
+          - generic [ref=e59]: RoadRules
+        - generic [ref=e60]: Urubuga rwambere mugutsindisha abanyeshuri bakora ikizamini cya provisoir
+      - generic [ref=e61]:
+        - generic [ref=e62]: PLATFORM
+        - generic [ref=e63]:
+          - link "Ahabanza" [ref=e64] [cursor=pointer]:
+            - /url: index.html
+          - link "Imyitozo" [ref=e65] [cursor=pointer]:
+            - /url: imyitozo.html
+          - link "Ibibazo" [ref=e66] [cursor=pointer]:
+            - /url: ibibazo.html
+          - link "Ifatabuguzi" [ref=e67] [cursor=pointer]:
+            - /url: ifitabuguzi.html
+      - generic [ref=e68]:
+        - generic [ref=e69]: SUPPORT
+        - generic [ref=e70]:
+          - link "Help Center" [ref=e71] [cursor=pointer]:
+            - /url: "#"
+          - link "Report Issue" [ref=e72] [cursor=pointer]:
+            - /url: "#"
+      - generic [ref=e73]:
+        - generic [ref=e74]: LEGAL
+        - generic [ref=e75]:
+          - link "Privacy Policy" [ref=e76] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms of Service" [ref=e77] [cursor=pointer]:
+            - /url: "#"
+          - link "Data Protection" [ref=e78] [cursor=pointer]:
+            - /url: "#"
+      - generic [ref=e79]:
+        - generic [ref=e80]: CONNECT
+        - generic [ref=e81]:
+          - link "" [ref=e82] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e83]: 
+          - link "" [ref=e84] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e85]: 
+          - link "" [ref=e86] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e87]: 
+        - generic [ref=e88]: © 2026 RoadRules Ltd. • Kigali, Rwanda
+  - text: 
