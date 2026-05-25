@@ -242,9 +242,9 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   panel.className = 'hidden fixed bottom-16 md:bottom-20 right-4 md:right-6 z-[99999] w-[94vw] max-w-[360px] sm:max-w-[380px] md:w-96 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl rounded-3xl overflow-hidden flex flex-col';
   panel.style.boxShadow = '0 30px 80px -15px rgb(15 23 42 / 0.35), 0 10px 10px -5px rgb(0 0 0 / 0.1), 0 0 0 1px rgba(148,163,184,0.08) inset';
   
-  // Original behavior: max-height only, perfectly anchored from bottom
-  const maxH = window.innerWidth <= 768 ? '550px' : '450px';
-  panel.style.maxHeight = maxH;
+  // Absolute maximum height immediately on open (no compact, no growth animation)
+  panel.style.maxHeight = window.innerWidth <= 768 ? '92vh' : '85vh';
+  panel.style.transition = 'none';
   panel.innerHTML = `
     <!-- Premium Header with Persona Switcher -->
     <div class="px-4 py-2 sm:py-[11px] bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
@@ -261,7 +261,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
       <div id="rr-current-persona-name" class="font-semibold text-[13.5px] leading-none text-slate-800 dark:text-slate-100">Manzi</div>
       <div id="rr-persona-status" class="flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400">
         <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="font-medium">Online now • RoadRules Support</span>
+        <span class="font-medium">Online • Perime.rw Support</span>
       </div>
     </div>
 
@@ -287,7 +287,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
 
     <!-- Quick Replies (Manzi only) -->
     <div id="rr-help-suggestions" class="px-4 py-2 sm:py-3.5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hidden">
-      <div class="text-[11px] font-medium tracking-[0.5px] text-slate-500 dark:text-slate-400 mb-1 sm:mb-2">Quick questions</div>
+      <div class="text-[11px] font-medium tracking-[0.5px] text-slate-500 dark:text-slate-400 mb-1 sm:mb-2">Hitamo ikibazo ufite muribi bikurikira:</div>
       <div id="rr-help-chips" class="flex flex-wrap gap-2"></div>
     </div>
 
@@ -315,7 +315,13 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
     .rr-persona-btn.active { box-shadow: 0 1px 2px rgb(0 0 0 / 0.05); }
 
     #rr-help-panel {
-      max-height: 450px;
+      max-height: 85vh;
+      transition: none !important;
+    }
+    @media (max-width: 768px) {
+      #rr-help-panel {
+        max-height: 92vh;
+      }
     }
     #rr-help-panel > :not(#rr-help-messages) { flex-shrink: 0; }
     #rr-help-messages { min-height: 0 !important; flex: 1 1 auto; }
@@ -611,12 +617,22 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
     currentFeedbackEl = row;
     scrollToBottom();
 
-    row.querySelector('.rr-fb-yes').onclick = () => {
-      row.innerHTML = `<div class="px-1 py-1 text-emerald-600 text-sm font-medium">Murakoze! Niba hari ikindi, kanda ikoni y’ubufasha.</div>`;
-      setTimeout(() => {
-        if (row && row.parentNode) row.parentNode.removeChild(row);
-        currentFeedbackEl = null;
-      }, 1600);
+    row.querySelector('.rr-fb-yes').onclick = async () => {
+      // Remove feedback row cleanly
+      if (row && row.parentNode) row.parentNode.removeChild(row);
+      currentFeedbackEl = null;
+
+      // Simulate typing indicator, then deliver the thank-you as a normal bot message with animation
+      const typing = showTypingIndicator();
+      await sleep(480);
+      removeTypingIndicator();
+
+      const thanks = addChatBubble('', false);
+      await typeWriter(thanks, 'Murakoze! Niba hari ikindi kibazo ufite ndihano kugufasha.', 22);
+
+      // Re-show the Hitamo ikibazo ufite muribi bikurikira:/chips immediately so user can keep asking
+      renderChips();
+      scrollToBottom();
     };
 
     row.querySelector('.rr-fb-no').onclick = () => {
@@ -929,6 +945,12 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   async function openPanel() {
     if (isOpen) return;
     isOpen = true;
+
+    // Force absolute maximum height instantly — fully expanded from the very first frame
+    // No compact state, no height transition or growth animation on any device
+    panel.style.transition = 'none';
+    panel.style.maxHeight = window.innerWidth <= 768 ? '92vh' : '85vh';
+
     panel.classList.remove('hidden');
     panel.classList.add('flex');
 
@@ -1061,6 +1083,12 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   function setPersona(persona) {
     if (persona === currentPersona) return;
 
+    if (persona === 'rugamba' && !hasUkweziAccess()) {
+      // Non-logged-in users and users without ukwezi subscription see the same guard message
+      showUkweziPrompt();
+      return;
+    }
+
     // Save the chat we are leaving (each persona keeps its own separate history)
     saveCurrentPersonaHistory();
 
@@ -1086,7 +1114,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
         statusEl.innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span><span class="font-medium">Mwarimu • Coach w’ibizamini</span>`;
         statusEl.className = 'flex items-center gap-1.5 text-[11px] text-amber-600 dark:text-amber-400';
       } else {
-        statusEl.innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span class="font-medium">Online now • RoadRules Support</span>`;
+        statusEl.innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span class="font-medium">Online • Perime.rw Support</span>`;
         statusEl.className = 'flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400';
       }
     }
@@ -1095,17 +1123,8 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
       currentNameEl.textContent = persona === 'rugamba' ? 'Rugamba' : 'Manzi';
     }
 
-    // Handle Rugamba guard + special UI + restore its own chat history
+    // Handle Rugamba special UI + restore its own chat history (guard already passed above)
     if (persona === 'rugamba') {
-      if (!hasUkweziAccess()) {
-        // Show guard prompt
-        showUkweziPrompt();
-        // Revert to Manzi
-        setTimeout(() => {
-          setPersona('manzi');
-        }, 120);
-        return;
-      }
       // Allowed — show banner + Rugamba UI
       if (mwarimuBanner) mwarimuBanner.classList.remove('hidden');
 
@@ -1151,9 +1170,10 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
         <i class="fa-solid fa-lock text-amber-600 dark:text-amber-400 text-2xl"></i>
       </div>
       <div class="font-semibold text-base text-amber-700 dark:text-amber-300 mb-1">Bisaba kuba ufite ifatabuguzi ry'ukwezi</div>
-      <div class="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">Kugira ngo uvugane na Rugamba (Mwarimu) kugira ngo akubwire uko urimo mu myitozo, akakubwira nimba warihuguye bihagije, ugomba kugira ifatabuguzi ry’ukwezi.</div>
+      <div class="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">Kugira ngo ubashe kuganira na Rugamba (Mwarimu) akumenyeshe uko uhagaze mu myitozo ndetse anagusuzumire niba wariteguye bihagije, bisaba kuba waraguze ifatabuguzi ry’ukwezi.
+</div>
       <div class="flex gap-2">
-        <button class="flex-1 py-2.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-medium" onclick="window.RoadRulesHelp.close()">Funga</button>
+        <button class="flex-1 py-2.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-medium" onclick="window.RoadRulesHelp._restoreManziWelcome && window.RoadRulesHelp._restoreManziWelcome()">Komeza na Manzi</button>
         <button onclick="window.location.href='ifitabuguzi.html'" class="flex-1 py-2.5 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold">Gura Ukwezi (1000 RWF)</button>
       </div>
     `;
@@ -1216,8 +1236,30 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
     };
   }
 
-  // Initialize default persona (Manzi)
-  setPersona('manzi');
+  // Restore session flags + histories + last persona EARLY (before any setPersona or open logic)
+  // This ensures conversation (incl. Manzi welcome) and last persona survive page reloads when panel was left open.
+  try {
+    if (sessionStorage.getItem('rrChatHasClosedOnce') === '1') chatHasClosedOnce = true;
+    if (sessionStorage.getItem('rrChatGreetingShown') === '1') hasShownGreetingThisSession = true;
+    if (sessionStorage.getItem('rrRugambaGreeted') === '1') rugambaGreetedThisSession = true;
+
+    // Per-persona chat histories + last used persona
+    manziHistory = sessionStorage.getItem('rrChatManziHistory') || '';
+    rugambaHistory = sessionStorage.getItem('rrChatRugambaHistory') || '';
+    const lastP = sessionStorage.getItem('rrLastPersona');
+    if (lastP === 'manzi' || lastP === 'rugamba') {
+      currentPersona = lastP;
+      // If last used Rugamba but no longer has access (logged out / no ifatabuguzi), force Manzi so guard shows correctly
+      if (currentPersona === 'rugamba' && !hasUkweziAccess()) {
+        currentPersona = 'manzi';
+        try { sessionStorage.setItem('rrLastPersona', 'manzi'); } catch (_) {}
+      }
+    }
+  } catch (_) {}
+
+  // Initialize to the (restored) persona. For Manzi with no prior history this seeds the welcome message.
+  // For Rugamba (only if access) it will set correct header + content.
+  setPersona(currentPersona);
 
   // Optional: close on ESC when open
   document.addEventListener('keydown', (e) => {
@@ -1226,6 +1268,22 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
 
   // Make sure it works even if user clicks very early
   window.RoadRulesHelp = { open: openPanel, close: closePanel };
+  // Helper for guard prompt to restore manzi view without closing panel (used by non-logged and no-sub users)
+  window.RoadRulesHelp._restoreManziWelcome = function() {
+    if (!messagesEl) return;
+    currentPersona = 'manzi';
+    try { sessionStorage.setItem('rrLastPersona', 'manzi'); } catch (_) {}
+    updateBottomPersonaBar();
+    if (mwarimuBanner) mwarimuBanner.classList.add('hidden');
+    if (mwarimuBar) mwarimuBar.classList.add('hidden');
+    if (suggestionsWrap) suggestionsWrap.classList.remove('hidden');
+    messagesEl.innerHTML = '';
+    const g = addChatBubble('', false);
+    g.textContent = MANZI_WELCOME_MESSAGE;
+    hideChips();
+    renderChips();
+    scrollToBottom();
+  };
 
   // ========== SMART VISIBILITY: Hide on exam / review screens (imyitozo.html) ==========
   let visibilityObserver = null;
@@ -1311,21 +1369,9 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   // Auto-load FAQs in background (non-blocking)
   setTimeout(loadFaqs, 1800);
 
-  // Restore session flags (persist across reloads in same tab)
-  try {
-    if (sessionStorage.getItem('rrChatHasClosedOnce') === '1') chatHasClosedOnce = true;
-    if (sessionStorage.getItem('rrChatGreetingShown') === '1') hasShownGreetingThisSession = true;
-    if (sessionStorage.getItem('rrRugambaGreeted') === '1') rugambaGreetedThisSession = true;
-
-    // Per-persona chat histories + last used persona
-    manziHistory = sessionStorage.getItem('rrChatManziHistory') || '';
-    rugambaHistory = sessionStorage.getItem('rrChatRugambaHistory') || '';
-    const lastP = sessionStorage.getItem('rrLastPersona');
-    if (lastP === 'manzi' || lastP === 'rugamba') currentPersona = lastP;
-  } catch (_) {}
-
   // Do NOT close the chatbot on page load. Only close when the user explicitly clicks the close icon (X).
   // If the panel was left open (flag=1), re-open it after load so it doesn't "disappear" on refresh.
+  // (histories + persona already restored early, before setPersona, so Manzi welcome + prior chat survive reload correctly)
   try {
     if (sessionStorage.getItem('rrHelpPanelOpen') === '1') {
       setTimeout(openPanel, 280);
