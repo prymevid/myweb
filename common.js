@@ -151,7 +151,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   } catch (_) {}
 
   // Persistent Manzi welcome (shown once with typing, then stays forever until explicit close)
-  const MANZI_WELCOME_MESSAGE = "Murakaza neza! Ni iki ushaka....";
+  const MANZI_WELCOME_MESSAGE = "Murakaza neza kuri perime.rw 👋 Mudusangize ikibazo mufite cyangwa serivisi mwifuza kumenya, kugira ngo mubone ubufasha bwihuse";
 
   function hasUkweziAccess() {
     try {
