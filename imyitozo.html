@@ -100,8 +100,12 @@
   </nav>
 
   <!-- MIDDLE CONTENT - Minimal -->
-  <main class="min-h-[calc(100vh-280px)] max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-16">
-    <div class="max-w-5xl mx-auto">
+  <main class="min-h-[calc(100vh-280px)] max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-16 relative overflow-hidden">
+    <!-- Rich layered premium background across the whole experience -->
+    <div class="absolute inset-0 bg-premium-mesh opacity-45 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-premium-glow opacity-35 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-premium-noise opacity-50 pointer-events-none"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
       <!-- Header text kept as requested -->
       <div class="inline-flex items-center gap-2 rounded-3xl bg-emerald-100 dark:bg-emerald-950 px-4 py-1 text-emerald-700 dark:text-emerald-400 text-xs font-semibold tracking-widest mb-3">
         <i class="fa-solid fa-graduation-cap"></i> <span>IMYITOZO</span>
@@ -118,7 +122,7 @@
 
       <!-- TAB 0: EXAM SIMULATION -->
       <div id="tab-content-0" class="mt-6">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 p-5 md:p-8">
+         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 p-5 md:p-8 relative overflow-hidden premium-inner-texture">
           <div class="flex items-start justify-between">
             <div>
               <div class="text-emerald-600 dark:text-emerald-400 text-sm font-semibold tracking-wider">SIMULATION</div>
@@ -141,7 +145,7 @@
             <!-- Single entry point: one "Tangira Simulation" button + live plan limit status -->
             <div id="exam-slots" class="mt-8"></div>
 
-            <div class="mt-3 text-[11px] text-slate-500">Buri simulation ni 20 ibibazo • 20 min. Ibisubizo bigaragara nyuma y’ikizamini. Ibizamini by’umwimerere bigenda bitewe n’ifatabuguzi ryawe.</div>
+            <div class="mt-3 text-[11px] text-slate-500">Ikizamini polisi y'u Rwanda itanga nacyo kiba giteye nkicyo ugiye gukora. Amahirwe masa!</div>
          </div>
        </div>
 
@@ -175,7 +179,9 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative overflow-hidden">
+    <div class="absolute inset-0 bg-premium-diagonal opacity-45 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-premium-noise opacity-35 pointer-events-none"></div>
     <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
       <div class="py-12 md:py-14 grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-6 text-sm">
         <div class="col-span-2 md:col-span-1">
@@ -453,7 +459,7 @@
         extraInfo = `<div class="text-[11px] text-amber-600 mt-1">Gura Ifatabuguzi kugira ngo ukore ibindi bizamini</div>`;
       } else {
         if (max === 1 && currentPlan === 'ubuntu') {
-          statusLine = `Biroroshye, Ubu ikizamini cyambere wagikora ku ubuntu`;
+          statusLine = `Abantu bashya bose bahabwa ikizamini cyamebere ku buntu. Nyuma yaho urishyura.`;
           btnText = 'Tangira Ikizamini ku Ubuntu';
         } else {
           statusLine = `Wakoze <strong>${done}/${max}</strong> ibizamini byemewe n'ifatabuguzi ryawe.`;
@@ -963,9 +969,9 @@
              <div class="rounded-3xl border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950 p-4">
                <div class="flex items-center gap-2">
                  <span class="px-2.5 py-0.5 text-xs rounded-full bg-sky-600 text-white font-semibold">IKIZAMINI CY'UBUNTU</span>
-                 <span class="text-sm text-slate-600 dark:text-slate-300">Ntago wakoze (1/1 y'ifatabuguzi rya Ubuntu)</span>
+                 <span class="text-sm text-slate-600 dark:text-slate-300">Ntago wakoze (1/1 y'ifatabuguzi ry'Ubuntu)</span>
                </div>
-               <div class="mt-2 text-xs text-slate-500">Tangira mu gice cya "Simulation y'Ibizami" ku mpande y'ibumoso.</div>
+               <div class="mt-2 text-xs text-slate-500">Tangira ikizamini ubone amahirwe yo gukora ikizamini kubuntu</div>
              </div>`;
          } else {
            container.innerHTML = `<div class="text-sm text-slate-500 p-4 border rounded-3xl">Ntabizamini wakozeye.</div>`;

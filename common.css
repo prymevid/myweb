@@ -42,8 +42,56 @@ body { font-family: var(--font-sans); }
 
 .section-header { font-size: 13px; letter-spacing: 2.5px; font-weight: 600; }
 
-.feature-card { transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
-.feature-card:hover { box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+.feature-card {
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+}
+.dark .feature-card {
+  background: linear-gradient(145deg, #0f172a, #020617);
+}
+.feature-card:hover {
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.18), 0 10px 10px -5px rgb(0 0 0 / 0.1);
+  transform: translateY(-6px);
+}
+/* Inner micro texture on cards for luxury feel */
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(148,163,184,0.06) 0.7px, transparent 1px),
+    linear-gradient(rgba(148,163,184,0.035) 1px, transparent 1px);
+  background-size: 17px 17px, 34px 34px;
+  pointer-events: none;
+  opacity: 0.65;
+  z-index: 0;
+}
+.dark .feature-card::before {
+  background-image:
+    radial-gradient(rgba(148,163,184,0.05) 0.7px, transparent 1px),
+    linear-gradient(rgba(148,163,184,0.028) 1px, transparent 1px);
+}
+
+/* Universal luxury inner texture for all major white cards */
+.premium-inner-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(148,163,184,0.045) 0.6px, transparent 1px),
+    linear-gradient(rgba(148,163,184,0.025) 1px, transparent 1px);
+  background-size: 16px 16px, 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.dark .premium-inner-texture::before {
+  background-image:
+    radial-gradient(rgba(148,163,184,0.04) 0.6px, transparent 1px),
+    linear-gradient(rgba(148,163,184,0.02) 1px, transparent 1px);
+}
 
 .stat-number { font-variant-numeric: tabular-nums; }
 
@@ -55,10 +103,102 @@ body { font-family: var(--font-sans); }
 
 .modern-testimonial { transition: all 0.3s cubic-bezier(0.23, 1.0, 0.32, 1); }
 
-.road-grid {
-  background-image: linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
-  background-size: 32px 32px;
+/* =====================================================
+   ROADRULES — SIGNATURE PREMIUM BACKGROUND SYSTEM
+   High-end, unique, "unbelievable" aesthetic everywhere.
+   Layered, subtle, expensive-feeling textures on simple color bases.
+   ===================================================== */
+
+/* 1. Signature Cubic Grid (your favorite on Ahabanza) — refined & stronger */
+.bg-grid {
+  background-image: 
+    linear-gradient(rgba(148, 163, 184, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.09) 1px, transparent 1px);
+  background-size: 26px 26px;
 }
+.dark .bg-grid {
+  background-image: 
+    linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+}
+
+/* 2. Premium Mesh — dots + fine lines (extremely expensive feel) */
+.bg-premium-mesh {
+  background-image:
+    radial-gradient(rgba(148,163,184,0.10) 0.9px, transparent 1px),
+    linear-gradient(rgba(148,163,184,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148,163,184,0.055) 1px, transparent 1px);
+  background-size: 19px 19px, 38px 38px, 38px 38px;
+}
+.dark .bg-premium-mesh {
+  background-image:
+    radial-gradient(rgba(148,163,184,0.08) 0.9px, transparent 1px),
+    linear-gradient(rgba(148,163,184,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148,163,184,0.045) 1px, transparent 1px);
+}
+
+/* 3. Ultra-premium Radial Glow / Soft Orbs (creates incredible depth) */
+.bg-premium-glow {
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(59,130,246,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 75%, rgba(148,163,184,0.07) 0%, transparent 55%);
+  background-size: 140% 140%, 120% 120%;
+  background-position: 0 0, 100% 100%;
+}
+.dark .bg-premium-glow {
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(59,130,246,0.09) 0%, transparent 55%),
+    radial-gradient(circle at 80% 75%, rgba(148,163,184,0.08) 0%, transparent 60%);
+}
+
+/* 4. Elegant Diagonal — refined luxury lines */
+.bg-premium-diagonal {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(148, 163, 184, 0.065) 0px,
+    rgba(148, 163, 184, 0.065) 1px,
+    transparent 1px,
+    transparent 22px
+  );
+}
+.dark .bg-premium-diagonal {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(148, 163, 184, 0.05) 0px,
+    rgba(148, 163, 184, 0.05) 1px,
+    transparent 1px,
+    transparent 22px
+  );
+}
+
+/* 5. Signature Fine Noise / Texture (the "this is expensive" layer) */
+.bg-premium-noise {
+  background-image:
+    linear-gradient(rgba(15,23,42,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,23,42,0.018) 1px, transparent 1px),
+    radial-gradient(rgba(148,163,184,0.025) 0.6px, transparent 1px);
+  background-size: 3px 3px, 3px 3px, 11px 11px;
+}
+.dark .bg-premium-noise {
+  background-image:
+    linear-gradient(rgba(226,232,240,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(226,232,240,0.022) 1px, transparent 1px),
+    radial-gradient(rgba(148,163,184,0.03) 0.6px, transparent 1px);
+}
+
+/* Slow living premium drift on the signature hero grid — makes it feel alive & unique */
+.hero .bg-grid {
+  animation: premiumGridDrift 38s linear infinite;
+}
+@keyframes premiumGridDrift {
+  0% { background-position: 0 0; }
+  100% { background-position: 26px 26px; }
+}
+
+/* Legacy support for old names (won't break anything) */
+.bg-dots { background-image: radial-gradient(rgba(148, 163, 184, 0.09) 1px, transparent 1px); background-size: 20px 20px; }
+.dark .bg-dots { background-image: radial-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px); }
+.bg-diagonal { background: inherit; } /* now use .bg-premium-diagonal instead */
 
 .hero-visual { box-shadow: 0 30px 60px -15px rgb(15 23 42 / 0.3), 0 0 0 1px rgba(148,163,184,0.1) inset; }
 

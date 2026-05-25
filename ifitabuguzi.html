@@ -610,8 +610,8 @@
         user.pendingUpgrade = newSubscription;
         localStorage.setItem('roadRulesUser', JSON.stringify(user));
 
-        // Immediately reflect in UI (current plan + pending notice)
-        if (typeof updateCurrentPlanBanner === 'function') updateCurrentPlanBanner();
+        // Immediately reflect in UI (current plan + pending notice) - no blocking
+        if (typeof updateCurrentPlanBanner === 'function') { updateCurrentPlanBanner(); }
 
         // Close step3 modal
         step3Modal.classList.remove('flex');
@@ -678,7 +678,50 @@
       if (!user || !user.subscription || user.subscription.status !== 'approved') {
         return { plan: 'ubuntu', planName: 'Ubuntu Free', status: 'approved', amount: 0 };
       }
+      // Ensure planName exists (legacy safety)
+      if (!user.subscription.planName) {
+        const map = { ubuntu: 'Ubuntu Free', inshuro2: 'Inshuro 2', inshuro5: 'Icyumweru', ukwezi: 'Ukwezi' };
+        user.subscription.planName = map[user.subscription.plan] || 'Paid Plan';
+      }
       return user.subscription;
+    }
+
+    // NEW: Silently pull latest subscription from Drive so users see their real active plan
+    // even if they didn't log out/in after admin approval.
+    async function refreshLatestSubscriptionFromDrive() {
+      try {
+        const raw = localStorage.getItem('roadRulesUser');
+        const user = raw ? JSON.parse(raw) : null;
+        if (!user || !user.phone || !window.RoadRulesAdmin || !window.RoadRulesAdmin.getUserData) return false;
+
+        const fresh = await (window.RoadRulesAdmin.getUserDataSilent || window.RoadRulesAdmin.getUserData)(user.phone);
+        if (!fresh) return false;
+
+        const localUser = JSON.parse(localStorage.getItem('roadRulesUser') || '{}');
+
+        let changed = false;
+
+        if (fresh.subscription && fresh.subscription.status === 'approved') {
+          localUser.subscription = fresh.subscription;
+          changed = true;
+        }
+
+        if (fresh.pendingUpgrade) {
+          localUser.pendingUpgrade = fresh.pendingUpgrade;
+          changed = true;
+        } else if (localUser.pendingUpgrade) {
+          delete localUser.pendingUpgrade;
+          changed = true;
+        }
+
+        if (changed) {
+          localStorage.setItem('roadRulesUser', JSON.stringify(localUser));
+        }
+        return changed;
+      } catch (e) {
+        console.warn('[Plan] Could not refresh subscription from Drive:', e);
+        return false;
+      }
     }
 
     function getPendingUpgradeRequest() {
@@ -698,6 +741,7 @@
       const container = document.getElementById('current-plan-section');
       if (!container) return;
 
+      // Render immediately from localStorage (fast, no loading, like before)
       const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
 
       if (!user) {
@@ -708,6 +752,8 @@
             <button onclick="window.openAuthModal && window.openAuthModal('login')" class="ml-auto px-4 py-1.5 text-xs rounded-2xl bg-slate-900 text-white font-semibold">Injira</button>
           </div>`;
         updatePlanCardButtons({ plan: 'ubuntu' });
+        // Still try silent background refresh for logged-in case
+        refreshLatestSubscriptionFromDrive().then(changed => { if (changed) updateCurrentPlanBanner(); });
         return;
       }
 
@@ -759,6 +805,14 @@
 
       // Update buttons based on current plan
       updatePlanCardButtons(sub);
+
+      // Background silent refresh from Drive (no loading spinner, no delay on open)
+      // If data changed (e.g. admin just approved your plan), re-render instantly
+      refreshLatestSubscriptionFromDrive().then(changed => {
+        if (changed) {
+          updateCurrentPlanBanner();
+        }
+      });
     }
 
     function updatePlanCardButtons(currentSub = null) {
@@ -826,7 +880,7 @@
       initTailwind(); 
       initTheme(); 
       initAccessibility();
-      updateCurrentPlanBanner(); 
+      updateCurrentPlanBanner();   // renders instantly from localStorage, refresh happens in background (no loading)
       // Ensure buttons are in correct state even if banner had early return
       if (!document.getElementById('current-plan-section')?.innerHTML.includes('CURRENT PLAN')) {
         updatePlanCardButtons();

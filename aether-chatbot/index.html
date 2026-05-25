@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether • Professional Customer Support</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+    
+    :root {
+      --accent: 103 232 249;
+      --accent-2: 251 191 36;
+    }
+    
+    body {
+      font-family: 'Inter', system_ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    
+    .display-font {
+      font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+      font-feature-settings: "ss02";
+    }
+
+    .chat-container {
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4),
+                  0 10px 10px -6px rgb(0 0 0 / 0.3),
+                  inset 0 1px 0 0 rgb(255 255 255 / 0.06);
+    }
+
+    .message-bubble {
+      transition: all 0.2s cubic-bezier(0.23, 1.0, 0.32, 1);
+      animation: messageEnter 0.3s cubic-bezier(0.23, 1.0, 0.32, 1) backwards;
+    }
+
+    @keyframes messageEnter {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .agent-bubble {
+      background: linear-gradient(145deg, #1e2937, #0f172a);
+      border: 1px solid #334155;
+    }
+
+    .user-bubble {
+      background: linear-gradient(145deg, rgb(var(--accent)), #67e8f9);
+      color: #0b1120;
+      box-shadow: 0 10px 15px -3px rgb(var(--accent) / 0.2);
+    }
+
+    .glass {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .chat-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: #334155 #0f172a;
+    }
+
+    .chat-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background-color: #334155;
+      border-radius: 20px;
+    }
+
+    .prose-custom {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .modern-shadow {
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 
+                  0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    .nav-active {
+      color: rgb(var(--accent));
+      position: relative;
+    }
+    
+    .nav-active:after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgb(var(--accent)), transparent);
+    }
+
+    .support-header {
+      background: linear-gradient(#0f172a, transparent);
+    }
+
+    .metric-value {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .quick-reply-btn {
+      transition: all 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    
+    .quick-reply-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    .insight-card {
+      transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
+                  box-shadow 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .sentiment-bar {
+      transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .typing-dot {
+      width: 4px;
+      height: 4px;
+      background: #64748b;
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    .message-streaming {
+      position: relative;
+    }
+
+    .luxury-border {
+      position: relative;
+    }
+    
+    .luxury-border:after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      padding: 1px;
+      background: linear-gradient(145deg, rgba(103,232,249,0.15), transparent 40%, rgba(251,191,36,0.08));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .section-header {
+      letter-spacing: -0.025em;
+    }
+
+    .chat-timestamp {
+      font-size: 0.6875rem;
+      font-feature-settings: "tnum";
+    }
+
+    .demo-frame {
+      box-shadow: 0 35px 60px -15px rgb(0 0 0 / 0.5),
+                  0 0 0 1px #1e2937,
+                  0 0 0 12px #020617;
+      border-radius: 28px;
+      overflow: hidden;
+    }
+
+    .subtle-grid {
+      background-image: 
+        linear-gradient(rgba(51, 65, 85, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(51, 65, 85, 0.06) 1px, transparent 1px);
+      background-size: 38px 38px;
+    }
+
+    .premium-gradient {
+      background: linear-gradient(145deg, #67e8f9, #a5f3fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-[#020617] text-slate-200 antialiased">
+  <!-- Top Navigation -->
+  <nav class="border-b border-slate-800 bg-[#020617]/90 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-x-3">
+          <!-- Logo -->
+          <div class="flex items-center gap-x-2.5">
+            <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-cyan-400 to-teal-300 flex items-center justify-center shadow-inner relative">
+              <div class="w-5 h-5 bg-[#020617] rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-infinity text-cyan-400 text-lg"></i>
+              </div>
+            </div>
+            <div>
+              <span class="display-font text-2xl font-semibold tracking-tighter">Aether</span>
+              <span class="text-[10px] font-mono tracking-[2px] text-slate-500 ml-0.5 align-super">PRO</span>
+            </div>
+          </div>
+          <div class="hidden md:flex items-center px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-slate-400">
+            <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse mr-1.5"></div>
+            99.97% uptime
+          </div>
+        </div>
+
+        <div class="flex items-center gap-x-2 text-sm">
+          <div class="hidden md:flex items-center gap-x-1 text-slate-400 text-sm">
+            <button onclick="switchDemoScenario('general')" 
+                    class="px-4 py-1.5 hover:bg-slate-900 transition-colors rounded-2xl text-xs font-medium flex items-center gap-x-1.5 border border-transparent hover:border-slate-700">
+              <i class="fa-solid fa-globe fa-sm"></i>
+              <span>General</span>
+            </button>
+            <button onclick="switchDemoScenario('billing')" 
+                    class="px-4 py-1.5 hover:bg-slate-900 transition-colors rounded-2xl text-xs font-medium flex items-center gap-x-1.5 border border-transparent hover:border-slate-700">
+              <i class="fa-solid fa-credit-card fa-sm"></i>
+              <span>Billing</span>
+            </button>
+            <button onclick="switchDemoScenario('tech')" 
+                    class="px-4 py-1.5 hover:bg-slate-900 transition-colors rounded-2xl text-xs font-medium flex items-center gap-x-1.5 border border-transparent hover:border-slate-700">
+              <i class="fa-solid fa-wrench fa-sm"></i>
+              <span>Technical</span>
+            </button>
+          </div>
+
+          <div class="h-5 w-px bg-slate-800 mx-1"></div>
+
+          <button onclick="toggleAgentView()" 
+                  class="flex items-center gap-x-2 px-3.5 py-1.5 text-xs font-semibold rounded-2xl hover:bg-slate-900 transition-all active:bg-slate-950 border border-slate-800 hover:border-slate-700">
+            <i class="fa-solid fa-user-tie fa-sm"></i>
+            <span class="hidden sm:inline">Agent View</span>
+          </button>
+
+          <button onclick="resetChat()" 
+                  class="flex items-center gap-x-2 px-4 py-1.5 text-xs font-semibold rounded-2xl bg-slate-900 hover:bg-slate-800 transition-all border border-slate-800 hover:border-slate-700 active:scale-[0.985]">
+            <i class="fa-solid fa-redo fa-sm"></i>
+            <span class="hidden sm:inline">Reset</span>
+          </button>
+
+          <div class="flex items-center gap-x-px bg-slate-900 border border-slate-800 rounded-3xl p-0.5">
+            <button onclick="setLanguage('en')" id="lang-en"
+                    class="px-3 py-1 text-xs font-medium rounded-[14px] transition-all lang-btn active">EN</button>
+            <button onclick="setLanguage('fr')" id="lang-fr"
+                    class="px-3 py-1 text-xs font-medium rounded-[14px] transition-all lang-btn">FR</button>
+            <button onclick="setLanguage('es')" id="lang-es"
+                    class="px-3 py-1 text-xs font-medium rounded-[14px] transition-all lang-btn">ES</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-8 pt-8 pb-12">
+    <!-- Hero / Status -->
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-8 gap-y-3">
+      <div>
+        <div class="inline-flex items-center rounded-3xl bg-slate-900 border border-slate-800 px-4 h-8 text-xs tracking-widest font-semibold text-cyan-400 mb-2">
+          ENTERPRISE READY
+        </div>
+        <h1 class="display-font text-5xl lg:text-6xl font-semibold tracking-tighter leading-none">Support that feels<br>human at scale.</h1>
+        <p class="mt-3 max-w-md text-slate-400">A next-generation conversational experience designed for clarity, speed, and genuine resolution.</p>
+      </div>
+
+      <div class="flex items-center gap-x-4">
+        <div class="flex -space-x-2 items-center">
+          <div class="w-7 h-7 rounded-full border border-slate-700 overflow-hidden ring-1 ring-offset-2 ring-offset-[#020617] ring-slate-800"><img src="https://i.pravatar.cc/28?img=28" class="object-cover"></div>
+          <div class="w-7 h-7 rounded-full border border-slate-700 overflow-hidden ring-1 ring-offset-2 ring-offset-[#020617] ring-slate-800"><img src="https://i.pravatar.cc/28?img=47" class="object-cover"></div>
+          <div class="w-7 h-7 rounded-full border border-slate-700 overflow-hidden ring-1 ring-offset-2 ring-offset-[#020617] ring-slate-800"><img src="https://i.pravatar.cc/28?img=32" class="object-cover"></div>
+        </div>
+        <div class="text-xs text-slate-400 leading-tight">
+          <div class="font-medium text-emerald-400">2,847 teams</div>
+          <div>using Aether today</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Experience -->
+    <div class="flex flex-col xl:flex-row gap-5">
+      
+      <!-- The Chat Interface -->
+      <div class="flex-1">
+        <div class="demo-frame bg-[#0b1120] border border-slate-800 rounded-[26px] overflow-hidden luxury-border flex flex-col" style="height: 640px; max-height: calc(100vh - 180px);">
+          
+          <!-- Chat Header -->
+          <div class="px-6 py-4 border-b border-slate-800 bg-[#020617] flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-x-3">
+              <div class="relative">
+                <div id="agent-avatar" 
+                     class="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center ring-1 ring-slate-600 overflow-hidden">
+                  <div class="w-full h-full bg-[radial-gradient(#64748b_0.8px,transparent_1px)] bg-[length:3px_3px] flex items-center justify-center">
+                    <i class="fa-solid fa-headset text-cyan-400 text-xl"></i>
+                  </div>
+                </div>
+                <div class="absolute -bottom-px -right-px w-3.5 h-3.5 bg-emerald-400 border-[2px] border-[#020617] rounded-full flex items-center justify-center">
+                  <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-baseline gap-x-2">
+                  <span id="agent-name" class="font-semibold text-lg tracking-tight">Elena Voss</span>
+                  <span class="text-xs px-1.5 py-px rounded bg-emerald-900/70 text-emerald-400 font-medium">ONLINE</span>
+                </div>
+                <div class="text-[10px] text-slate-500 font-medium flex items-center gap-x-1">
+                  <span>Customer Success • </span>
+                  <span class="font-mono text-emerald-300/90">avg reply 42s</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-x-1">
+              <button onclick="showCommandPalette()" 
+                      class="text-xs px-3 py-1.5 flex items-center gap-x-1.5 rounded-2xl hover:bg-slate-900 transition-all text-slate-400 hover:text-slate-200 border border-transparent hover:border-slate-700"
+                      title="Command palette (?)">
+                <i class="fa-solid fa-terminal fa-sm"></i>
+                <span class="hidden md:inline text-xs font-medium">Commands</span>
+              </button>
+              
+              <button onclick="escalateToHuman()" 
+                      class="text-xs font-medium px-4 py-1.5 rounded-2xl flex items-center gap-x-2 bg-amber-900/70 hover:bg-amber-900 transition-colors active:bg-amber-800 border border-amber-800/70 text-amber-300">
+                <i class="fa-solid fa-user-plus fa-sm"></i>
+                <span class="font-semibold hidden md:inline">Escalate</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div id="chat-messages" 
+               class="chat-scroll flex-1 p-5 space-y-5 overflow-y-auto bg-[#020617] text-[15px] leading-relaxed"
+               style="background-image: radial-gradient(circle at center, rgba(15,23,42,0.4) 0%, transparent 70%);">
+          </div>
+
+          <!-- Composer -->
+          <div class="border-t border-slate-800 bg-[#0b1120] p-4 flex-shrink-0">
+            <div class="relative flex items-end gap-x-2">
+              <!-- Attachment -->
+              <div class="flex flex-col items-center">
+                <button onclick="triggerFileUpload()" 
+                        class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:bg-slate-900 rounded-2xl transition-all active:scale-95"
+                        title="Attach file">
+                  <i class="fa-solid fa-paperclip text-base"></i>
+                </button>
+              </div>
+
+              <!-- Voice -->
+              <div class="flex flex-col items-center">
+                <button id="voice-btn" onclick="toggleVoiceInput()" 
+                        class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:bg-slate-900 rounded-2xl transition-all active:scale-95"
+                        title="Voice input">
+                  <i class="fa-solid fa-microphone text-base"></i>
+                </button>
+              </div>
+
+              <!-- Input -->
+              <div class="flex-1 relative">
+                <textarea id="chat-input" rows="1"
+                          class="w-full resize-none bg-slate-900 border border-slate-700 focus:border-cyan-700 focus:ring-1 focus:ring-cyan-700/50 placeholder:text-slate-500 text-sm rounded-3xl py-3 px-5 outline-none max-h-[96px]"
+                          placeholder="Ask anything about your account, billing, or features..."
+                          onkeydown="if (event.key === 'Enter' &amp;&amp; !event.shiftKey) { event.preventDefault(); sendUserMessage(); } if (event.key === '?') showCommandPalette();"
+                          oninput="autoResizeTextarea(this)"></textarea>
+              </div>
+
+              <button onclick="sendUserMessage()" 
+                      class="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-gradient-to-br from-cyan-400 to-teal-300 hover:brightness-105 active:scale-[0.975] transition-all shadow-lg shadow-cyan-500/30 text-[#020617] rounded-3xl">
+                <i class="fa-solid fa-arrow-up text-lg"></i>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between mt-1.5 px-1">
+              <div class="text-[10px] text-slate-500 flex items-center gap-1 font-medium">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>End-to-end encrypted</span>
+              </div>
+              <div onclick="showFeedbackModal()" class="text-[10px] cursor-pointer text-slate-500 hover:text-slate-400 transition-colors">Rate this conversation</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Trust bar -->
+        <div class="mt-3 flex items-center justify-center gap-x-5 text-[10px] text-slate-500 font-medium tracking-wider">
+          <div>GDPR</div>
+          <div>SOC 2 TYPE II</div>
+          <div>ISO 27001</div>
+          <div class="hidden sm:block">HIPAA READY</div>
+        </div>
+      </div>
+
+      <!-- Right Insights Panel -->
+      <div class="xl:w-80 flex-shrink-0 xl:mt-1">
+        <div class="bg-[#0b1120] border border-slate-800 rounded-3xl p-5 h-full flex flex-col" style="height: 640px; max-height: calc(100vh - 180px);">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <div class="uppercase text-cyan-400 font-mono text-[10px] tracking-[1px]">LIVE INSIGHTS</div>
+              <div class="font-semibold text-lg tracking-tight section-header">Conversation Co-Pilot</div>
+            </div>
+            <div class="px-2.5 py-px bg-slate-900 rounded text-emerald-300 text-xs font-mono font-medium">97% confident</div>
+          </div>
+
+          <!-- Customer Context -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
+                <img src="https://i.pravatar.cc/36?img=40" class="w-full h-full object-cover">
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-sm">Jordan Hale</div>
+                <div class="text-xs text-slate-400 flex items-center gap-x-1">
+                  <span>Enterprise • 14 mo</span> 
+                  <span class="text-emerald-400">•</span> 
+                  <span class="font-medium">LTV $18.4k</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 flex gap-1.5">
+              <div class="text-[10px] px-2.5 py-px bg-slate-800 rounded-xl flex-1 text-center font-medium text-slate-300">Pro Plan</div>
+              <div class="text-[10px] px-2.5 py-px bg-slate-800 rounded-xl flex-1 text-center font-medium text-slate-300">8 seats</div>
+            </div>
+          </div>
+
+          <!-- Intent + Sentiment -->
+          <div class="mb-4">
+            <div class="flex justify-between text-xs mb-1.5 px-0.5">
+              <div class="font-medium text-slate-400">Detected Intent</div>
+              <div id="intent-badge" 
+                   class="px-2 py-px rounded text-[10px] bg-cyan-900/70 text-cyan-300 font-semibold flex items-center">GENERAL_INQUIRY</div>
+            </div>
+            
+            <div class="text-xs font-medium text-slate-400 mb-1 px-0.5">Sentiment</div>
+            <div class="flex items-center gap-2">
+              <div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="sentiment-bar" 
+                     class="sentiment-bar h-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-300" 
+                     style="width: 78%"></div>
+              </div>
+              <div id="sentiment-label" class="font-mono text-xs font-semibold w-9 text-right text-emerald-400">+0.78</div>
+            </div>
+          </div>
+
+          <!-- Suggested Knowledge -->
+          <div class="flex-1 flex flex-col min-h-0">
+            <div class="uppercase text-[10px] font-semibold tracking-widest text-slate-400 px-1 mb-2">SUGGESTED RESOURCES</div>
+            
+            <div id="kb-suggestions" class="space-y-1.5 flex-1 overflow-y-auto pr-1 text-sm">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Quick Outcomes -->
+          <div class="pt-4 border-t border-slate-800 mt-auto">
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="markAsResolved()" 
+                      class="col-span-2 flex items-center justify-center gap-x-2 text-xs font-semibold transition-all active:scale-[0.985] bg-emerald-400 hover:bg-emerald-300 text-emerald-950 rounded-2xl py-2">
+                <i class="fa-solid fa-check-double"></i>
+                <span class="font-semibold">Mark Resolved</span>
+              </button>
+              <button onclick="requestFeedback()" 
+                      class="text-xs font-medium flex items-center justify-center gap-1 transition-all bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-2xl">
+                <i class="fa-solid fa-star text-amber-400"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Hidden file input -->
+  <input type="file" id="file-input" class="hidden" onchange="handleFileUpload(event)">
+
+  <!-- Command Palette Modal -->
+  <div id="command-palette" onclick="if (event.target.id === 'command-palette') hideCommandPalette()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-start justify-center pt-[18vh]">
+    <div onclick="event.stopImmediatePropagation()" class="w-full max-w-md mx-4 bg-[#0b1120] border border-slate-700 shadow-2xl rounded-3xl overflow-hidden">
+      <div class="p-3 border-b border-slate-800 flex items-center text-xs px-4 text-slate-400">
+        <span class="font-mono">COMMAND PALETTE</span>
+      </div>
+      <div class="p-2">
+        <div onclick="executeCommand('restart')" class="px-4 py-2.5 hover:bg-slate-900 flex items-center gap-3 rounded-2xl cursor-pointer text-sm">
+          <i class="fa-solid fa-sync w-4 text-slate-400"></i>
+          <div class="flex-1">Restart conversation</div>
+          <div class="font-mono text-xs text-slate-500">/restart</div>
+        </div>
+        <div onclick="executeCommand('escalate')" class="px-4 py-2.5 hover:bg-slate-900 flex items-center gap-3 rounded-2xl cursor-pointer text-sm">
+          <i class="fa-solid fa-headset w-4 text-amber-400"></i>
+          <div class="flex-1">Escalate to senior agent</div>
+          <div class="font-mono text-xs text-slate-500">/escalate</div>
+        </div>
+        <div onclick="executeCommand('kb')" class="px-4 py-2.5 hover:bg-slate-900 flex items-center gap-3 rounded-2xl cursor-pointer text-sm">
+          <i class="fa-solid fa-book w-4 text-slate-400"></i>
+          <div class="flex-1">Search knowledge base</div>
+          <div class="font-mono text-xs text-slate-500">/kb</div>
+        </div>
+        <div onclick="executeCommand('summary')" class="px-4 py-2.5 hover:bg-slate-900 flex items-center gap-3 rounded-2xl cursor-pointer text-sm">
+          <i class="fa-solid fa-file-export w-4 text-slate-400"></i>
+          <div class="flex-1">Export transcript + summary</div>
+        </div>
+        <div onclick="executeCommand('feedback')" class="px-4 py-2.5 hover:bg-slate-900 flex items-center gap-3 rounded-2xl cursor-pointer text-sm">
+          <i class="fa-solid fa-comments w-4 text-slate-400"></i>
+          <div class="flex-1">Provide detailed feedback</div>
+        </div>
+      </div>
+      <div class="bg-[#020617] p-2 text-[10px] px-4 text-slate-500 flex items-center">
+        <span>Press <span class="font-mono border px-1 rounded">ESC</span> to close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-[90] flex flex-col items-end gap-y-2"></div>
+
+  <script>
+    // Tailwind configuration - refined professional palette
+    function initTailwind() {
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ['Space Grotesk', 'system-ui', 'sans-serif']
+            },
+            colors: {
+              'aether-cyan': 'rgb(103 232 249)',
+              'aether-amber': 'rgb(251 191 36)'
+            }
+          }
+        }
+      };
+    }
+
+    // Core State
+    let chatState = {
+      messages: [],
+      context: {
+        intent: 'general_inquiry',
+        sentiment: 0.75,
+        customerName: 'Jordan Hale',
+        language: 'en',
+        issueCategory: null,
+        resolved: false,
+        attachments: []
+      },
+      conversationId: 'conv_' + Date.now(),
+      isAgentView: false,
+      lang: 'en'
+    };
+
+    // Knowledge Base (curated for demo)
+    const knowledgeBase = [
+      { id: 'kb1', title: 'How to upgrade your plan', category: 'Billing', keywords: ['upgrade', 'plan', 'billing', 'subscription'], snippet: 'You can upgrade instantly from Billing → Plans. Pro-rated charges apply.' },
+      { id: 'kb2', title: 'Reset two-factor authentication', category: 'Security', keywords: ['2fa', 'login', 'security', 'authentication'], snippet: 'Visit Account Settings → Security. Use backup codes if needed.' },
+      { id: 'kb3', title: 'Exporting workspace data', category: 'Features', keywords: ['export', 'data', 'csv', 'backup'], snippet: 'Go to Workspace → Settings → Data Export. Available for Enterprise plans.' },
+      { id: 'kb4', title: 'Invoice & payment history', category: 'Billing', keywords: ['invoice', 'payment', 'receipt', 'billing'], snippet: 'All invoices are accessible under Billing → Invoices. Download PDFs anytime.' },
+      { id: 'kb5', title: 'SSO and SCIM setup', category: 'Enterprise', keywords: ['sso', 'scim', 'saml', 'okta'], snippet: 'Enterprise customers configure SSO via the Admin Console under Security.' }
+    ];
+
+    // Intelligent response templates with personality
+    const responseTemplates = {
+      en: {
+        greeting: [
+          "Hello! I'm Elena. How can I help make your experience with Aether exceptional today?",
+          "Hi Jordan — welcome back. What can I assist you with?"
+        ],
+        general_inquiry: [
+          "I can definitely help with that. Could you share a few more details so I can give you the most accurate guidance?",
+          "Great question. Let me pull the latest information for you."
+        ],
+        billing: [
+          "I understand billing questions can be stressful. Let's sort this out together right now.",
+          "Happy to review your billing details. Your current plan is Pro with 8 seats — what specifically would you like to change or understand?"
+        ],
+        tech: [
+          "I'm here to troubleshoot this with you step by step. Can you tell me exactly what you're seeing?",
+          "Technical issues are the worst. Let's get to the root cause quickly."
+        ],
+        escalation: [
+          "I completely understand wanting to speak with a specialist. I'll prepare a detailed handoff now.",
+          "Of course — I'm looping in our senior support team. They'll have full context."
+        ],
+        resolved: [
+          "Wonderful! I'm glad we could resolve that together. Is there anything else I can help with before we wrap up?",
+          "Fantastic news. Your satisfaction means everything to us."
+        ],
+        fallback: [
+          "I want to make sure I give you the best answer. Let me think about this for a moment...",
+          "Thanks for the clarity. One moment while I check our latest resources."
+        ]
+      },
+      fr: {
+        greeting: ["Bonjour ! Je suis Elena. Comment puis-je vous aider aujourd'hui ?"],
+        billing: ["Je comprends que les questions de facturation puissent être stressantes. Résolvons cela ensemble."],
+        fallback: ["Merci pour ces précisions. Laissez-moi vérifier les dernières informations."]
+      },
+      es: {
+        greeting: ["¡Hola! Soy Elena. ¿Cómo puedo ayudarte hoy?"],
+        billing: ["Entiendo que las preguntas de facturación pueden ser estresantes. Resolvámoslo juntos."],
+        fallback: ["Gracias por la claridad. Un momento mientras verifico nuestros recursos."]
+      }
+    };
+
+    // Intent classifier (lightweight but effective)
+    function classifyIntent(text) {
+      const t = text.toLowerCase();
+      let scores = { general_inquiry: 1, billing: 0, tech: 0, account: 0, feature: 0 };
+
+      const billingWords = ['bill', 'invoice', 'payment', 'charge', 'subscription', 'upgrade', 'price', 'cost', 'refund'];
+      const techWords = ['login', 'error', 'bug', 'not working', 'crash', 'sync', 'api', 'integration', 'password', '2fa'];
+      const accountWords = ['account', 'profile', 'team', 'user', 'seat', 'permission'];
+      const featureWords = ['how to', 'feature', 'export', 'report', 'automation', 'workflow'];
+
+      billingWords.forEach(w => { if (t.includes(w)) scores.billing += 2.6; });
+      techWords.forEach(w => { if (t.includes(w)) scores.tech += 3.1; });
+      accountWords.forEach(w => { if (t.includes(w)) scores.account += 2.3; });
+      featureWords.forEach(w => { if (t.includes(w)) scores.feature += 1.9; });
+
+      // Boost if recent context
+      if (chatState.context.issueCategory === 'billing') scores.billing += 1.5;
+
+      let best = 'general_inquiry';
+      let maxScore = scores.general_inquiry;
+      
+      Object.keys(scores).forEach(key => {
+        if (scores[key] > maxScore) {
+          maxScore = scores[key];
+          best = key;
+        }
+      });
+
+      const confidence = Math.min(0.98, Math.max(0.55, maxScore / 5.5));
+      return { intent: best, confidence };
+    }
+
+    function getSentimentDelta(text) {
+      const t = text.toLowerCase();
+      let delta = 0;
+      if (/(thank|great|awesome|love|perfect|excellent)/.test(t)) delta = 0.18;
+      if (/(frustrat|annoy|angry|bad|broken|terrible|issue|problem|stuck)/.test(t)) delta = -0.25;
+      if (/(urgent|asap|now|immediately)/.test(t)) delta = -0.12;
+      return delta;
+    }
+
+    // Main render
+    function renderMessages() {
+      const container = document.getElementById('chat-messages');
+      container.innerHTML = '';
+      
+      chatState.messages.forEach((msg, index) => {
+        const el = createMessageElement(msg, index);
+        container.appendChild(el);
+      });
+      
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function createMessageElement(msg, index) {
+      const wrapper = document.createElement('div');
+      wrapper.className = `flex gap-3 message-bubble ${msg.role === 'user' ? 'justify-end' : ''}`;
+      
+      if (msg.role === 'agent' || msg.role === 'system') {
+        const avatarHTML = `
+          <div class="w-8 h-8 rounded-2xl flex-shrink-0 mt-0.5 overflow-hidden ring-1 ring-offset-2 ring-offset-[#020617] ring-slate-700 bg-gradient-to-br from-slate-700 to-slate-800">
+            ${msg.role === 'system' ? 
+              `<div class="w-full h-full flex items-center justify-center"><i class="fa-solid fa-robot text-xs text-slate-400"></i></div>` : 
+              `<div class="w-full h-full flex items-center justify-center bg-[radial-gradient(#64748b_0.8px,transparent_1px)] bg-[length:3.2px_3.2px]">
+                 <i class="fa-solid fa-headset text-cyan-400 text-base"></i>
+               </div>`}
+          </div>`;
+        
+        wrapper.innerHTML = `
+          <div class="flex gap-3 max-w-[82%]">
+            ${avatarHTML}
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-x-2 mb-1">
+                <span class="text-xs font-semibold text-slate-400">${msg.role === 'system' ? 'Aether' : 'Elena'}</span>
+                <span class="chat-timestamp text-slate-600">${msg.timestamp || ''}</span>
+              </div>
+              <div class="agent-bubble px-4 py-3 rounded-3xl rounded-bl-lg text-slate-100 prose-custom">
+                ${msg.html || msg.text}
+              </div>
+              ${msg.quickReplies ? createQuickRepliesHTML(msg.quickReplies) : ''}
+            </div>
+          </div>`;
+      } else {
+        wrapper.innerHTML = `
+          <div class="max-w-[72%]">
+            <div class="user-bubble px-5 py-3 rounded-3xl rounded-br-lg text-[#020617] font-medium prose-custom">
+              ${msg.html || escapeHtml(msg.text)}
+            </div>
+            <div class="text-right pr-1">
+              <span class="chat-timestamp text-slate-600">${msg.timestamp || ''}</span>
+            </div>
+          </div>`;
+      }
+      
+      return wrapper;
+    }
+
+    function createQuickRepliesHTML(replies) {
+      return `
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          ${replies.map(r => `
+            <button onclick="handleQuickReply('${escapeForAttr(r)}', this)" 
+                    class="quick-reply-btn px-3.5 py-1 text-xs font-medium bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors rounded-2xl text-slate-200">
+              ${escapeHtml(r)}
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    
+    function escapeForAttr(str) {
+      return str.replace(/'/g, "\\'");
+    }
+
+    // Add message to state + render
+    function addMessage(role, text, options = {}) {
+      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      const msg = {
+        id: 'msg_' + Date.now(),
+        role,
+        text,
+        html: options.html || null,
+        timestamp,
+        quickReplies: options.quickReplies || null,
+        meta: options.meta || {}
+      };
+      
+      chatState.messages.push(msg);
+      renderMessages();
+      
+      // Persist
+      saveToLocalStorage();
+      
+      return msg;
+    }
+
+    // Streaming effect for agent replies
+    async function streamAgentReply(fullText, quickReplies = null) {
+      const container = document.getElementById('chat-messages');
+      
+      const msgEl = document.createElement('div');
+      msgEl.className = `flex gap-3 message-bubble`;
+      
+      const avatarHTML = `
+        <div class="w-8 h-8 rounded-2xl flex-shrink-0 mt-0.5 overflow-hidden ring-1 ring-offset-2 ring-offset-[#020617] ring-slate-700 bg-gradient-to-br from-slate-700 to-slate-800">
+          <div class="w-full h-full flex items-center justify-center bg-[radial-gradient(#64748b_0.8px,transparent_1px)] bg-[length:3.2px_3.2px]">
+            <i class="fa-solid fa-headset text-cyan-400 text-base"></i>
+          </div>
+        </div>`;
+      
+      msgEl.innerHTML = `
+        <div class="flex gap-3 max-w-[82%]">
+          ${avatarHTML}
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-x-2 mb-1">
+              <span class="text-xs font-semibold text-slate-400">Elena</span>
+              <span class="chat-timestamp text-slate-600">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+            </div>
+            <div class="agent-bubble px-4 py-3 rounded-3xl rounded-bl-lg text-slate-100 prose-custom message-streaming">
+              <span class="stream-text"></span><span class="stream-cursor inline-block w-[2px] h-4 bg-cyan-400 ml-px align-middle animate-pulse"></span>
+            </div>
+          </div>
+        </div>`;
+      
+      container.appendChild(msgEl);
+      container.scrollTop = container.scrollHeight;
+      
+      const textContainer = msgEl.querySelector('.stream-text');
+      const cursor = msgEl.querySelector('.stream-cursor');
+      
+      // Stream character by character
+      for (let i = 0; i < fullText.length; i++) {
+        textContainer.textContent += fullText[i];
+        container.scrollTop = container.scrollHeight;
+        
+        // Variable speed for realism
+        let delay = 18 + Math.random() * 26;
+        if (fullText[i] === ' ' || fullText[i] === ',' || fullText[i] === '.') delay *= 1.6;
+        await new Promise(r => setTimeout(r, delay));
+      }
+      
+      cursor.remove();
+      
+      // Finalize message
+      const finalMsg = {
+        id: 'msg_' + Date.now(),
+        role: 'agent',
+        text: fullText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        quickReplies
+      };
+      
+      chatState.messages.push(finalMsg);
+      saveToLocalStorage();
+      
+      // After stream, update insights sometimes
+      if (Math.random() > 0.6) updateInsights();
+    }
+
+    // Send user message + process
+    function sendUserMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+      
+      addMessage('user', text);
+      input.value = '';
+      autoResizeTextarea(input, true);
+      
+      // Play send sound
+      playSound('send');
+      
+      // Simulate thinking + reply
+      setTimeout(() => {
+        processUserInput(text);
+      }, 380 + Math.random() * 340);
+    }
+
+    function processUserInput(text) {
+      // Update sentiment
+      const delta = getSentimentDelta(text);
+      chatState.context.sentiment = Math.max(0.1, Math.min(0.98, chatState.context.sentiment + delta));
+      
+      // Classify
+      const classification = classifyIntent(text);
+      chatState.context.intent = classification.intent;
+      
+      if (classification.intent === 'billing' || classification.intent === 'tech') {
+        chatState.context.issueCategory = classification.intent;
+      }
+      
+      updateInsights();
+      
+      // Generate intelligent reply
+      let responseText = '';
+      const lang = chatState.lang;
+      const templates = responseTemplates[lang] || responseTemplates.en;
+      
+      const intentKey = chatState.context.intent;
+      
+      if (templates[intentKey] && templates[intentKey].length) {
+        responseText = templates[intentKey][Math.floor(Math.random() * templates[intentKey].length)];
+      } else {
+        responseText = templates.fallback[Math.floor(Math.random() * templates.fallback.length)];
+      }
+      
+      // Context-aware enhancements
+      if (text.toLowerCase().includes('invoice') || text.toLowerCase().includes('payment')) {
+        responseText += " I've pulled your latest invoice from January 12th. Would you like me to send it to your email?";
+        setTimeout(() => {
+          showInlineActionCard('invoice');
+        }, 1400);
+      }
+      
+      if (text.toLowerCase().includes('upgrade')) {
+        responseText = "Upgrading is seamless. Your new annual Pro plan would be $1,980 billed yearly (save 18%). Shall I start the upgrade flow?";
+      }
+      
+      // Show typing indicator briefly
+      showTypingIndicator();
+      
+      setTimeout(() => {
+        hideTypingIndicator();
+        
+        // Stream the reply
+        streamAgentReply(responseText, generateContextualQuickReplies(classification.intent));
+        
+        // Occasional proactive suggestion
+        if (Math.random() < 0.22) {
+          setTimeout(() => {
+            showProactiveSuggestion();
+          }, 6500);
+        }
+      }, 820);
+    }
+
+    function generateContextualQuickReplies(intent) {
+      const common = ['That helps — thank you', 'Can you explain more?', 'Talk to a human'];
+      
+      if (intent === 'billing') return ['Show my invoices', 'Change payment method', 'Explain my charges', ...common];
+      if (intent === 'tech') return ['I tried restarting', 'Share error screenshot', 'Check status page', ...common];
+      if (intent === 'account') return ['Manage team members', 'Update my email', ...common];
+      
+      return ['Tell me about features', 'How do I export data?', 'Pricing plans', ...common.slice(0,2)];
+    }
+
+    function handleQuickReply(replyText, btnEl) {
+      btnEl.style.opacity = '0.4';
+      btnEl.style.pointerEvents = 'none';
+      
+      addMessage('user', replyText);
+      
+      setTimeout(() => {
+        let response = "Thanks for the additional detail.";
+        
+        if (replyText.toLowerCase().includes('invoice') || replyText.toLowerCase().includes('payment')) {
+          response = "Here is your most recent invoice. I've attached a PDF copy to this conversation.";
+          addMessage('agent', response);
+          setTimeout(() => showInlineActionCard('invoice'), 600);
+          return;
+        }
+        
+        if (replyText.toLowerCase().includes('human') || replyText.toLowerCase().includes('escalate')) {
+          escalateToHuman();
+          return;
+        }
+        
+        if (replyText.toLowerCase().includes('thank')) {
+          response = "You're very welcome. Is there anything else I can help you with today?";
+          addMessage('agent', response, { quickReplies: ['No, all good!', 'One more question'] });
+          return;
+        }
+        
+        addMessage('agent', response);
+        updateInsights();
+      }, 620);
+    }
+
+    function showTypingIndicator() {
+      const container = document.getElementById('chat-messages');
+      const indicator = document.createElement('div');
+      indicator.id = 'typing-indicator';
+      indicator.className = `flex gap-3 pl-1`;
+      indicator.innerHTML = `
+        <div class="w-8 h-8 rounded-2xl flex-shrink-0 mt-0.5 overflow-hidden ring-1 ring-offset-2 ring-offset-[#020617] ring-slate-700 bg-gradient-to-br from-slate-700 to-slate-800">
+          <div class="w-full h-full flex items-center justify-center bg-[radial-gradient(#64748b_0.8px,transparent_1px)] bg-[length:3.2px_3.2px]">
+            <i class="fa-solid fa-headset text-cyan-400 text-base"></i>
+          </div>
+        </div>
+        <div class="pt-1">
+          <div class="agent-bubble px-4 py-3 rounded-3xl rounded-bl-lg inline-flex items-center">
+            <div class="typing-indicator">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(indicator);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+      const ind = document.getElementById('typing-indicator');
+      if (ind) ind.remove();
+    }
+
+    // File upload
+    function triggerFileUpload() {
+      document.getElementById('file-input').click();
+    }
+
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const isImage = file.type.startsWith('image/');
+        
+        let html = `
+          <div class="flex items-center gap-x-3">
+            <div class="flex-shrink-0 w-9 h-9 bg-slate-700 rounded-xl flex items-center justify-center">
+              <i class="fa-solid ${isImage ? 'fa-image' : 'fa-file'} text-cyan-300"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="font-medium text-sm truncate">${file.name}</div>
+              <div class="text-[10px] text-slate-400">${(file.size / 1024).toFixed(1)} KB • Uploaded just now</div>
+            </div>
+          </div>
+        `;
+        
+        addMessage('user', `Shared file: ${file.name}`, { html });
+        
+        chatState.context.attachments.push({ name: file.name, size: file.size, type: file.type });
+        
+        // Simulate agent acknowledgement
+        setTimeout(() => {
+          addMessage('agent', "Thank you — I've received the file. Our team can now review it. Anything specific you'd like me to look for?");
+        }, 1350);
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    }
+
+    // Drag and drop support on chat area
+    function setupDragDrop() {
+      const chatArea = document.getElementById('chat-messages');
+      
+      chatArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        chatArea.style.background = 'rgba(15, 23, 42, 0.6)';
+      });
+      
+      chatArea.addEventListener('dragleave', () => {
+        chatArea.style.background = '';
+      });
+      
+      chatArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        chatArea.style.background = '';
+        
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          const fakeEvent = { target: { files: [file] } };
+          handleFileUpload(fakeEvent);
+        }
+      });
+    }
+
+    // Voice input using Web Speech API
+    let recognition = null;
+    let isListening = false;
+
+    function toggleVoiceInput() {
+      const btn = document.getElementById('voice-btn');
+      
+      if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        showToast("Voice input isn't supported in this browser", 'error');
+        return;
+      }
+      
+      if (!recognition) {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRec();
+        recognition.lang = chatState.lang === 'en' ? 'en-US' : (chatState.lang === 'fr' ? 'fr-FR' : 'es-ES');
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        
+        recognition.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          document.getElementById('chat-input').value = transcript;
+          btn.classList.remove('!text-red-400', 'bg-red-900/30');
+          isListening = false;
+          
+          // Auto-send after short pause
+          setTimeout(() => {
+            sendUserMessage();
+          }, 420);
+        };
+        
+        recognition.onerror = function() {
+          showToast('Voice recognition error', 'error');
+          btn.classList.remove('!text-red-400', 'bg-red-900/30');
+          isListening = false;
+        };
+        
+        recognition.onend = function() {
+          btn.classList.remove('!text-red-400', 'bg-red-900/30');
+          isListening = false;
+        };
+      }
+      
+      if (!isListening) {
+        try {
+          recognition.start();
+          isListening = true;
+          btn.classList.add('!text-red-400', 'bg-red-900/30');
+          showToast('Listening... speak now', 'info', 1400);
+        } catch(e) {}
+      } else {
+        recognition.stop();
+        isListening = false;
+        btn.classList.remove('!text-red-400', 'bg-red-900/30');
+      }
+    }
+
+    // Update live insights panel
+    function updateInsights() {
+      // Intent badge
+      const intentEl = document.getElementById('intent-badge');
+      const intentMap = {
+        'billing': 'BILLING_INQUIRY',
+        'tech': 'TECHNICAL_SUPPORT',
+        'account': 'ACCOUNT_MANAGEMENT',
+        'feature': 'FEATURE_QUESTION',
+        'general_inquiry': 'GENERAL_INQUIRY'
+      };
+      intentEl.textContent = intentMap[chatState.context.intent] || 'GENERAL_INQUIRY';
+      intentEl.className = `px-2 py-px rounded text-[10px] ${chatState.context.intent === 'billing' || chatState.context.intent === 'tech' ? 'bg-amber-900/70 text-amber-300' : 'bg-cyan-900/70 text-cyan-300'} font-semibold flex items-center`;
+      
+      // Sentiment
+      const bar = document.getElementById('sentiment-bar');
+      const label = document.getElementById('sentiment-label');
+      
+      const pct = Math.round(chatState.context.sentiment * 100);
+      bar.style.width = `${pct}%`;
+      
+      if (chatState.context.sentiment > 0.7) {
+        bar.style.background = 'linear-gradient(to right, #4ade80, #14b8a6)';
+        label.className = 'font-mono text-xs font-semibold w-9 text-right text-emerald-400';
+        label.textContent = `+${(chatState.context.sentiment - 0.5).toFixed(2)}`;
+      } else if (chatState.context.sentiment < 0.45) {
+        bar.style.background = 'linear-gradient(to right, #f87171, #fb923c)';
+        label.className = 'font-mono text-xs font-semibold w-9 text-right text-orange-400';
+        label.textContent = (chatState.context.sentiment - 0.5).toFixed(2);
+      } else {
+        bar.style.background = 'linear-gradient(to right, #67e8f9, #a5f3fc)';
+        label.className = 'font-mono text-xs font-semibold w-9 text-right text-cyan-400';
+        label.textContent = `+${(chatState.context.sentiment - 0.5).toFixed(2)}`;
+      }
+      
+      // Suggested KB
+      renderKBSuggestions();
+    }
+
+    function renderKBSuggestions() {
+      const container = document.getElementById('kb-suggestions');
+      container.innerHTML = '';
+      
+      const currentIntent = chatState.context.intent;
+      let matches = knowledgeBase.filter(kb => 
+        kb.keywords.some(kw => currentIntent.includes(kw) || chatState.messages.some(m => m.text && m.text.toLowerCase().includes(kw)))
+      );
+      
+      if (matches.length === 0) matches = knowledgeBase.slice(0, 3);
+      
+      matches.slice(0, 3).forEach(article => {
+        const div = document.createElement('div');
+        div.className = 'insight-card cursor-pointer px-3 py-[7px] bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-2xl text-xs transition-all';
+        div.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div class="flex-1 pr-2">
+              <div class="font-medium text-slate-200 leading-tight">${article.title}</div>
+              <div class="text-[10px] text-slate-400 mt-px">${article.category}</div>
+            </div>
+            <button class="text-[9px] px-2 py-px flex-shrink-0 rounded-xl bg-slate-700 text-cyan-300 font-medium self-start">SHARE</button>
+          </div>
+        `;
+        
+        div.onclick = () => {
+          addMessage('agent', `Here's the most relevant article: <strong>${article.title}</strong>`, {
+            html: `<div><strong>${article.title}</strong><br><span class="text-xs opacity-70">${article.snippet}</span><div class="mt-2 text-[10px]"><a href="#" class="underline text-cyan-400">Open full guide →</a></div></div>`
+          });
+          
+          showToast('Article shared in chat', 'success');
+        };
+        
+        container.appendChild(div);
+      });
+    }
+
+    function showInlineActionCard(type) {
+      const container = document.getElementById('chat-messages');
+      
+      const card = document.createElement('div');
+      card.className = `flex gap-3 pl-11 max-w-[82%] message-bubble`;
+      
+      if (type === 'invoice') {
+        card.innerHTML = `
+          <div class="flex-1 bg-slate-900 border border-slate-700 rounded-3xl p-3 text-xs">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <div class="font-semibold">Invoice #INV-28491</div>
+                <div class="text-emerald-400 text-[10px]">PAID • Jan 12, 2026</div>
+              </div>
+              <div class="text-right">
+                <div class="font-semibold">$1,650.00</div>
+                <div class="text-[10px] text-slate-400">8 seats • Pro</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="downloadInvoice(this)" class="flex-1 text-center bg-slate-800 hover:bg-slate-700 transition-colors py-1.5 rounded-2xl font-medium">Download PDF</button>
+              <button onclick="emailInvoice(this)" class="flex-1 text-center bg-cyan-800 hover:bg-cyan-700 transition-colors text-cyan-100 py-1.5 rounded-2xl font-medium">Email copy</button>
+            </div>
+          </div>`;
+      }
+      
+      container.appendChild(card);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function downloadInvoice(btn) {
+      btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Downloaded`;
+      setTimeout(() => {
+        addMessage('agent', 'Your invoice has been downloaded. Let me know if you need anything else!');
+      }, 600);
+    }
+    
+    function emailInvoice(btn) {
+      btn.innerHTML = `Sent to jordan@acme.co`;
+      setTimeout(() => {
+        addMessage('agent', "I've emailed a copy to your primary address. You should receive it within the next minute.");
+      }, 900);
+    }
+
+    function showProactiveSuggestion() {
+      const container = document.getElementById('chat-messages');
+      const suggestion = document.createElement('div');
+      suggestion.className = `px-4 py-1 flex gap-2 items-center text-xs message-bubble`;
+      
+      suggestion.innerHTML = `
+        <div class="bg-slate-900 border border-slate-700 text-slate-300 px-3 py-2 rounded-3xl flex items-center gap-x-2 text-xs">
+          <span class="opacity-70">Proactive:</span> 
+          <span class="font-medium">Would you like a 3-minute Loom walkthrough of the new dashboard?</span>
+          <button onclick="acceptProactive(this)" class="ml-2 px-3 py-px text-xs font-semibold bg-slate-700 hover:bg-slate-600 transition-colors rounded-2xl">Yes</button>
+        </div>
+      `;
+      container.appendChild(suggestion);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function acceptProactive(el) {
+      el.parentElement.innerHTML = `<span class="text-emerald-400 text-xs px-3">Great — sending you a personalized walkthrough now.</span>`;
+      setTimeout(() => {
+        addMessage('agent', "I've generated a custom 3-min Loom for your use case. Link sent to your email + saved in this thread.");
+      }, 1100);
+    }
+
+    // Escalation
+    function escalateToHuman() {
+      const container = document.getElementById('chat-messages');
+      
+      addMessage('system', 'Handoff initiated to senior support specialist...');
+      
+      setTimeout(() => {
+        // Change agent
+        document.getElementById('agent-name').textContent = 'Marcus Rivera';
+        document.getElementById('agent-avatar').innerHTML = `
+          <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-700/60 to-orange-800/50">
+            <i class="fa-solid fa-user-tie text-amber-300 text-xl"></i>
+          </div>`;
+        
+        chatState.isAgentView = true;
+        
+        const handoffMsg = document.createElement('div');
+        handoffMsg.className = `px-4 pt-2 pb-1 flex justify-center message-bubble`;
+        handoffMsg.innerHTML = `
+          <div class="text-center text-xs bg-gradient-to-r from-amber-900/70 to-transparent border border-amber-800/60 px-5 py-2 rounded-3xl max-w-[260px]">
+            <div class="font-semibold text-amber-300">Connected to Marcus Rivera, Senior Support</div>
+            <div class="text-amber-400/70 text-[10px] mt-px">Full conversation history transferred • Avg response &lt; 30s</div>
+          </div>`;
+        container.appendChild(handoffMsg);
+        container.scrollTop = container.scrollHeight;
+        
+        setTimeout(() => {
+          addMessage('agent', "Hi Jordan, this is Marcus. I've reviewed everything so far. How can I help resolve this quickly for you?");
+        }, 900);
+      }, 1350);
+    }
+
+    // Command palette
+    function showCommandPalette() {
+      document.getElementById('command-palette').classList.remove('hidden');
+      document.getElementById('command-palette').classList.add('flex');
+    }
+    
+    function hideCommandPalette() {
+      const pal = document.getElementById('command-palette');
+      pal.classList.remove('flex');
+      pal.classList.add('hidden');
+    }
+
+    function executeCommand(cmd) {
+      hideCommandPalette();
+      
+      switch (cmd) {
+        case 'restart':
+          resetChat();
+          break;
+        case 'escalate':
+          escalateToHuman();
+          break;
+        case 'kb':
+          const term = prompt('Search knowledge base:');
+          if (term) performKBSearch(term);
+          break;
+        case 'summary':
+          exportTranscript();
+          break;
+        case 'feedback':
+          showFeedbackModal();
+          break;
+      }
+    }
+
+    function performKBSearch(term) {
+      const results = knowledgeBase.filter(k => 
+        k.title.toLowerCase().includes(term.toLowerCase()) || 
+        k.snippet.toLowerCase().includes(term.toLowerCase())
+      );
+      
+      if (results.length) {
+        addMessage('agent', `Found ${results.length} relevant articles for "${term}"`, {
+          html: results.map(r => `<div class="py-px"><strong>${r.title}</strong> — <span class="opacity-75">${r.snippet}</span></div>`).join('')
+        });
+      } else {
+        addMessage('agent', `No direct matches for "${term}". Would you like me to create a support ticket for deeper investigation?`);
+      }
+    }
+
+    // Demo scenarios
+    function switchDemoScenario(scenario) {
+      resetChat(false);
+      
+      let seedMessages = [];
+      
+      if (scenario === 'billing') {
+        chatState.context.intent = 'billing';
+        chatState.context.sentiment = 0.62;
+        seedMessages = [
+          { role: 'agent', text: "Hello! I'm Elena. How can I help make your experience with Aether exceptional today?" },
+          { role: 'user', text: "I was charged twice this month for the same invoice" },
+        ];
+      } else if (scenario === 'tech') {
+        chatState.context.intent = 'tech';
+        chatState.context.sentiment = 0.38;
+        seedMessages = [
+          { role: 'agent', text: "Hi Jordan — welcome back. What can I assist you with?" },
+          { role: 'user', text: "The API keeps returning 502 errors on our sync jobs" },
+        ];
+      } else {
+        chatState.context.intent = 'general_inquiry';
+        seedMessages = [
+          { role: 'agent', text: "Hello! I'm Elena. How can I help make your experience with Aether exceptional today?" },
+          { role: 'user', text: "Can you walk me through how to set up team permissions?" },
+        ];
+      }
+      
+      // Seed
+      seedMessages.forEach(m => {
+        chatState.messages.push({
+          ...m,
+          id: 'msg_' + Date.now() + Math.random(),
+          timestamp: new Date(Date.now() - 40000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+        });
+      });
+      
+      renderMessages();
+      updateInsights();
+      
+      // Auto reply after seed for immersion
+      if (scenario !== 'general') {
+        setTimeout(() => {
+          let reply = scenario === 'billing' 
+            ? "I'm sorry about the duplicate charge — this occasionally happens during plan migrations. I've already flagged your account and initiated a refund of $1,650. You'll see it within 3 business days."
+            : "502 errors during sync are almost always related to a recent change in your OAuth token scope. Can you confirm if you recently updated any integration settings?";
+          
+          streamAgentReply(reply, scenario === 'billing' ? ['Confirm refund status', 'Talk to billing specialist'] : ['Yes I did', 'No changes made']);
+        }, 1700);
+      }
+    }
+
+    // Mark resolved
+    function markAsResolved() {
+      chatState.context.resolved = true;
+      
+      addMessage('agent', "I'm thrilled we got this resolved for you. A quick CSAT rating would help us improve — thank you so much for being an amazing customer.", {
+        quickReplies: ['5 - Excellent', '4 - Good', '3 - Okay']
+      });
+      
+      // Confetti delight
+      launchConfetti();
+      
+      setTimeout(updateInsights, 200);
+    }
+
+    function launchConfetti() {
+      const colors = ['#67e8f9', '#fbbf24', '#4ade80'];
+      for (let i = 0; i < 42; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `position:fixed;left:${Math.random()*100}vw;top:-10px;width:7px;height:7px;background:${colors[i%3]};border-radius:50%;z-index:999;pointer-events:none;`;
+        document.body.appendChild(particle);
+        
+        const duration = 1400 + Math.random() * 1200;
+        const angle = Math.random() * 80 + 50;
+        
+        particle.animate([
+          { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+          { transform: `translateY(${window.innerHeight + 120}px) translateX(${Math.random() * 180 - 80}px) rotate(${angle * 4}deg)`, opacity: 0 }
+        ], {
+          duration,
+          easing: 'cubic-bezier(0.22, 1, 0.3, 1)'
+        }).onfinish = () => particle.remove();
+      }
+    }
+
+    // Feedback
+    function showFeedbackModal() {
+      const modal = document.createElement('div');
+      modal.className = `fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm`;
+      modal.innerHTML = `
+        <div onclick="event.target.remove()" class="absolute inset-0"></div>
+        <div onclick="event.stopImmediatePropagation()" class="relative bg-[#0b1120] border border-slate-700 rounded-3xl w-full max-w-sm p-6 mx-4">
+          <div class="font-semibold text-xl tracking-tighter mb-1">How was your experience?</div>
+          <div class="text-xs text-slate-400 mb-5">Your feedback helps us build better support for everyone.</div>
+          
+          <div class="flex justify-center gap-x-1 mb-6">
+            ${[1,2,3,4,5].map(n => `
+              <button onclick="submitCSAT(${n}, this)" class="w-11 h-11 flex items-center justify-center text-3xl hover:scale-110 transition-all"> ${n === 5 ? '🤩' : n === 4 ? '😊' : n === 3 ? '🙂' : n === 2 ? '😐' : '😕'} </button>
+            `).join('')}
+          </div>
+          
+          <textarea id="feedback-text" placeholder="Any additional comments? (optional)" 
+                    class="w-full h-20 text-sm bg-slate-900 border border-slate-700 p-3 rounded-2xl text-xs resize-y"></textarea>
+          
+          <div class="flex gap-3 mt-4">
+            <button onclick="this.closest('.fixed').remove()" class="flex-1 py-2.5 text-sm font-medium rounded-2xl border border-slate-700 hover:bg-slate-900 transition">Cancel</button>
+            <button onclick="submitDetailedFeedback(this)" class="flex-1 py-2.5 text-sm font-semibold bg-gradient-to-r from-cyan-400 to-teal-300 text-[#020617] rounded-2xl">Submit Feedback</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function submitCSAT(score, el) {
+      document.querySelectorAll('.fixed button').forEach(b => b.style.opacity = b === el ? '1' : '0.3');
+      
+      chatState.context.csat = score;
+      
+      setTimeout(() => {
+        const modal = el.closest('.fixed');
+        if (modal) modal.remove();
+        
+        addMessage('system', `Thank you for the ${score}★ rating.`);
+        
+        if (score >= 4) {
+          launchConfetti();
+        }
+      }, 700);
+    }
+
+    function submitDetailedFeedback(btn) {
+      const text = btn.parentElement.parentElement.querySelector('#feedback-text').value.trim();
+      const modal = btn.closest('.fixed');
+      
+      modal.remove();
+      
+      addMessage('agent', "Your detailed feedback has been recorded. The product team will review it within 48 hours. We truly appreciate customers like you.");
+      
+      if (text) {
+        setTimeout(() => {
+          showToast('Feedback submitted to our product team. Thank you.', 'success');
+        }, 800);
+      }
+    }
+
+    function requestFeedback() {
+      showFeedbackModal();
+    }
+
+    // Misc utilities
+    function autoResizeTextarea(textarea, reset = false) {
+      if (reset) {
+        textarea.style.height = 'auto';
+        return;
+      }
+      textarea.style.height = 'auto';
+      textarea.style.height = Math.min(textarea.scrollHeight, 96) + 'px';
+    }
+
+    function playSound(type) {
+      try {
+        const audio = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audio.createOscillator();
+        const gain = audio.createGain();
+        const filter = audio.createBiquadFilter();
+        
+        if (type === 'send') {
+          osc.type = 'sine';
+          osc.frequency.value = 820;
+          gain.gain.value = 0.07;
+          filter.type = 'lowpass';
+          filter.frequency.value = 1400;
+          
+          const noise = audio.createBufferSource();
+          const buffer = audio.createBuffer(1, audio.sampleRate * 0.06, audio.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+          noise.buffer = buffer;
+          
+          const noiseGain = audio.createGain();
+          noiseGain.gain.value = 0.025;
+          
+          const noiseFilter = audio.createBiquadFilter();
+          noiseFilter.type = 'bandpass';
+          noiseFilter.frequency.value = 1600;
+          
+          const masterGain = audio.createGain();
+          masterGain.gain.value = 0.8;
+          
+          noise.connect(noiseFilter);
+          noiseFilter.connect(noiseGain);
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(masterGain);
+          noiseGain.connect(masterGain);
+          masterGain.connect(audio.destination);
+          
+          osc.start();
+          noise.start();
+          
+          setTimeout(() => {
+            gain.gain.linearRampToValueAtTime(0.0001, audio.currentTime + 0.2);
+            noiseGain.gain.linearRampToValueAtTime(0.0001, audio.currentTime + 0.25);
+          }, 40);
+          
+          setTimeout(() => {
+            osc.stop(); noise.stop();
+          }, 380);
+        }
+      } catch (e) {}
+    }
+
+    function showToast(message, type = 'info', duration = 2400) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const icon = type === 'success' ? 'fa-check-circle text-emerald-400' : 
+                   type === 'error' ? 'fa-exclamation-circle text-red-400' : 'fa-info-circle text-cyan-400';
+      
+      toast.className = `flex items-center gap-x-3 px-4 py-2.5 rounded-2xl shadow-xl border text-sm bg-[#0b1120] border-slate-700 max-w-[260px]`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icon}"></i>
+        <span>${message}</span>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.transition = 'all 0.18s ease';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 160);
+      }, duration);
+    }
+
+    function setLanguage(lang) {
+      chatState.lang = lang;
+      chatState.context.language = lang;
+      
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active', 'bg-cyan-900/70', 'text-cyan-100'));
+      const activeBtn = document.getElementById('lang-' + lang);
+      if (activeBtn) activeBtn.classList.add('active', 'bg-cyan-900/70', 'text-cyan-100');
+      
+      // Update greeting if first message
+      if (chatState.messages.length <= 1) {
+        const container = document.getElementById('chat-messages');
+        container.innerHTML = '';
+        chatState.messages = [];
+        
+        const greeting = responseTemplates[lang]?.greeting?.[0] || responseTemplates.en.greeting[0];
+        addMessage('agent', greeting, { 
+          quickReplies: lang === 'en' ? ['How do I upgrade?', 'I have a billing question', 'Technical help needed'] : ['Comment mettre à niveau ?', 'Question de facturation']
+        });
+      }
+      
+      showToast('Language switched to ' + lang.toUpperCase(), 'info', 1200);
+    }
+
+    function toggleAgentView() {
+      chatState.isAgentView = !chatState.isAgentView;
+      
+      const panel = document.querySelector('.xl\\:w-80');
+      if (panel) {
+        panel.style.display = chatState.isAgentView ? 'none' : '';
+      }
+      
+      const header = document.getElementById('agent-name');
+      if (chatState.isAgentView) {
+        header.textContent = 'You (Agent)';
+        document.getElementById('agent-avatar').innerHTML = `<div class="w-full h-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">JH</div>`;
+      } else {
+        header.textContent = chatState.context.resolved ? 'Marcus Rivera' : 'Elena Voss';
+      }
+      
+      showToast(chatState.isAgentView ? 'Switched to agent preview mode' : 'Returned to customer view', 'info');
+    }
+
+    function exportTranscript() {
+      const transcript = chatState.messages.map(m => 
+        `[${m.timestamp}] ${m.role.toUpperCase()}: ${m.text || '(rich content)'}`
+      ).join('\n\n');
+      
+      const summary = `Aether Support Transcript\nConversation ID: ${chatState.conversationId}\nCustomer: ${chatState.context.customerName}\nIntent: ${chatState.context.intent}\nSentiment: ${chatState.context.sentiment.toFixed(2)}\n\n${transcript}`;
+      
+      const blob = new Blob([summary], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `aether-support-${chatState.conversationId}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      showToast('Transcript exported successfully', 'success');
+    }
+
+    function saveToLocalStorage() {
+      try {
+        localStorage.setItem('aether_chat_state_v1', JSON.stringify(chatState));
+      } catch (e) {}
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        const saved = localStorage.getItem('aether_chat_state_v1');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          // Only restore if not too old
+          if (parsed.conversationId && Date.now() - parseInt(parsed.conversationId.split('_')[1]) < 1000 * 60 * 60 * 6) {
+            chatState = parsed;
+            return true;
+          }
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    function initializeChat() {
+      initTailwind();
+      
+      const container = document.getElementById('chat-messages');
+      
+      // Try restore or start fresh
+      const restored = loadFromLocalStorage();
+      
+      if (!restored || chatState.messages.length === 0) {
+        // Fresh start
+        chatState.messages = [];
+        chatState.context = {
+          intent: 'general_inquiry',
+          sentiment: 0.78,
+          customerName: 'Jordan Hale',
+          language: 'en',
+          issueCategory: null,
+          resolved: false,
+          attachments: []
+        };
+        
+        const greeting = "Hello! I'm Elena. How can I help make your experience with Aether exceptional today?";
+        
+        addMessage('agent', greeting, { 
+          quickReplies: ['How do I upgrade my plan?', 'I have a billing question', 'Technical help needed'] 
+        });
+      } else {
+        renderMessages();
+      }
+      
+      updateInsights();
+      setupDragDrop();
+      
+      // Welcome toast on first load
+      if (!restored) {
+        setTimeout(() => {
+          showToast('Tip: Try the command palette with "?" or voice input', 'info', 3800);
+        }, 6200);
+      }
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '?' && document.activeElement.tagName === 'BODY') {
+          e.preventDefault();
+          showCommandPalette();
+        }
+        if (e.key.toLowerCase() === 'r' && e.metaKey && document.activeElement.id !== 'chat-input') {
+          e.preventDefault();
+          resetChat();
+        }
+        if (e.key === 'Escape') {
+          const pal = document.getElementById('command-palette');
+          if (!pal.classList.contains('hidden')) hideCommandPalette();
+        }
+      });
+      
+      // Focus input on load
+      setTimeout(() => {
+        document.getElementById('chat-input').focus();
+      }, 1200);
+      
+      // Demo hint
+      console.log('%c[Aether] Professional support chatbot ready. All features self-contained.', 'color:#475569');
+    }
+
+    function resetChat(showToastMsg = true) {
+      localStorage.removeItem('aether_chat_state_v1');
+      
+      chatState = {
+        messages: [],
+        context: {
+          intent: 'general_inquiry',
+          sentiment: 0.75,
+          customerName: 'Jordan Hale',
+          language: 'en',
+          issueCategory: null,
+          resolved: false,
+          attachments: []
+        },
+        conversationId: 'conv_' + Date.now(),
+        isAgentView: false,
+        lang: 'en'
+      };
+      
+      // Reset UI
+      document.getElementById('agent-name').textContent = 'Elena Voss';
+      document.getElementById('agent-avatar').innerHTML = `
+        <div class="w-full h-full flex items-center justify-center bg-[radial-gradient(#64748b_0.8px,transparent_1px)] bg-[length:3px_3px]">
+          <i class="fa-solid fa-headset text-cyan-400 text-xl"></i>
+        </div>`;
+      
+      document.getElementById('chat-messages').innerHTML = '';
+      
+      const greeting = responseTemplates.en.greeting[0];
+      addMessage('agent', greeting, { 
+        quickReplies: ['How do I upgrade my plan?', 'I have a billing question', 'Technical help needed'] 
+      });
+      
+      updateInsights();
+      
+      if (showToastMsg) showToast('Conversation reset', 'info', 1200);
+    }
+
+    function initializeLanguageButtons() {
+      const active = document.getElementById('lang-en');
+      if (active) active.classList.add('bg-cyan-900/70', 'text-cyan-100');
+    }
+
+    function initializeEverything() {
+      initializeChat();
+      initializeLanguageButtons();
+      
+      // Make sure KB is populated initially
+      setTimeout(() => {
+        const kb = document.getElementById('kb-suggestions');
+        if (kb && kb.children.length === 0) {
+          renderKBSuggestions();
+        }
+      }, 300);
+      
+      // Global accessibility hint
+      document.documentElement.setAttribute('data-aether-chat', 'ready');
+    }
+
+    // Boot
+    window.onload = initializeEverything;
+    
+    // Expose for debugging / future extensibility (power users)
+    window.AETHER = { reset: () => resetChat(), switchScenario: switchDemoScenario, getState: () => chatState };
+  </script>
+</body>
+</html>

@@ -1298,6 +1298,25 @@
         }
     }
 
+    // Silent version for background plan sync (no loading overlay, fast page open)
+    async function getUserDataSilent(phone) {
+        try {
+            const token = await getAccessToken();
+            const folderId = await getFolderId(token, FOLDER_NAME);
+            if (!folderId) return null;
+
+            const fileName = `${phone.replace(/[^0-9]/g, '')}.json`;
+            const fileId = await findFileByName(token, folderId, fileName);
+            if (!fileId) return null;
+
+            const data = await readFileContent(token, fileId);
+            return data;
+        } catch (e) {
+            console.warn('Silent user data fetch failed:', e.message || e);
+            return null;
+        }
+    }
+
     async function updateUserData(phone, updates) {
         showLoading('Kubona ifatabuguzi...');
         try {
@@ -1490,9 +1509,34 @@
     window.RoadRulesAdmin.getCurrentPlan = getCurrentPlan;
     window.RoadRulesAdmin.getPendingUpgrade = getPendingUpgrade;
 
+    // Public helper for any page: refresh the logged-in user's data from Drive (fixes stale plan display)
+    window.RoadRulesAuth = window.RoadRulesAuth || {};
+    window.RoadRulesAuth.refreshMyData = async function() {
+      try {
+        const raw = localStorage.getItem('roadRulesUser');
+        const user = raw ? JSON.parse(raw) : null;
+        if (!user || !user.phone || !window.RoadRulesAdmin) return null;
+
+        const fresh = await (window.RoadRulesAdmin.getUserDataSilent || window.RoadRulesAdmin.getUserData)(user.phone);
+        if (!fresh) return null;
+
+        const local = JSON.parse(localStorage.getItem('roadRulesUser') || '{}');
+        if (fresh.subscription) local.subscription = fresh.subscription;
+        if (fresh.pendingUpgrade) local.pendingUpgrade = fresh.pendingUpgrade;
+        else delete local.pendingUpgrade;
+
+        localStorage.setItem('roadRulesUser', JSON.stringify(local));
+        return local;
+      } catch (e) {
+        console.warn('refreshMyData failed', e);
+        return null;
+      }
+    };
+
     // Expose admin API
     window.RoadRulesAdmin.listAllUserFiles = listAllUserFiles;
     window.RoadRulesAdmin.getUserData = getUserData;
+    window.RoadRulesAdmin.getUserDataSilent = getUserDataSilent;
     window.RoadRulesAdmin.updateUserData = updateUserData;
     window.RoadRulesAdmin.dismissUserPlan = dismissUserPlan;
     window.RoadRulesAdmin.approveUserPlan = approveUserPlan;

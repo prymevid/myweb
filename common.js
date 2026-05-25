@@ -1137,8 +1137,13 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
       if (!messagesEl.children.length) {
         loadRugambaExperience(true); // adds greeting only once (flag protected)
       } else {
-        scrollToBottom();
-      }
+    scrollToBottom();
+
+    // Focus smart composer for immediate natural typing (Aether-style)
+    setTimeout(() => {
+      if (inputEl && !inputEl.closest('.hidden')) inputEl.focus();
+    }, 380);
+  }
     } else {
       if (mwarimuBanner) mwarimuBanner.classList.add('hidden');
 

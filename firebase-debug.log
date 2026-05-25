@@ -618,3 +618,5 @@ For CI servers and headless environments, generate a new token with firebase log
 [debug] [2026-05-25T10:29:04.269Z] > authorizing via signed-in user (ndatimanah@gmail.com)
 [debug] [2026-05-25T10:29:05.696Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
 [debug] [2026-05-25T10:29:05.697Z] > authorizing via signed-in user (ndatimanah@gmail.com)
+[debug] [2026-05-25T16:27:48.936Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-05-25T16:27:48.951Z] > authorizing via signed-in user (ndatimanah@gmail.com)
