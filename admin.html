@@ -311,10 +311,10 @@
         
         loadedUsers = [];
         const toLoad = files.slice(0, 200);
-        const results = await Promise.all(toLoad.map(async (file) => {
-          const userData = await window.RoadRulesAdmin.readUserFileById(file.id);
-          return userData ? { ...userData, _fileId: file.id } : null;
-        }));
+const results = await Promise.all(toLoad.map(async (file) => {
+           const userData = await window.RoadRulesAdmin.readUserFileByIdSilent(file.id);
+           return userData ? { ...userData, _fileId: file.id } : null;
+         }));
         loadedUsers = results.filter(Boolean);
 
         renderUserTable();
@@ -357,9 +357,9 @@
         return;
       }
 
-      loadedUsers.forEach(user => {
-        const sub = user.subscription || { planName: 'Ubuntu Free', status: 'approved' };
-        const pend = user.pendingUpgrade || null;
+loadedUsers.forEach(user => {
+         const sub = user.subscription || { planName: 'Ubuntu Free', status: 'approved' };
+         const pend = user.pendingUpgrade || null;
 
         let planDisplay = sub.planName || 'Ubuntu Free';
         let statusHTML = '';
@@ -397,10 +397,11 @@
           <td class="px-3 sm:px-6 py-2.5 sm:py-3.5">${planDisplay}</td>
           <td class="px-3 sm:px-6 py-2.5 sm:py-3.5">${statusHTML}</td>
           <td class="px-3 sm:px-6 py-2.5 sm:py-3.5 text-xs text-slate-500 hidden sm:table-cell">${user.lastUpdated ? new Date(user.lastUpdated).toLocaleDateString() : '—'}</td>
-          <td class="px-3 sm:px-6 py-2.5 sm:py-3.5 text-right whitespace-nowrap space-x-1 sm:space-x-2 sticky right-0 z-10 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800 border-l border-slate-200 dark:border-slate-700">
-            ${actionButtons}
-            <button onclick="viewUserDetails('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 border rounded-xl">View</button>
-          </td>
+<td class="px-3 sm:px-6 py-2.5 sm:py-3.5 text-right whitespace-nowrap space-x-1 sm:space-x-2 sticky right-0 z-10 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800 border-l border-slate-200 dark:border-slate-700">
+             ${actionButtons}
+             <button onclick="viewUserDetails('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 border rounded-xl">View</button>
+             <button onclick="adminDeleteUser('${user.phone}')" class="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 bg-red-700 text-white rounded-xl ml-1">Delete</button>
+           </td>
         `;
         tbody.appendChild(row);
       });
@@ -463,16 +464,30 @@
       }
     }
 
-    async function viewUserDetails(phone) {
-      const data = await window.RoadRulesAdmin.getUserData(phone);
-      if (!data) {
-        alert('Could not load user from Drive');
-        return;
+async function viewUserDetails(phone) {
+       const data = await window.RoadRulesAdmin.getUserData(phone);
+       if (!data) {
+         alert('Could not load user from Drive');
+         return;
+       }
+       const json = JSON.stringify(data, null, 2);
+       const win = window.open('', '_blank');
+       win.document.write(`<pre style="padding:20px; background:#111; color:#0f0; font-size:12px;">${json}</pre>`);
+     }
+
+async function adminDeleteUser(phone) {
+        if (!confirm(`Siba uko ${phone}? (Delete this user permanently? They will need to sign up again.)`)) return;
+        try {
+          showLoading('Kubona ibibazo...');
+          await window.RoadRulesAdmin.deleteUser(phone);
+          hideLoading();
+          alert('User deleted permanently. Account removed from Google Drive.');
+          await loadAllUsersFromDrive();
+        } catch (e) {
+          hideLoading();
+          alert('Failed to delete user: ' + (e.message || 'Unknown error'));
+        }
       }
-      const json = JSON.stringify(data, null, 2);
-      const win = window.open('', '_blank');
-      win.document.write(`<pre style="padding:20px; background:#111; color:#0f0; font-size:12px;">${json}</pre>`);
-    }
 
     // ========== AMATANGAZO ADMIN FUNCTIONS (for Konte panel) ==========
     async function loadAdminAnnouncements() {

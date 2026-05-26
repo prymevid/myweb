@@ -123,7 +123,7 @@
         return res.json();
     }
 
-    async function readUserFileById(fileId) {
+async function readUserFileById(fileId) {
         showLoading('Kuzana amakuru...');
         try {
             const token = await getAccessToken();
@@ -137,6 +137,20 @@
         } catch (e) {
             console.error('Failed to read file by id', e);
             hideLoading();
+            return null;
+        }
+    }
+
+    // Silent version for batch loading (no loading overlay)
+    async function readUserFileByIdSilent(fileId) {
+        try {
+            const token = await getAccessToken();
+            const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) return null;
+            return await res.json();
+        } catch (e) {
             return null;
         }
     }
@@ -1248,7 +1262,7 @@
         console.log('%c[RoadRules] Google Drive auth driver active (same as your reference)', 'color:#64748b');
     }
 
-    // ========== ADMIN / DATABASE CONTROL (Google Drive direct) ==========
+// ========== ADMIN / DATABASE CONTROL (Google Drive direct) ==========
     window.RoadRulesAdmin = {};
 
     async function listAllUserFiles() {
@@ -1262,11 +1276,12 @@
                 return [];
             }
 
-            const query = `'${folderId}' in parents and trashed=false and (name contains '.json' or name contains 'json')`;
+            const query = `'${folderId}' in parents and trashed=false and name contains '.json'`;
             const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,modifiedTime,mimeType)&pageSize=1000&orderBy=modifiedTime%20desc`;
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             const data = await res.json();
-            const files = data.files || [];
+            // Only return files that match Rwandan phone pattern (07 + any digits .json)
+            const files = (data.files || []).filter(f => f.name && /^07\d+\.json$/.test(f.name));
             console.log(`[Admin] Found ${files.length} user files in Drive`);
             hideLoading();
             return files;
@@ -1533,7 +1548,37 @@
       }
     };
 
-    // Expose admin API
+// Delete a user permanently (admin action) - removes the JSON file from Drive
+     async function deleteUserFile(phone) {
+         if (!phone) throw new Error('Phone number required');
+         try {
+             const token = await getAccessToken();
+             const folderId = await getFolderId(token, FOLDER_NAME);
+             if (!folderId) throw new Error('UserData folder not found');
+
+             const fileName = `${phone.replace(/[^0-9]/g, '')}.json`;
+             const fileId = await findFileByName(token, folderId, fileName);
+             if (!fileId) throw new Error('User file not found');
+
+             const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
+                 method: 'DELETE',
+                 headers: { Authorization: `Bearer ${token}` }
+             });
+
+             if (!res.ok) {
+                 const err = await res.text();
+                 console.error('Drive DELETE error:', res.status, err);
+                 throw new Error(`Delete failed: ${res.status}`);
+             }
+
+             return true;
+         } catch (e) {
+             console.error('deleteUserFile error:', e);
+             throw e;
+         }
+     }
+
+// Expose admin API
     window.RoadRulesAdmin.listAllUserFiles = listAllUserFiles;
     window.RoadRulesAdmin.getUserData = getUserData;
     window.RoadRulesAdmin.getUserDataSilent = getUserDataSilent;
@@ -1541,6 +1586,8 @@
     window.RoadRulesAdmin.dismissUserPlan = dismissUserPlan;
     window.RoadRulesAdmin.approveUserPlan = approveUserPlan;
     window.RoadRulesAdmin.readUserFileById = readUserFileById;
+    window.RoadRulesAdmin.readUserFileByIdSilent = readUserFileByIdSilent;
+    window.RoadRulesAdmin.deleteUser = deleteUserFile;
 
     console.log('%c[RoadRules Admin] Direct Google Drive control enabled. Use window.RoadRulesAdmin.*', 'color:#f59e0b');
 

@@ -570,15 +570,10 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
     addChatBubble(faq.question, true);
 
     // Determine which answer version to show.
-    // Progressive answers cycle: after 3 answers, it restarts from alt1 (first answer).
-    // Progressive ONLY activates after the user has closed the chat box at least once.
+    // Progressive answers cycle on EVERY click: 1st click = alt1, 2nd click = alt2, 3rd click = alt3, 4th click = alt1...
     const answersArr = (faq.answers && faq.answers.length) ? faq.answers : [faq.answer || 'Ntago hari igisubizo.'];
-    let answerIndex = 0;
-
-    if (chatHasClosedOnce) {
-      const seen = getSeenCountForFaq(faq.id);
-      answerIndex = seen % answersArr.length;   // cycles 0,1,2,0,1,2,...
-    }
+    const seen = getSeenCountForFaq(faq.id);
+    const answerIndex = seen % answersArr.length;   // cycles 0,1,2,0,1,2,...
 
     const answerText = answersArr[answerIndex];
 
@@ -591,10 +586,8 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
     const botBubble = addChatBubble('', false);
     await typeWriter(botBubble, answerText, 26);
 
-    // Only mark "seen" (advance the counter) on subsequent asks after close
-    if (chatHasClosedOnce) {
-      markAnswerSeen(faq.id);
-    }
+    // Always advance the counter so next click shows next answer
+    markAnswerSeen(faq.id);
 
     // Feedback line
     showFeedbackRow();
