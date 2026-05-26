@@ -129,17 +129,17 @@
               <h3 class="text-2xl font-semibold mt-1">Tangira Imyitozo wihugure</h3>
               <p class="text-slate-600 dark:text-slate-400 mt-2 max-w-md">Ibizamini by’umwimerere bifatwa n’abayobozi b’ibinyabiziga. 20 ibibazo, iminuta 20.</p>
             </div>
-            <div class="hidden md:block text-right">
-              <div class="text-xs text-slate-500">Ibisobanuro</div>
-              <div class="mt-1 text-3xl font-semibold text-emerald-600">85%</div>
-              <div class="text-xs text-emerald-600">Average pass rate</div>
+            <div class="hidden md:block">
+              <div id="remaining-exams-stat" 
+                   class="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center gap-3 min-w-[150px]">
+                <!-- JS injected iconized remaining exams display -->
+              </div>
             </div>
           </div>
 
            <div class="mt-6 flex flex-wrap gap-3">
-             <div class="px-4 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm">20 ibibazo</div>
-             <div class="px-4 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm">20 min</div>
-             <div class="px-4 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm">All categories</div>
+             <div class="px-4 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm">Buri kizamini kigizwe n'ibibazo 20</div>
+             <div class="px-4 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm">Buri kizamini gikorwa mu minota 20</div>
            </div>
 
             <!-- Single entry point: one "Tangira Simulation" button + live plan limit status -->
@@ -482,6 +482,61 @@
             <div class="mt-2 text-[11px] text-slate-500">20 ibibazo • 20 min • Ibisubizo by’umwimerere • Buri gihe by’umwimerere</div>
           </div>
         </div>`;
+
+      // Also update the modern remaining exams stat box
+      if (typeof updateRemainingExamsStat === 'function') updateRemainingExamsStat();
+    }
+
+    function updateRemainingExamsStat() {
+      const el = document.getElementById('remaining-exams-stat');
+      if (!el) return;
+
+      const Access = window.RoadRulesAccess || {};
+      const max = Access.getMaxExamsAllowed ? Access.getMaxExamsAllowed() : 1;
+      const done = Access.getCompletedExamCount ? Access.getCompletedExamCount() : 0;
+      const remaining = Math.max(0, max - done);
+      const currentPlan = Access.getCurrentPlan ? Access.getCurrentPlan() : 'ubuntu';
+
+      let planLabel = 'Ubuntu';
+      if (currentPlan === 'inshuro2') planLabel = 'Inshuro 2';
+      else if (currentPlan === 'inshuro5') planLabel = 'Icyumweru';
+      else if (currentPlan === 'ukwezi') planLabel = 'Ukwezi';
+
+      // Dynamic color + icon based on remaining count
+      let icon = 'fa-solid fa-check-circle';
+      let iconColor = 'text-emerald-500';
+      let iconBg = 'bg-emerald-100 dark:bg-emerald-900';
+      let countColor = 'text-emerald-600 dark:text-emerald-400';
+
+      if (remaining <= 0) {
+        icon = 'fa-solid fa-ban';
+        iconColor = 'text-rose-500';
+        iconBg = 'bg-rose-100 dark:bg-rose-900';
+        countColor = 'text-rose-600 dark:text-rose-400';
+      } else if (remaining === 1) {
+        icon = 'fa-solid fa-exclamation-triangle';
+        iconColor = 'text-orange-500';
+        iconBg = 'bg-orange-100 dark:bg-orange-900';
+        countColor = 'text-orange-600 dark:text-orange-400';
+      } else if (remaining <= 3) {
+        icon = 'fa-solid fa-clock';
+        iconColor = 'text-amber-500';
+        iconBg = 'bg-amber-100 dark:bg-amber-900';
+        countColor = 'text-amber-600 dark:text-amber-400';
+      }
+
+      el.innerHTML = `
+        <div class="flex items-center gap-3 w-full">
+          <div class="w-9 h-9 ${iconBg} rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="${icon} ${iconColor} text-lg"></i>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-[10px] text-slate-500 dark:text-slate-400">Ibizamini bisigaye</div>
+            <div class="text-xl font-semibold tabular-nums ${countColor}">${remaining}/${max}</div>
+            <div class="text-[10px] text-slate-500">${planLabel}</div>
+          </div>
+        </div>
+      `;
     }
 
     function startExamForSlot(slotIndex) {
@@ -1169,6 +1224,9 @@
       loadQuestions();
       // Initial render of plan-based exam slots
       setTimeout(() => { if (typeof renderExamSlots === 'function') renderExamSlots(); }, 120);
+
+      // Update the new modern remaining exams stat box early
+      setTimeout(() => { if (typeof updateRemainingExamsStat === 'function') updateRemainingExamsStat(); }, 180);
     }
     window.onload = initializeApp;
   </script>
