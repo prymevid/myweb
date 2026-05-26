@@ -107,10 +107,9 @@
           <ul class="mt-6 space-y-3 text-sm flex-1">
             <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Wemerewe ikizamini cyambere kubuntu</li>
             <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Inshuro wakora Ibizamini: inshuro 1</li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Wemerewe kubona ibibazo n'ibisubizo by'ikizamini cya 1</li>
           </ul>
-          <div id="ubuntu-plan-status" class="mt-6 w-full py-3 rounded-2xl bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 text-center text-sm font-semibold">
-            Current Plan • Active
-          </div>
+           <div id="ubuntu-plan-status" class="mt-6 w-full py-3 text-center text-sm font-semibold"></div>
         </div>
 
         <!-- Plan 2: 300 RWF - Inshuro 2 -->
@@ -123,6 +122,7 @@
           <ul class="mt-6 space-y-3 text-sm flex-1">
             <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Wemerewe ibizamini bibiri </li>
             <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Inshuro wakora Ibizamini: inshuro 2 </li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Wemerewe kubona ibibazo n'ibisubizo by'ikizamini cya 1 </li>
           </ul>
           <button onclick="selectPlan('inshuro2', 300, 'Inshuro 2')"
                   class="mt-6 w-full py-3 rounded-2xl bg-blue-600 text-white font-semibold hover:bg-blue-700">Ishyura 300 RWF</button>
@@ -130,7 +130,7 @@
 
         <!-- Plan 3: 500 RWF - Inshuro 5 -->
         <div id="plan-card-inshuro5" class="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 flex flex-col relative">
-          <div class="absolute -top-3 right-4 bg-emerald-600 text-white text-xs px-3 py-0.5 rounded-2xl">Popular</div>
+          <div class="absolute -top-3 right-4 bg-emerald-600 text-white text-xs px-3 py-0.5 rounded-2xl">Irikunzwe na benshi</div>
           <div>
             <div class="inline-block px-3 py-1 text-xs font-semibold rounded-2xl bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">Icyumweru</div>
             <div class="mt-4 text-4xl font-semibold">500 <span class="text-xl font-normal">RWF</span></div>
@@ -156,6 +156,7 @@
           <ul class="mt-6 space-y-3 text-sm flex-1">
             <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Gukora umubare w'ibizamini byose wifuza</li>
             <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Kubona Ibibazo n'ibisubizo byose</li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Kuvugana na Mwarimu Rugamba ugufasha kwiga vuba</li>
             <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-600 mt-1"></i> Igihe wemerewe: Ukwezi</li>
           </ul>
            <button onclick="selectPlan('ukwezi', 1000, 'Ukwezi')"
@@ -219,7 +220,6 @@
               <i class="fa-solid fa-copy"></i>
             </button>
           </div>
-          <div class="text-[10px] text-yellow-600 dark:text-yellow-500 mt-1">*182*8*1*1249908*PRICE#</div>
         </div>
 
         <div>
@@ -656,7 +656,7 @@
             <button onclick="this.closest('.fixed').remove(); location.reload()" 
                     class="mt-6 w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center justify-center gap-2 transition">
               <i class="fa-solid fa-check"></i>
-              <span>Nabyakiriye</span>
+              <span>Nabyumvishe</span>
             </button>
           </div>
 
@@ -821,11 +821,25 @@
         const ub = document.getElementById('ubuntu-plan-status');
         if (ub) {
           ub.className = 'mt-6';
-          ub.innerHTML = `<button onclick="window.openAuthModal && window.openAuthModal('login')" class="w-full py-2.5 text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white transition">Injira cyangwa Iyandikishe kugira ukoreshe Ubuntu</button>`;
+          ub.innerHTML = `<button onclick="window.openAuthModal && window.openAuthModal('login')" class="w-full py-2.5 text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white transition">Saba iri fatabuguzi</button>`;
         }
       }
       const sub = currentSub || getCurrentSubscription();
       const pending = getPendingUpgradeRequest();
+
+      // Dynamically control Ubuntu card status: only mark as "Current Plan • Active" if it really is the approved current plan.
+      // If user has approved paid plan, clear the ubuntu status area so it does not falsely show as active/current.
+      const ub = document.getElementById('ubuntu-plan-status');
+      if (ub) {
+        if (sub.plan === 'ubuntu' && sub.status === 'approved') {
+          ub.className = 'mt-6 w-full py-3 rounded-2xl bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 text-center text-sm font-semibold';
+          ub.innerHTML = `Current Plan • Active`;
+        } else if (user) {
+          // Logged-in user on a paid plan: show nothing in the ubuntu status slot (no false "current" claim)
+          ub.innerHTML = '';
+          ub.className = 'mt-6';
+        }
+      }
 
       const btn2 = document.querySelector('#plan-card-inshuro2 button');
       if (btn2) {
