@@ -639,8 +639,8 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
       row.innerHTML = `
         <div class="text-[11px] text-slate-500 px-1">Ushaka kuvugana natwe kuri WhatsApp cyangwa ushaka kongera guhitamo ikindi kibazo?</div>
         <div class="flex gap-2 mt-2">
-          <button class="rr-wa-again flex-1 py-1.5 text-sm font-semibold rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white">Vugana kuri WhatsApp</button>
-          <button class="rr-choose-again flex-1 py-1.5 text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600">Hitamo ikindi kibazo</button>
+          <button class="rr-wa-again flex-1 py-1.5 text-sm font-semibold rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white">Kuri WhatsApp</button>
+          <button class="rr-choose-again flex-1 py-1.5 text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600">Guhitamo ikindi kibazo</button>
         </div>
       `;
       scrollToBottom();

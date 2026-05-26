@@ -754,3 +754,57 @@ For CI servers and headless environments, generate a new token with firebase log
 [debug] [2026-05-26T10:59:39.895Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prymequotes/services/firebasedataconnect.googleapis.com [omitted]
 [debug] [2026-05-26T10:59:40.302Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prymequotes/services/ 200
 [debug] [2026-05-26T10:59:40.303Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prymequotes/services/ [omitted]
+[debug] [2026-05-26T13:12:43.759Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.764Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.765Z] > refreshing access token with scopes: []
+[debug] [2026-05-26T13:12:43.770Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-05-26T13:12:43.770Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-05-26T13:12:43.894Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.894Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.895Z] > refreshing access token with scopes: []
+[debug] [2026-05-26T13:12:43.896Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-05-26T13:12:43.896Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-05-26T13:12:43.902Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.902Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.902Z] > refreshing access token with scopes: []
+[debug] [2026-05-26T13:12:43.903Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-05-26T13:12:43.903Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-05-26T13:12:43.908Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.908Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.909Z] > refreshing access token with scopes: []
+[debug] [2026-05-26T13:12:43.909Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-05-26T13:12:43.910Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-05-26T13:12:43.913Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.913Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.913Z] > refreshing access token with scopes: []
+[debug] [2026-05-26T13:12:43.914Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-05-26T13:12:43.914Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-05-26T13:12:43.917Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.917Z] Checked if tokens are valid: false, expires at: 1779796775487
+[debug] [2026-05-26T13:12:43.917Z] > refreshing access token with scopes: []
+[debug] [2026-05-26T13:12:43.918Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-05-26T13:12:43.918Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-05-26T13:12:43.932Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------8dcdd3b377ed2a96c185d28f","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: getaddrinfo ENOTFOUND www.googleapis.com
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-05-26T13:12:43.934Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------eb68cd43991b81550f9cb57b","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: getaddrinfo ENOTFOUND www.googleapis.com
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-05-26T13:12:43.935Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------78ecc20ec67564549345c360","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: getaddrinfo ENOTFOUND www.googleapis.com
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-05-26T13:12:43.936Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------ab07ebe662ae46516ed38f39","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: getaddrinfo ENOTFOUND www.googleapis.com
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-05-26T13:12:43.938Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------188cd9b4a0b3d3b2adc01b49","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: getaddrinfo ENOTFOUND www.googleapis.com
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-05-26T13:12:43.939Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------6da0424c9029c740fb4f72ca","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: getaddrinfo ENOTFOUND www.googleapis.com
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
