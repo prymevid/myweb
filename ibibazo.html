@@ -200,24 +200,26 @@
     <div onclick="event.stopImmediatePropagation()" class="bg-white dark:bg-slate-900 w-full max-w-[980px] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col max-h-[94vh] overflow-hidden">
       
       <!-- Modal Header -->
-      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4 bg-slate-50 dark:bg-slate-950/70">
-        <div class="flex items-center gap-x-3">
-          <div id="modal-icon" class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"></div>
-          <div>
-            <div id="modal-title" class="font-semibold text-xl tracking-tight"></div>
-            <div id="modal-subtitle" class="text-xs text-slate-500 font-medium"></div>
+      <div class="px-4 py-3 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-4 bg-slate-50 dark:bg-slate-950/70">
+        <div class="flex items-center gap-x-2 sm:gap-x-3 min-w-0">
+          <div id="modal-icon" class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center text-lg sm:text-xl flex-shrink-0"></div>
+          <div class="min-w-0">
+            <div id="modal-title" class="font-semibold text-[15px] sm:text-xl tracking-tight leading-tight"></div>
+            <div id="modal-subtitle" class="text-[10px] sm:text-xs text-slate-500 font-medium"></div>
           </div>
         </div>
         
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1 sm:gap-2 sm:ml-auto">
           <button onclick="toggleAnswersVisibility()" id="answers-toggle-btn"
-                  class="px-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 flex items-center gap-1.5">
-            <i class="fa-solid fa-eye-slash"></i> <span id="toggle-text">Hide Answers</span>
+                  class="px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 flex items-center gap-1 sm:gap-1.5 active:scale-[0.985] transition"
+                  aria-label="Toggle answers visibility" title="Toggle answers">
+            <i class="fa-solid fa-eye-slash"></i> <span id="toggle-text" class="hidden sm:inline">Hisha ibisubizo</span>
           </button>
-          <button onclick="pickRandomInCurrent()" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-emerald-600 text-white flex items-center gap-1.5 hover:bg-emerald-700 active:scale-95 transition">
-            <i class="fa-solid fa-random"></i> <span>Random</span>
+          <button onclick="pickRandomInCurrent()" class="px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl bg-emerald-600 text-white flex items-center gap-1 sm:gap-1.5 hover:bg-emerald-700 active:scale-95 transition"
+                  aria-label="Pick random question" title="Random">
+            <i class="fa-solid fa-random"></i> <span class="hidden sm:inline">Random</span>
           </button>
-          <button onclick="closeIsuzumaModal()" class="text-3xl leading-none px-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">×</button>
+          <button onclick="closeIsuzumaModal()" class="text-2xl sm:text-3xl leading-none px-1.5 sm:px-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" aria-label="Close" title="Close">×</button>
         </div>
       </div>
 
@@ -229,7 +231,7 @@
       <div class="px-5 py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-3 items-center">
         <button onclick="closeIsuzumaModal()" class="flex-1 py-2.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">Funga</button>
         <button onclick="markGroupComplete()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold flex items-center justify-center gap-2">
-          <i class="fa-solid fa-check-double"></i> <span>Mark as Completed &amp; Close</span>
+          <i class="fa-solid fa-check-double"></i> <span>Narangije kubisoma</span>
         </button>
       </div>
     </div>
@@ -526,11 +528,20 @@
       currentGroupFiltered = currentGroupQuestions.slice();
       answersVisible = true;
 
+      // Sync toggle button UI (in case previous modal left it in other state)
+      const tBtn = document.getElementById('answers-toggle-btn');
+      const tTxt = document.getElementById('toggle-text');
+      if (tBtn && tTxt) {
+        tTxt.textContent = 'Hide Answers';
+        const tIcon = tBtn.querySelector('i');
+        if (tIcon) tIcon.className = 'fa-solid fa-eye-slash';
+      }
+
       const meta = groupMeta[gi] || groupMeta[0];
 
       // Header
       document.getElementById('modal-icon').innerHTML = `<i class="fa-solid ${meta.icon} text-white"></i>`;
-      document.getElementById('modal-icon').className = `w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0 ${meta.bg}`;
+      document.getElementById('modal-icon').className = `w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center text-lg sm:text-xl flex-shrink-0 ${meta.bg}`;
       document.getElementById('modal-title').innerHTML = `Ikizamini cya ${gi + 1} — ${meta.focus}`;
       document.getElementById('modal-subtitle').innerHTML = `${currentGroupQuestions.length} ibibazo • ${meta.diff} • ${meta.time}`;
 
