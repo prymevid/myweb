@@ -903,6 +903,21 @@
       // Restore any in-progress payment flow (survives reload / navigation)
       restorePaymentFlow();
 
+      // Handle "Fungura iki kizamini" clicks coming from ibibazo page → directly open correct plan payment
+      try {
+        const upgrade = localStorage.getItem('roadRulesUpgradeFromIbibazo');
+        if (upgrade) {
+          const data = JSON.parse(upgrade);
+          localStorage.removeItem('roadRulesUpgradeFromIbibazo');
+          if (data.plan && typeof selectPlan === 'function') {
+            // Small delay so the page is fully initialized
+            setTimeout(() => {
+              selectPlan(data.plan.id, data.plan.price, data.plan.name);
+            }, 80);
+          }
+        }
+      } catch(e){}
+
       // Live-save the payer name while typing so it survives reload on step 3
       const payerInput = document.getElementById('payer-name');
       if (payerInput) {
