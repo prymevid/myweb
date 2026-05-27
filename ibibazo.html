@@ -25,10 +25,11 @@
   <style>
     .logo-font { font-family: 'Poppins', 'Inter', system-ui, sans-serif; }
     .pro-grid { 
-      display: flex; 
-      flex-direction: column; 
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 14px; 
     }
+    .empty-state { grid-column: 1 / -1; }
     .ikizamini-card {
       width: 100%;
       max-width: 780px;
@@ -177,12 +178,6 @@
           <div onclick="setFilter('all')" id="filter-all" class="filter-chip active">Byose Hamwe</div>
           <div onclick="setFilter('unlocked')" id="filter-unlocked" class="filter-chip">Ibifunguye</div>
           <div onclick="setFilter('done')" id="filter-done" class="filter-chip">Ibyarangiye</div>
-          
-          <select id="sort-select" onchange="filterAndRenderGroups()" class="h-10 text-sm font-medium rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 focus:outline-none cursor-pointer">
-            <option value="number">Urutonde rwa 1-20</option>
-            <option value="progress">Ibyarangiye (Progress)</option>
-            <option value="difficulty">Urutonde rwa difficulty</option>
-          </select>
         </div>
       </div>
 
@@ -414,6 +409,30 @@
         indicesToShow = Array.from({length: 20}, (_, i) => i);
       }
 
+      // Show empty state for "done" filter
+      if (currentFilter === 'done' && indicesToShow.length === 0) {
+        grid.innerHTML = `<div class="p-12 text-center">
+          <div class="mx-auto w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
+            <i class="fa-solid fa-check-circle text-3xl text-slate-400"></i>
+          </div>
+          <div class="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Nobwoko umunyeshuri ni ugira</div>
+          <div class="text-sm text-slate-500 dark:text-slate-400">Nta kizamini kirarangizwe kunde. Reka kora ikizamini kiri kugira!</div>
+        </div>`;
+        return;
+      }
+
+      // Show empty state for "unlocked" filter
+      if (currentFilter === 'unlocked' && indicesToShow.length === 0) {
+        grid.innerHTML = `<div class="p-12 text-center">
+          <div class="mx-auto w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
+            <i class="fa-solid fa-lock text-3xl text-slate-400"></i>
+          </div>
+          <div class="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Nta kizamini kifunguye</div>
+          <div class="text-sm text-slate-500 dark:text-slate-400">Kugira ikizamini kifunguye, rebesha ifatabuguzi.</div>
+        </div>`;
+        return;
+      }
+
       indicesToShow.forEach(realGi => {
         const group = isuzumaGroups[realGi];
         const meta = groupMeta[realGi] || groupMeta[0];
@@ -485,7 +504,6 @@ ${isLocked
     }
 
     function filterAndRenderGroups() {
-      const sortMode = document.getElementById('sort-select')?.value || 'number';
       const progressData = getProgress();
       const access = (window.RoadRulesAccess && window.RoadRulesAccess.getMaxExamsAllowed) ? window.RoadRulesAccess.getMaxExamsAllowed() : 5;
 
@@ -498,15 +516,8 @@ ${isLocked
         list = list.filter(item => (progressData[item.idx] || 0) >= 95);
       }
 
-      // Sort
-      if (sortMode === 'progress') {
-        list.sort((a, b) => (progressData[b.idx] || 0) - (progressData[a.idx] || 0));
-      } else if (sortMode === 'difficulty') {
-        const diffOrder = { 'Ibanje': 1, 'Icyiciro 2': 2 };
-        list.sort((a, b) => (diffOrder[(groupMeta[b.idx] || {}).diff] || 0) - (diffOrder[(groupMeta[a.idx] || {}).diff] || 0));
-      } else {
-        list.sort((a, b) => a.idx - b.idx);
-      }
+      // Sort by index
+      list.sort((a, b) => a.idx - b.idx);
 
       renderIsuzumaProGrid(list.map(l => l.group));
     }
@@ -773,22 +784,8 @@ ${isLocked
       window.location.href = 'ifitabuguzi.html';
     }
 
-    function openRandomUnlocked() {
-      const access = (window.RoadRulesAccess && window.RoadRulesAccess.getMaxExamsAllowed) ? window.RoadRulesAccess.getMaxExamsAllowed() : 5;
-      const unlocked = [];
-      for (let i = 0; i < access; i++) unlocked.push(i);
-      if (!unlocked.length) return;
-      const pick = unlocked[Math.floor(Math.random() * unlocked.length)];
-      openIsuzumaPro(pick);
-    }
-
     function escapeHtml(str) {
       return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m] || m));
-    }
-
-    function filterAndRenderGroupsWithAccessRefresh() {
-      // Called after auth updates
-      filterAndRenderGroups();
     }
 
     function initIbibazoPro() {
@@ -814,7 +811,7 @@ ${isLocked
         const orig = window.RoadRulesAuth.updateAuthUI;
         window.RoadRulesAuth.updateAuthUI = function() {
           if (orig) orig();
-          filterAndRenderGroupsWithAccessRefresh();
+          filterAndRenderGroups();
         };
       }
 
