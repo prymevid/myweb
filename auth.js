@@ -3,10 +3,16 @@
 // Works without any local server. Modal is injected automatically by this file.
 
 (function () {
-    // ========== GOOGLE DRIVE CREDENTIALS (from your reference) ==========
-    const CLIENT_ID = '313958815059-m8m1t0g29ittf223gdj3nlfb3uv030he.apps.googleusercontent.com';
-    const CLIENT_SECRET = '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';
-    const REFRESH_TOKEN = '1//04kD2s8SvhjxZCgYIARAAGAQSNwF-L9IropCH-lC7siDNmuQ3yKvcNXF1GtTje7-dnd-SEUDIC9LuyYfXe1DUV0sQiOTA2nOdfcs';
+    // ========== REMOVED: client credentials must not live in client-side code ==========
+    // Master credentials (CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN) were removed.
+    // The client now calls backend endpoints which hold credentials server-side.
+    // Backend endpoints used below:
+    //  - POST /api/token                -> returns { access_token }
+    //  - GET  /api/drive/folder?name=    -> returns { id }
+    //  - POST /api/drive/folder         -> create folder, returns { id }
+    //  - GET  /api/drive/find?folderId=&fileName= -> returns { id }
+    //  - POST /api/drive/files          -> create file, returns created file metadata
+    //  - GET  /api/drive/files/:fileId  -> returns file content (JSON)
     const FOLDER_NAME = 'UserData';
 
     let cachedAccessToken = null;
@@ -35,6 +41,7 @@
     }
 
     // ========== GOOGLE DRIVE HELPERS (copied & adapted from your reference) ==========
+    // Request an access token from the backend. Backend holds master credentials.
     async function getAccessToken() {
         const now = Date.now();
         if (cachedAccessToken && now < tokenExpiry) {
@@ -44,17 +51,8 @@
             return tokenPromise;
         }
         tokenPromise = (async () => {
-            const res = await fetch('https://oauth2.googleapis.com/token', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    grant_type: 'refresh_token',
-                    client_id: CLIENT_ID,
-                    client_secret: CLIENT_SECRET,
-                    refresh_token: REFRESH_TOKEN
-                })
-            });
-            if (!res.ok) throw new Error('Ntibishoboye kubona access token');
+            const res = await fetch('/api/token', { method: 'POST' });
+            if (!res.ok) throw new Error('Ntibishoboye kubona access token (backend)');
             const data = await res.json();
             cachedAccessToken = data.access_token;
             tokenExpiry = now + ((data.expires_in || 3500) * 1000);
@@ -65,15 +63,20 @@
         return tokenPromise;
     }
 
+    // Proxy folder lookup to backend to avoid exposing Drive scopes client-side
     async function getFolderId(accessToken, folderName) {
         if (cachedFolderId) return cachedFolderId;
         if (folderPromise) return folderPromise;
         folderPromise = (async () => {
-            const query = `name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
-            const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id)`;
-            const res = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
+            const url = `/api/drive/folder?name=${encodeURIComponent(folderName)}`;
+            const res = await fetch(url, { headers: { 'X-Access-Token': accessToken } });
+            if (!res.ok) {
+                const text = await res.text();
+                folderPromise = null;
+                throw new Error('Failed to get folder id: ' + text);
+            }
             const data = await res.json();
-            const id = data.files && data.files.length > 0 ? data.files[0].id : null;
+            const id = data.id || null;
             if (id) cachedFolderId = id;
             folderPromise = null;
             return id;
@@ -82,42 +85,37 @@
     }
 
     async function createFolder(accessToken, folderName) {
-        const metadata = { name: folderName, mimeType: 'application/vnd.google-apps.folder' };
-        const res = await fetch('https://www.googleapis.com/drive/v3/files', {
+        const res = await fetch('/api/drive/folder', {
             method: 'POST',
-            headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(metadata)
+            headers: { 'Content-Type': 'application/json', 'X-Access-Token': accessToken },
+            body: JSON.stringify({ name: folderName })
         });
+        if (!res.ok) throw new Error('Failed to create folder');
         const data = await res.json();
         return data.id;
     }
 
     async function findFileByName(accessToken, folderId, fileName) {
-        const query = `name='${fileName}' and '${folderId}' in parents and trashed=false`;
-        const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id)`;
-        const res = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
+        const url = `/api/drive/find?folderId=${encodeURIComponent(folderId)}&fileName=${encodeURIComponent(fileName)}`;
+        const res = await fetch(url, { headers: { 'X-Access-Token': accessToken } });
+        if (!res.ok) return null;
         const data = await res.json();
-        return data.files && data.files.length > 0 ? data.files[0].id : null;
+        return data.id || null;
     }
 
     async function createUserFile(accessToken, folderId, userData) {
-        const fileName = `${userData.phone.replace(/[^0-9]/g, '')}.json`;
-        const fileContent = JSON.stringify(userData);
-        const metadata = { name: fileName, parents: [folderId], mimeType: 'application/json' };
-        const form = new FormData();
-        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-        form.append('file', new Blob([fileContent], { type: 'application/json' }));
-        const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        const res = await fetch('/api/drive/files', {
             method: 'POST',
-            headers: { Authorization: `Bearer ${accessToken}` },
-            body: form
+            headers: { 'Content-Type': 'application/json', 'X-Access-Token': accessToken },
+            body: JSON.stringify({ folderId, userData })
         });
+        if (!res.ok) throw new Error('Failed to create user file');
         return res.json();
     }
 
     async function readFileContent(accessToken, fileId) {
-        const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
-            headers: { Authorization: `Bearer ${accessToken}` }
+        const res = await fetch(`/api/drive/files/${encodeURIComponent(fileId)}`, {
+            headers: { 'X-Access-Token': accessToken }
         });
         if (!res.ok) throw new Error('Fichier ntibabonetse');
         return res.json();
