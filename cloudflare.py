@@ -1,16 +1,17 @@
 import requests
 import sys
+import os
 
 # --- your credentials (paste as-is for a quick test) ---
-API_TOKEN = "cfat_dYVmeXskeSTVzYjzH9swnpTvrvhLfnGqO6LVRwLZ7292a700"
-ACCOUNT_ID = "0d0a0a287282172b39fb04d9334d8346"
+API_TOKEN = os.environ.get('CF_API_TOKEN')
+ACCOUNT_ID = os.environ.get('CF_ACCOUNT_ID')
 
 # Cloudflare Pages – list projects endpoint
 # GET https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects
 base_url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/pages/projects"
 
 headers = {
-    "Authorization": f"Bearer {API_TOKEN}", # required: Pages Read or Pages Write【12349452513496639†L35-L41】
+    "Authorization": f"Bearer {API_TOKEN}" if API_TOKEN else "",
     "Content-Type": "application/json"
 }
 
