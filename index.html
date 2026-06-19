@@ -70,10 +70,10 @@
                <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
              </button>
  
-             <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
-               <button onclick="openAuthModal('login')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Injira</button>
-               <button onclick="openAuthModal('signup')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition">Iyandikishe</button>
-             </div>
+              <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+              <a href="login.html" onclick="setReturnTo()" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition inline-flex items-center">Injira</a>
+              <a href="signup.html" onclick="setReturnTo()" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition inline-flex items-center">Iyandikishe</a>
+              </div>
  
              <button onclick="toggleMobileMenu()" id="mobile-menu-button" class="md:hidden flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Open menu">
                <i class="fa-solid fa-bars text-lg"></i>
@@ -100,8 +100,8 @@
         </div>
         <div class="my-7 border-t border-slate-200 dark:border-slate-700"></div>
         <div id="mobile-auth-area" class="space-y-3">
-          <button onclick="openAuthModal('login'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold">Injira (Login)</button>
-          <button onclick="openAuthModal('signup'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold">Iyandikishe (Sign Up)</button>
+          <a href="login.html" onclick="setReturnTo(); toggleMobileMenu()" class="block w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold text-center">Injira (Login)</a>
+          <a href="signup.html" onclick="setReturnTo(); toggleMobileMenu()" class="block w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold text-center">Iyandikishe (Sign Up)</a>
         </div>
       </div>
     </div>
@@ -423,10 +423,10 @@
           <p class="mt-2 text-blue-200 max-w-md">Jya mu bandi ibihumbi batsindiye ikizamini ku nshuro ya mbere bakoresheje urubuga rwacu perime.rw</p>
         </div>
          <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-           <button id="final-signup-cta" onclick="openAuthModal('signup')" 
+            <a id="final-signup-cta" href="signup.html" 
                    class="premium-btn whitespace-nowrap px-10 py-4 bg-white text-blue-700 hover:bg-slate-100 active:bg-white font-semibold rounded-3xl text-lg shadow-xl transition flex-1 lg:flex-none">
-             Iyandikishe Ubu
-           </button>
+              Iyandikishe Ubu
+            </a>
            <a href="ibibazo.html" 
               class="whitespace-nowrap inline-flex items-center justify-center px-8 py-4 border border-white/40 hover:bg-white/10 rounded-3xl font-semibold text-lg transition flex-1 lg:flex-none">
              Reba Ibisubizo
@@ -492,6 +492,9 @@
   <script src="questions.js"></script>
   <script src="common.js"></script>
   <script>
+    function setReturnTo() {
+      try { sessionStorage.setItem('roadRulesReturnTo', window.location.href); } catch(e){}
+    }
     // Premium: Animated stats counters (index specific)
     function animateStats() {
       const stats = document.querySelectorAll('.stat-number');

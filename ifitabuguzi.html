@@ -54,8 +54,8 @@
            <div class="flex items-center gap-x-2.5 flex-shrink-0">
             <button onclick="toggleTheme()" id="theme-toggle" class="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-all hover:border-slate-300 active:scale-[0.96]" aria-label="Toggle theme"><i id="theme-icon" class="fa-solid fa-moon text-base"></i></button>
             <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
-              <button onclick="openAuthModal('login')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Injira</button>
-              <button onclick="openAuthModal('signup')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition">Iyandikishe</button>
+              <a href="login.html" onclick="setReturnTo()" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition inline-flex items-center">Injira</a>
+              <a href="signup.html" onclick="setReturnTo()" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition inline-flex items-center">Iyandikishe</a>
             </div>
             <button onclick="toggleMobileMenu()" id="mobile-menu-button" class="md:hidden flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Open menu"><i class="fa-solid fa-bars text-lg"></i></button>
           </div>
@@ -77,8 +77,8 @@
         </div>
         <div class="my-7 border-t border-slate-200 dark:border-slate-700"></div>
         <div id="mobile-auth-area" class="space-y-3">
-          <button onclick="openAuthModal('login'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold">Injira (Login)</button>
-          <button onclick="openAuthModal('signup'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold">Iyandikishe (Sign Up)</button>
+          <a href="login.html" onclick="setReturnTo(); toggleMobileMenu()" class="block w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold text-center">Injira (Login)</a>
+          <a href="signup.html" onclick="setReturnTo(); toggleMobileMenu()" class="block w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold text-center">Iyandikishe (Sign Up)</a>
         </div>
       </div>
     </div>
@@ -389,6 +389,7 @@
   </footer>
 
   <!-- AUTH MODAL injected dynamically by auth.js -->
+  <script src="common.js"></script>
   <script src="auth.js"></script>
   <script src="questions.js"></script>
   <script src="common.js"></script>
@@ -402,7 +403,7 @@
       if (!user) {
         // Not logged in → prompt login first
         if (window.openAuthModal) {
-          window.openAuthModal('login');
+          window.location.href = 'login.html';
         }
         return;
       }
@@ -749,7 +750,7 @@
           <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-800 rounded-2xl px-5 py-3 text-sm">
             <i class="fa-solid fa-user-lock text-slate-500"></i>
             <span class="text-slate-600 dark:text-slate-400">Injira cyangwa iyandikishe kugira ngo ubone ifatabuguzi ryawe rigezweho.</span>
-            <button onclick="window.openAuthModal && window.openAuthModal('login')" class="ml-auto px-4 py-1.5 text-xs rounded-2xl bg-slate-900 text-white font-semibold">Injira</button>
+            <a href="login.html" class="ml-auto px-4 py-1.5 text-xs rounded-2xl bg-slate-900 text-white font-semibold inline-flex items-center">Injira</a>
           </div>`;
         updatePlanCardButtons({ plan: 'ubuntu' });
         // Still try silent background refresh for logged-in case
@@ -821,7 +822,7 @@
         const ub = document.getElementById('ubuntu-plan-status');
         if (ub) {
           ub.className = 'mt-6';
-          ub.innerHTML = `<button onclick="window.openAuthModal && window.openAuthModal('login')" class="w-full py-2.5 text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white transition">Saba iri fatabuguzi</button>`;
+          ub.innerHTML = `<a href="login.html" class="block w-full py-2.5 text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white text-center transition">Saba iri fatabuguzi</a>`;
         }
       }
       const sub = currentSub || getCurrentSubscription();

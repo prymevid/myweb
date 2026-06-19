@@ -277,7 +277,22 @@ async function readUserFileById(fileId) {
 
             await createUserFile(token, folderId, userData);
 
+            // Auto-login session
+            const sessionUser = {
+                name: userData.name,
+                phone: userData.phone,
+                district: userData.district,
+                subscription: userData.subscription
+            };
+            localStorage.setItem('roadRulesUser', JSON.stringify(sessionUser));
+
             showToast('Kwiyandikisha byagenze neza!', 'success');
+
+            // On standalone signup.html, redirect immediately to homepage
+            if (window.location.pathname.includes('signup.html')) {
+                setTimeout(() => { window.location.replace('index.html'); }, 400);
+                return;
+            }
 
             // Switch to login tab
             setTimeout(() => {
@@ -340,6 +355,12 @@ async function readUserFileById(fileId) {
                 localStorage.setItem('roadRulesUser', JSON.stringify(sessionUser));
 
                 showToast(`Murakaza neza ${user.name.split(' ')[0]}!`, 'success');
+
+                // On standalone login.html, redirect immediately to homepage
+                if (window.location.pathname.includes('login.html')) {
+                    setTimeout(() => { window.location.replace('index.html'); }, 400);
+                    return;
+                }
 
                 // Close modal + update header UI
                 const modal = document.getElementById('auth-modal');
@@ -535,7 +556,13 @@ async function readUserFileById(fileId) {
 
     // ========== INIT ==========
     function initGoogleDriveAuth() {
-        ensureAuthModal();
+        const path = (window.location.pathname || '').replace(/\\/g, '/');
+        const isStandaloneAuth = path.includes('login.html') || path.includes('signup.html');
+
+        // On standalone login/signup pages, skip modal injection and use page-native forms
+        if (!isStandaloneAuth) {
+            ensureAuthModal();
+        }
         getElements();
         attachHandlers();
 

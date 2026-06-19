@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RoadRules - Injira cyangwa Iyandikishe" />
+  <title>Injira • RoadRules</title>
+
+  <!-- Early theme script -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('roadRulesTheme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = saved === 'dark' || (!saved && prefersDark);
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="common.css" />
+  <style>
+    /* ===== PREMIUM AUTH PAGE STYLES ===== */
+    
+    /* Full-screen aesthetic background */
+    .auth-page {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      overflow: hidden;
+    }
+    .dark .auth-page {
+      background: linear-gradient(135deg, #020617 0%, #0b1120 50%, #020617 100%);
+    }
+
+    /* Animated mesh gradient overlay */
+    .auth-mesh {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(ellipse at 20% 50%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Grid pattern overlay */
+    .auth-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* Floating premium orbs with animation */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      animation: orbFloat 8s ease-in-out infinite alternate;
+    }
+    .orb-1 {
+      width: 400px; height: 400px;
+      background: rgba(37, 99, 235, 0.20);
+      top: -100px; left: -100px;
+      animation-delay: 0s;
+    }
+    .orb-2 {
+      width: 350px; height: 350px;
+      background: rgba(139, 92, 246, 0.15);
+      bottom: -80px; right: -80px;
+      animation-delay: -3s;
+    }
+    .orb-3 {
+      width: 250px; height: 250px;
+      background: rgba(16, 185, 129, 0.10);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -5s;
+    }
+    @keyframes orbFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -30px) scale(1.1); }
+    }
+
+    /* Glass card with premium depth */
+    .glass-auth {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    .dark .glass-auth {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: rgba(51, 65, 85, 0.5);
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    /* Input fields with premium focus */
+    .auth-field {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border-radius: 16px;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    .auth-field:focus {
+      border-color: #2563eb;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+    }
+    .dark .auth-field {
+      background: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+    }
+    .dark .auth-field:focus {
+      border-color: #3b82f6;
+      background: #1e293b;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    }
+    .auth-field::placeholder {
+      color: #94a3b8;
+    }
+    .dark .auth-field::placeholder {
+      color: #64748b;
+    }
+
+    /* Input icon wrapper */
+    .input-icon-wrap {
+      position: relative;
+    }
+    .input-icon-wrap .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 16px;
+      z-index: 1;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+    .input-icon-wrap:focus-within .icon {
+      color: #2563eb;
+    }
+    .dark .input-icon-wrap:focus-within .icon {
+      color: #3b82f6;
+    }
+
+    /* Premium submit button */
+    .btn-primary {
+      width: 100%;
+      padding: 15px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 32px rgba(37, 99, 235, 0.35);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.99);
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,0.10));
+      pointer-events: none;
+    }
+
+    .btn-success {
+      width: 100%;
+      padding: 15px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #059669, #047857);
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-success:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+    }
+    .btn-success:active {
+      transform: translateY(0) scale(0.99);
+    }
+    .btn-success::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,0.10));
+      pointer-events: none;
+    }
+
+    /* Tab switcher premium */
+    .auth-tab {
+      flex: 1;
+      padding: 14px 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-radius: 12px;
+      position: relative;
+      color: #64748b;
+    }
+    .auth-tab:hover {
+      color: #334155;
+    }
+    .dark .auth-tab {
+      color: #94a3b8;
+    }
+    .dark .auth-tab:hover {
+      color: #cbd5e1;
+    }
+    .auth-tab.active {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.30);
+    }
+    .dark .auth-tab.active {
+      background: #3b82f6;
+      color: white;
+    }
+
+    /* Select field premium */
+    .auth-select {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border-radius: 16px;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      outline: none;
+      appearance: none;
+      cursor: pointer;
+    }
+    .auth-select:focus {
+      border-color: #2563eb;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+    }
+    .dark .auth-select {
+      background: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+    }
+    .dark .auth-select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    }
+
+    /* Small decorative elements */
+    .brand-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2563eb;
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Success checkmark animation */
+    .checkmark {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #059669, #047857);
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.30);
+      animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .checkmark i {
+      color: white;
+      font-size: 28px;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    /* Slide up form animation */
+    .form-panel {
+      animation: slideUp 0.35s ease-out;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Logo bounce */
+    .logo-icon {
+      animation: gentleBounce 3s ease-in-out infinite;
+    }
+    @keyframes gentleBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* Seamless divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+    .dark .divider::before,
+    .dark .divider::after {
+      background: #334155;
+    }
+
+    /* Loading spinner */
+    .auth-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast customization */
+    .auth-toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+      animation: slideDown 0.3s ease-out;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ===== AUTH PAGE - FULL PREMIUM DESIGN ===== -->
+  <div class="auth-page">
+    
+    <!-- Background layers -->
+    <div class="auth-mesh"></div>
+    <div class="auth-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Back to home - subtle floating -->
+    <a href="index.html" 
+       class="fixed top-5 left-5 z-50 flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 text-white/80 hover:text-white hover:bg-white/20 transition-all text-sm">
+      <i class="fa-solid fa-arrow-left text-xs"></i>
+      <span class="hidden sm:inline font-medium">Ahabanza</span>
+    </a>
+
+    <!-- Theme toggle -->
+    <button onclick="toggleTheme()" id="theme-toggle" 
+            class="fixed top-5 right-5 z-50 flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 text-white/80 hover:text-white hover:bg-white/20 transition-all" 
+            aria-label="Toggle theme">
+      <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
+    </button>
+
+    <!-- ===== MAIN AUTH CARD ===== -->
+    <div class="relative z-10 w-full max-w-[420px] px-4">
+
+      <!-- Logo area -->
+      <div class="text-center mb-8">
+        <div class="logo-icon inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-2xl shadow-blue-900/30 ring-1 ring-white/20">
+          <i class="fa-solid fa-road text-2xl"></i>
+        </div>
+        <h1 class="mt-4 text-2xl font-bold tracking-tight text-white">Murakaza Neza</h1>
+        <p class="text-sm text-white/60 mt-1" id="auth-subtitle">Injira ukore imyitozo yawe</p>
+      </div>
+
+      <!-- ===== GLASS CARD ===== -->
+      <div class="glass-auth rounded-3xl overflow-hidden">
+
+        <!-- Tab Switcher -->
+        <div class="flex gap-2 p-3 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
+          <div id="tab-login" onclick="switchAuthTab('login')" class="auth-tab active">
+            <i class="fa-solid fa-right-to-bracket mr-2"></i>Injira
+          </div>
+          <div id="tab-signup" onclick="switchAuthTab('signup')" class="auth-tab">
+            <i class="fa-solid fa-user-plus mr-2"></i>Iyandikishe
+          </div>
+        </div>
+
+        <!-- ====== LOGIN FORM ====== -->
+        <form id="login-form" class="form-panel px-7 pt-6 pb-8 space-y-5">
+          
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-phone icon"></i>
+            <input id="login-phone" type="tel" placeholder="Nimero ya telefone" autocomplete="tel"
+                   class="auth-field" />
+          </div>
+
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-lock icon"></i>
+            <input id="login-pass" type="password" placeholder="Ijambobanga" autocomplete="current-password"
+                   class="auth-field" />
+          </div>
+
+          <button type="submit" class="btn-primary" id="login-btn">
+            <span class="inline-flex items-center gap-2">
+              <i class="fa-solid fa-right-to-bracket"></i>
+              <span>Injira</span>
+            </span>
+          </button>
+
+          <div class="divider">cyangwa</div>
+
+          <div class="text-center">
+            <span class="text-sm text-slate-500 dark:text-slate-400">Ntabwo ufite konti?</span>
+            <button type="button" onclick="switchAuthTab('signup')" 
+                    class="ml-1 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline bg-transparent border-none cursor-pointer">
+              Iyandikishe
+            </button>
+          </div>
+        </form>
+
+        <!-- ====== SIGNUP FORM ====== -->
+        <form id="signup-form" class="form-panel px-7 pt-6 pb-8 space-y-4 hidden">
+          
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-user icon"></i>
+            <input id="signup-name" type="text" placeholder="Amazina yawe" autocomplete="name"
+                   class="auth-field" />
+          </div>
+
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-phone icon"></i>
+            <input id="signup-phone" type="tel" placeholder="Nimero ya telefone" autocomplete="tel"
+                   class="auth-field" />
+          </div>
+
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-map-location-dot icon"></i>
+            <select id="signup-district" class="auth-select">
+              <option value="Kigali">Kigali</option>
+              <option value="Musanze">Musanze</option>
+              <option value="Rubavu">Rubavu</option>
+              <option value="Huye">Huye</option>
+              <option value="Nyagatare">Nyagatare</option>
+              <option value="Rusizi">Rusizi</option>
+              <option value="Rwamagana">Rwamagana</option>
+              <option value="Gicumbi">Gicumbi</option>
+              <option value="Muhanga">Muhanga</option>
+              <option value="Ruhango">Ruhango</option>
+              <option value="Nyamasheke">Nyamasheke</option>
+              <option value="Kayonza">Kayonza</option>
+              <option value="Karongi">Karongi</option>
+              <option value="Bugesera">Bugesera</option>
+              <option value="Nyanza">Nyanza</option>
+            </select>
+          </div>
+
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-lock icon"></i>
+            <input id="signup-pass" type="password" placeholder="Ijambobanga" autocomplete="new-password"
+                   class="auth-field" />
+          </div>
+
+          <button type="submit" class="btn-success" id="signup-btn">
+            <span class="inline-flex items-center gap-2">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>Iyandikishe</span>
+            </span>
+          </button>
+
+          <div class="divider">cyangwa</div>
+
+          <div class="text-center">
+            <span class="text-sm text-slate-500 dark:text-slate-400">Usanzwe ufite konti?</span>
+            <button type="button" onclick="switchAuthTab('login')" 
+                    class="ml-1 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline bg-transparent border-none cursor-pointer">
+              Injira
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Trust footer -->
+      <div class="mt-6 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+          <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
+          <span class="text-[11px] text-white/50 font-medium tracking-wide">100% SECURE • PERIME.RW</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script src="auth.js"></script>
+  <script src="common.js"></script>
+  <script>
+    // ----- Custom toast for this page -----
+    function showAuthToast(msg, type) {
+      document.querySelectorAll('.auth-toast').forEach(t => t.remove());
+      const toast = document.createElement('div');
+      toast.className = 'auth-toast ' + (type === 'error' 
+        ? 'bg-red-600 text-white' 
+        : 'bg-emerald-600 text-white');
+      toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+    window.showToast = showAuthToast;
+
+    // Override openAuthModal for compatibility
+    window.openAuthModal = function(mode) {
+      switchAuthTab(mode || 'login');
+    };
+    window.closeAuthModal = function() {};
+
+    // ----- Tab Switching with animation -----
+    function switchAuthTab(tab) {
+      const loginF = document.getElementById('login-form');
+      const signupF = document.getElementById('signup-form');
+      const tLogin = document.getElementById('tab-login');
+      const tSignup = document.getElementById('tab-signup');
+
+      if (!loginF || !signupF) return;
+
+      if (tab === 'login') {
+        loginF.classList.remove('hidden');
+        signupF.classList.add('hidden');
+        tLogin.classList.add('active');
+        tSignup.classList.remove('active');
+        document.title = 'Injira • RoadRules';
+        document.getElementById('auth-subtitle').textContent = 'Injira ukore imyitozo yawe';
+      } else {
+        loginF.classList.add('hidden');
+        signupF.classList.remove('hidden');
+        tSignup.classList.add('active');
+        tLogin.classList.remove('active');
+        document.title = 'Iyandikishe • RoadRules';
+        document.getElementById('auth-subtitle').textContent = 'Fungura konti utangire kwihugura';
+      }
+    }
+
+    // ----- Loading state for buttons -----
+    function setButtonLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      const span = btn.querySelector('span');
+      if (loading) {
+        btn.disabled = true;
+        btn.style.opacity = '0.8';
+        span.innerHTML = '<span class="auth-spinner mr-2"></span> <span>Tegereza...</span>';
+      } else {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        if (btnId === 'login-btn') {
+          span.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> <span>Injira</span>';
+        } else {
+          span.innerHTML = '<i class="fa-solid fa-user-plus"></i> <span>Iyandikishe</span>';
+        }
+      }
+    }
+
+    // ----- Attach form handlers -----
+    function attachAuthPageHandlers() {
+      const loginPhone = document.getElementById('login-phone');
+      const loginPass = document.getElementById('login-pass');
+      const signupName = document.getElementById('signup-name');
+      const signupPhone = document.getElementById('signup-phone');
+      const signupDistrict = document.getElementById('signup-district');
+      const signupPass = document.getElementById('signup-pass');
+
+      // LOGIN
+      document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const phone = loginPhone.value.trim();
+        const password = loginPass.value.trim();
+        if (!phone || !password) {
+          showAuthToast('Uzuza nimero n\'ijambobanga', 'error');
+          return;
+        }
+
+        setButtonLoading('login-btn', true);
+        try {
+          const token = await getAccessToken();
+          const folderId = await getFolderId(token, 'UserData');
+          if (!folderId) throw new Error('Nta bushyinguro bwabonetse muri Drive.');
+
+          const fileName = phone.replace(/[^0-9]/g, '') + '.json';
+          const fileId = await findFileByName(token, folderId, fileName);
+          if (!fileId) throw new Error('Konti ntabwo ibaho. Iyandikishe!');
+
+          const user = await readFileContent(token, fileId);
+
+          if (user.password === password) {
+            if (!user.subscription) {
+              user.subscription = { plan: 'ubuntu', planName: 'Ubuntu Free', amount: 0, status: 'approved', paidAt: new Date().toISOString() };
+            }
+            const sessionUser = { name: user.name, phone: user.phone, district: user.district, subscription: user.subscription };
+            if (user.pendingUpgrade) sessionUser.pendingUpgrade = user.pendingUpgrade;
+            localStorage.setItem('roadRulesUser', JSON.stringify(sessionUser));
+
+            showAuthToast('Murakaza neza ' + (user.name.split(' ')[0] || '') + '!', 'success');
+            window.location.replace('index.html');
+          } else {
+            showAuthToast('Ijambobanga cyangwa nimero si byo.', 'error');
+            setButtonLoading('login-btn', false);
+          }
+        } catch (err) {
+          showAuthToast('Byanze: ' + err.message, 'error');
+          setButtonLoading('login-btn', false);
+        }
+      });
+
+      // SIGNUP
+      document.getElementById('signup-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const name = signupName.value.trim();
+        const phone = signupPhone.value.trim();
+        const district = signupDistrict.value.trim() || 'Kigali';
+        const password = signupPass.value.trim();
+
+        if (!name || !phone || !password) {
+          showAuthToast('Nyamuneka uzuza amazina, nimero, n\'ijambobanga', 'error');
+          return;
+        }
+
+        setButtonLoading('signup-btn', true);
+        try {
+          const token = await getAccessToken();
+          let folderId = await getFolderId(token, 'UserData');
+          if (!folderId) folderId = await createFolder(token, 'UserData');
+
+          const fileName = phone.replace(/[^0-9]/g, '') + '.json';
+          const existing = await findFileByName(token, folderId, fileName);
+          if (existing) throw new Error('Iyi telefone irahari. Injira!');
+
+          const userData = {
+            name, phone, district, password,
+            createdAt: new Date().toISOString(),
+            subscription: { plan: 'ubuntu', planName: 'Ubuntu Free', amount: 0, status: 'approved', paidAt: new Date().toISOString() }
+          };
+
+          await createUserFile(token, folderId, userData);
+
+          // Auto-login after signup
+          const sessionUser = { name: userData.name, phone: userData.phone, district: userData.district, subscription: userData.subscription };
+          localStorage.setItem('roadRulesUser', JSON.stringify(sessionUser));
+
+          showAuthToast('Kwiyandikisha byagenze neza!', 'success');
+          window.location.replace('index.html');
+        } catch (err) {
+          showAuthToast('Byanze: ' + err.message, 'error');
+          setButtonLoading('signup-btn', false);
+        }
+      });
+    }
+
+    // ----- Initialize -----
+    function initAuthPage() {
+      if (typeof initTailwind === 'function') initTailwind();
+      if (typeof initTheme === 'function') initTheme();
+      if (typeof initAccessibility === 'function') initAccessibility();
+
+      const params = new URLSearchParams(window.location.search);
+      const mode = params.get('mode') === 'signup' ? 'signup' : 'login';
+
+      // Wait for auth.js Drive functions
+      const checkReady = setInterval(() => {
+        if (typeof getAccessToken === 'function' && typeof getFolderId === 'function') {
+          clearInterval(checkReady);
+          attachAuthPageHandlers();
+          switchAuthTab(mode);
+          setTimeout(() => {
+            const input = mode === 'login' ? document.getElementById('login-phone') : document.getElementById('signup-name');
+            if (input) input.focus();
+          }, 100);
+        }
+      }, 50);
+
+      setTimeout(() => { clearInterval(checkReady); }, 10000);
+    }
+
+    window.onload = initAuthPage;
+  </script>
+</body>
+</html>

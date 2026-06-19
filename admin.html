@@ -55,8 +55,8 @@
            <div class="flex items-center gap-x-2.5 flex-shrink-0">
             <button onclick="toggleTheme()" id="theme-toggle" class="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-all hover:border-slate-300 active:scale-[0.96]" aria-label="Toggle theme"><i id="theme-icon" class="fa-solid fa-moon text-base"></i></button>
             <div id="desktop-auth-area" class="hidden sm:flex items-center gap-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
-              <button onclick="openAuthModal('login')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Injira</button>
-              <button onclick="openAuthModal('signup')" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition">Iyandikishe</button>
+              <a href="login.html" onclick="setReturnTo()" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition inline-flex items-center">Injira</a>
+              <a href="signup.html" onclick="setReturnTo()" class="polished-btn px-5 py-[9px] text-sm font-semibold rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm transition inline-flex items-center">Iyandikishe</a>
             </div>
             <button onclick="toggleMobileMenu()" id="mobile-menu-button" class="md:hidden flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Open menu"><i class="fa-solid fa-bars text-lg"></i></button>
           </div>
@@ -79,8 +79,8 @@
         </div>
         <div class="my-7 border-t border-slate-200 dark:border-slate-700"></div>
         <div id="mobile-auth-area" class="space-y-3">
-          <button onclick="openAuthModal('login'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold">Injira (Login)</button>
-          <button onclick="openAuthModal('signup'); toggleMobileMenu()" class="w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold">Iyandikishe (Sign Up)</button>
+          <a href="login.html" onclick="setReturnTo(); toggleMobileMenu()" class="block w-full py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 text-sm font-semibold text-center">Injira (Login)</a>
+          <a href="signup.html" onclick="setReturnTo(); toggleMobileMenu()" class="block w-full py-3.5 rounded-2xl bg-blue-700 text-white text-sm font-semibold text-center">Iyandikishe (Sign Up)</a>
         </div>
       </div>
     </div>
@@ -281,7 +281,11 @@
   </footer>
 
   <!-- AUTH MODAL injected dynamically by auth.js -->
-
+  <script>
+    function setReturnTo() {
+      try { sessionStorage.setItem('roadRulesReturnTo', window.location.href); } catch(e){}
+    }
+  </script>
   <script src="auth.js"></script>
   <script src="questions.js"></script>
   <script src="common.js"></script>
@@ -478,13 +482,19 @@ async function viewUserDetails(phone) {
 async function adminDeleteUser(phone) {
         if (!confirm(`Siba uko ${phone}? (Delete this user permanently? They will need to sign up again.)`)) return;
         try {
-          showLoading('Kubona ibibazo...');
+          if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.show === 'function') {
+            window.RoadRulesLoader.show('Kubona ibibazo...');
+          }
           await window.RoadRulesAdmin.deleteUser(phone);
-          hideLoading();
+          if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.hide === 'function') {
+            window.RoadRulesLoader.hide();
+          }
           alert('User deleted permanently. Account removed from Google Drive.');
           await loadAllUsersFromDrive();
         } catch (e) {
-          hideLoading();
+          if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.hide === 'function') {
+            window.RoadRulesLoader.hide();
+          }
           alert('Failed to delete user: ' + (e.message || 'Unknown error'));
         }
       }
@@ -763,16 +773,22 @@ async function adminDeleteUser(phone) {
          return;
        }
        try {
-         if (typeof showLoading === 'function') showLoading('Saving Rugamba delay...');
+         if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.show === 'function') {
+           window.RoadRulesLoader.show('Saving Rugamba delay...');
+         }
          await window.RoadRulesAdmin.updateChatbotConfig({ rugambaProactiveDelayMin: val });
-         if (typeof hideLoading === 'function') hideLoading();
+         if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.hide === 'function') {
+           window.RoadRulesLoader.hide();
+         }
          const fb = document.createElement('div');
          fb.className = 'fixed bottom-4 right-4 px-4 py-2 rounded-2xl bg-emerald-600 text-white text-sm shadow z-[99999]';
          fb.textContent = 'Delay saved. New users will see Rugamba message after ' + val + ' min.';
          document.body.appendChild(fb);
          setTimeout(() => fb.remove(), 2600);
        } catch (e) {
-         if (typeof hideLoading === 'function') hideLoading();
+         if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.hide === 'function') {
+           window.RoadRulesLoader.hide();
+         }
          alert('Failed to save: ' + (e.message || e));
        }
      }

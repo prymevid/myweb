@@ -1,6 +1,10 @@
 /* RoadRules - Shared UI (common.js) */
 /* Theme, mobile menu, accessibility, tailwind config - used by all pages */
 
+function setReturnTo() {
+  try { sessionStorage.setItem('roadRulesReturnTo', window.location.href); } catch(e){}
+}
+
 function initTailwind() {
   if (window.tailwind) {
     tailwind.config = { darkMode: 'class' };
