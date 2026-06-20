@@ -96,13 +96,13 @@
           <span class="px-3 py-0.5 text-xs rounded-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 font-medium">ADMIN ONLY</span>
         </div>
         <h1 class="text-2xl sm:text-3xl font-semibold tracking-tighter">Driver Database & Activity Dashboard</h1>
-        <p class="text-sm text-slate-500">Direct control over all user files in Google Drive</p>
+        <p class="text-sm text-slate-500">Direct control over all user records in Supabase</p>
       </div>
       <div class="flex-shrink-0">
-          <button onclick="loadAllUsersFromDrive()" 
+          <button onclick="loadAllUsers()" 
                   class="px-4 sm:px-5 py-2.5 text-sm font-semibold rounded-2xl bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2">
             <i class="fa-solid fa-sync"></i>
-            <span class="hidden sm:inline">Load / Refresh from Drive</span>
+            <span class="hidden sm:inline">Load / Refresh Users</span>
             <span class="sm:hidden">Refresh</span>
           </button>
       </div>
@@ -131,7 +131,7 @@
     <!-- User Database Table -->
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl overflow-hidden">
       <div class="px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-        <div class="font-semibold text-sm sm:text-base">All Driver Users (from Google Drive)</div>
+        <div class="font-semibold text-sm sm:text-base">All Driver Users (from Supabase)</div>
         <div class="text-[10px] sm:text-xs text-slate-400">Changes written directly to each user’s .json file</div>
       </div>
       <div class="overflow-x-auto">
@@ -151,7 +151,7 @@
             <td colspan="6" class="px-3 sm:px-6 py-8 sm:py-10 text-center text-slate-400">
               <div class="flex flex-col items-center gap-2">
                 <div class="animate-spin h-5 w-5 border-2 border-slate-400 border-t-transparent rounded-full"></div>
-                <span>Automatically loading users from Google Drive...</span>
+                <span>Loading users from Supabase...</span>
               </div>
             </td>
           </tr>
@@ -162,7 +162,7 @@
 
     <div class="mt-4 text-xs text-amber-600 flex items-center gap-2">
       <i class="fa-solid fa-exclamation-triangle"></i>
-      <span>Warning: All actions here write directly and permanently to Google Drive user files.</span>
+      <span>Warning: All actions here write directly and permanently to the Supabase database.</span>
     </div>
 
     <!-- AMATANGAZO (Announcements) MANAGEMENT - visible to all users in Konte panel -->
@@ -290,20 +290,19 @@
   <script src="questions.js"></script>
   <script src="common.js"></script>
   <script>
-    // ========== DRIVER DATABASE DASHBOARD (Google Drive powered) ==========
+    // ========== DRIVER DATABASE DASHBOARD (Supabase powered) ==========
     let loadedUsers = [];
 
-    async function loadAllUsersFromDrive() {
+    async function loadAllUsers() {
       const tbody = document.getElementById('users-table-body');
-      const button = document.querySelector('button[onclick*="loadAllUsersFromDrive"]');
+      const button = document.querySelector('button[onclick*="loadAllUsers"]');
 
-      // Show nice loading spinner
       tbody.innerHTML = `
         <tr>
           <td colspan="6" class="px-3 sm:px-6 py-8 sm:py-10">
             <div class="flex flex-col items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
               <div class="animate-spin h-6 w-6 border-[3px] border-blue-500 border-t-transparent rounded-full"></div>
-              <span class="text-sm font-medium">Loading users from Google Drive...</span>
+              <span class="text-sm font-medium">Loading users from Supabase...</span>
             </div>
           </td>
         </tr>`;
@@ -311,26 +310,18 @@
       if (button) button.disabled = true;
 
       try {
-        const files = await window.RoadRulesAdmin.listAllUserFiles();
-        
-        loadedUsers = [];
-        const toLoad = files.slice(0, 200);
-const results = await Promise.all(toLoad.map(async (file) => {
-           const userData = await window.RoadRulesAdmin.readUserFileByIdSilent(file.id);
-           return userData ? { ...userData, _fileId: file.id } : null;
-         }));
-        loadedUsers = results.filter(Boolean);
+        // listAllUserFiles() now returns full user objects directly from Supabase
+        loadedUsers = await window.RoadRulesAdmin.listAllUserFiles();
 
         renderUserTable();
         updateDashboardStats();
-
         document.getElementById('stat-last-sync').textContent = new Date().toLocaleTimeString();
 
       } catch (err) {
         tbody.innerHTML = `
           <tr>
             <td colspan="6" class="px-3 sm:px-6 py-6 sm:py-8 text-center">
-              <div class="text-red-500 text-sm">Failed to load from Drive. Check browser console for details.</div>
+              <div class="text-red-500 text-sm">Failed to load users. Check browser console for details.</div>
             </td>
           </tr>`;
         console.error(err);
@@ -338,6 +329,9 @@ const results = await Promise.all(toLoad.map(async (file) => {
         if (button) button.disabled = false;
       }
     }
+
+    // keep alias so any other call sites still work
+    async function loadAllUsersFromDrive() { return loadAllUsers(); }
 
     function updateDashboardStats() {
       document.getElementById('stat-loaded').textContent = loadedUsers.length;
@@ -436,10 +430,10 @@ loadedUsers.forEach(user => {
       }
 
       if (success) {
-        alert('Plan approved and synced to Google Drive.');
-        await loadAllUsersFromDrive(); // refresh
+        alert('Plan approved and saved to Supabase.');
+        await loadAllUsers(); // refresh
       } else {
-        alert('Failed to sync to Drive.');
+        alert('Failed to save.');
       }
     }
 
@@ -448,10 +442,10 @@ loadedUsers.forEach(user => {
 
       const success = await window.RoadRulesAdmin.dismissUserPlan(phone);
       if (success) {
-        alert('Plan dismissed. User reset to Ubuntu. Changes saved to Google Drive.');
-        await loadAllUsersFromDrive();
+        alert('Plan dismissed. User reset to Ubuntu.');
+        await loadAllUsers();
       } else {
-        alert('Failed to write to Drive.');
+        alert('Failed to update.');
       }
     }
 
@@ -462,7 +456,7 @@ loadedUsers.forEach(user => {
       const success = await window.RoadRulesAdmin.updateUserData(phone, { pendingUpgrade: undefined });
       if (success) {
         alert('Upgrade request rejected. User remains on their previous plan.');
-        await loadAllUsersFromDrive();
+        await loadAllUsers();
       } else {
         alert('Failed to update Drive.');
       }
@@ -471,7 +465,7 @@ loadedUsers.forEach(user => {
 async function viewUserDetails(phone) {
        const data = await window.RoadRulesAdmin.getUserData(phone);
        if (!data) {
-         alert('Could not load user from Drive');
+         alert('Could not load user');
          return;
        }
        const json = JSON.stringify(data, null, 2);
@@ -489,8 +483,8 @@ async function adminDeleteUser(phone) {
           if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.hide === 'function') {
             window.RoadRulesLoader.hide();
           }
-          alert('User deleted permanently. Account removed from Google Drive.');
-          await loadAllUsersFromDrive();
+          alert('User deleted permanently.');
+          await loadAllUsers();
         } catch (e) {
           if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.hide === 'function') {
             window.RoadRulesLoader.hide();
@@ -798,10 +792,10 @@ async function adminDeleteUser(phone) {
       initTheme(); 
       initAccessibility(); 
 
-      // Auto-load users from Google Drive on page load
+      // Auto-load users from Supabase on page load
       setTimeout(() => {
-        if (typeof window.RoadRulesAdmin !== 'undefined' && typeof loadAllUsersFromDrive === 'function') {
-          loadAllUsersFromDrive();
+        if (typeof window.RoadRulesAdmin !== 'undefined' && typeof loadAllUsers === "function") {
+          loadAllUsers();
         }
       }, 800);
 
