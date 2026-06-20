@@ -1,0 +1,370 @@
+You are an expert full-stack engineer specializing in large-scale migrations.
+
+Your objective is NOT to partially integrate Supabase. Your objective is to replace every existing backend, storage system, local tracking system, and API with Supabase while preserving 100% of the website functionality.
+
+Follow these rules strictly:
+
+1. First Analyze the Entire Codebase
+
+Before modifying anything:
+
+Scan every HTML, JS, TS, React, Vue, API route, worker, server file and configuration.
+Identify every place where data is stored.
+Identify every API call.
+Identify every localStorage usage.
+Identify every session storage usage.
+Identify every cookie.
+Identify every Google Drive integration.
+Identify every Firebase integration.
+Identify every backend endpoint.
+Identify every admin page dependency.
+Identify every chatbot dependency.
+Identify every analytics dependency.
+
+Create a complete dependency map before editing any code.
+
+Never migrate only part of the system.
+
+2. Design Supabase Schema
+
+Create tables necessary to replace every backend feature.
+
+Use:
+
+PostgreSQL
+JSONB where appropriate
+Foreign Keys
+Indexes
+Created_at
+Updated_at
+UUID primary keys
+
+Create migration SQL automatically.
+
+Do not ask the user to design tables.
+
+3. Replace Every Storage
+
+Replace:
+
+Google Drive
+
+Firebase
+
+MongoDB
+
+MySQL
+
+SQLite
+
+JSON files
+
+Node memory
+
+Cloud storage
+
+Server files
+
+Flat files
+
+Everything must become Supabase.
+
+4. Replace localStorage
+
+Search entire project for:
+
+localStorage.getItem
+
+localStorage.setItem
+
+localStorage.removeItem
+
+sessionStorage
+
+cookies
+
+offline cache
+
+Replace user tracking with Supabase user columns.
+
+Examples:
+
+chat_progress
+
+seen_announcements
+
+exam_history
+
+favorite_questions
+
+payment_history
+
+quiz_progress
+
+chatbot_state
+
+notification_state
+
+Everything should sync with Supabase.
+
+Only keep local cache when offline fallback is required.
+
+5. Authentication
+
+Use Supabase Auth.
+
+Migrate login.
+
+Migrate signup.
+
+Migrate logout.
+
+Migrate sessions.
+
+Migrate password reset.
+
+Migrate profile update.
+
+Migrate account deletion.
+
+Never leave mixed auth systems.
+
+6. Chatbot
+
+Store chatbot state in Supabase.
+
+Store:
+
+conversation history
+
+FAQ progress
+
+seen questions
+
+recommendations
+
+AI history
+
+timers
+
+cooldowns
+
+admin configuration
+
+Everything should synchronize across devices.
+
+7. Admin Panel
+
+Ensure admin panel works exactly as before.
+
+Every admin action should now read/write Supabase.
+
+User details should include:
+
+chat progress
+
+announcements
+
+payments
+
+exams
+
+statistics
+
+tracking
+
+history
+
+No feature should break.
+
+8. Payments
+
+Replace payment storage.
+
+Store:
+
+transactions
+
+pending payments
+
+completed payments
+
+verification status
+
+timestamps
+
+references
+
+Everything inside Supabase.
+
+Admin payment page must still function.
+
+9. Tracking
+
+Every user action should sync with Supabase:
+
+visited pages
+
+chat usage
+
+exam attempts
+
+time spent
+
+notifications
+
+history
+
+preferences
+
+leaderboard
+
+statistics
+
+No local tracking unless temporary cache.
+
+10. Configuration
+
+Admin editable configuration should be stored in Supabase tables:
+
+chat delays
+
+exam cooldown
+
+announcements
+
+limits
+
+API configs
+
+feature flags
+
+bot settings
+
+Do not hardcode values.
+
+11. Data Migration
+
+Automatically migrate old data into Supabase when possible.
+
+If schema changes are needed:
+
+Generate SQL migration.
+
+Generate ALTER TABLE statements.
+
+Generate CREATE TABLE statements.
+
+Generate indexes.
+
+Generate policies.
+
+Generate triggers if necessary.
+
+12. Preserve Existing Behavior
+
+The website should behave exactly the same.
+
+Only backend implementation changes.
+
+UI must not change.
+
+Logic must not change.
+
+Routes must not change.
+
+Admin workflows must not change.
+
+13. Automatic Code Editing
+
+Do not only explain.
+
+Actually edit every necessary file.
+
+Update imports.
+
+Update functions.
+
+Update API calls.
+
+Update fetch requests.
+
+Update auth calls.
+
+Update storage.
+
+Update admin pages.
+
+Update chatbot.
+
+Update utilities.
+
+Update shared functions.
+
+Update everything.
+
+14. Test Everything
+
+Verify:
+
+Signup
+
+Login
+
+Logout
+
+Payments
+
+Chatbot
+
+Tracking
+
+Admin
+
+Profile
+
+Exams
+
+Announcements
+
+Storage
+
+Queries
+
+Sessions
+
+Permissions
+
+Database writes
+
+Database reads
+
+Everything should work.
+
+15. Final Output
+
+When finished provide:
+
+✔ Files modified
+
+✔ SQL migrations
+
+✔ Tables created
+
+✔ Columns added
+
+✔ Functions changed
+
+✔ APIs replaced
+
+✔ Remaining manual steps
+
+✔ Features migrated
+
+✔ Features tested
+
+Keep iterating until every backend dependency has been replaced with Supabase.
+
+Do not stop after partial migration. what you will use - SUPABASE_URL: https://zplzsgsyzxjpvewtjygd.supabase.co
+- SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpwbHpzZ3N5enhqcHZld3RqeWdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NTYyMTEsImV4cCI6MjA5NjUzMjIxMX0.WCpHnVfqmguQcD3AI_ryqx-njCqXIKoS3fz3sNCjkfE
+- SUPABASE_SERVICE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpwbHpzZ3N5enhqcHZld3RqeWdkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDk1NjIxMSwiZXhwIjoyMDk2NTMyMjExfQ.airAIrGq06yAgi9XkfsYzJ1MwazE0Xj65iAtKSXJBqM
