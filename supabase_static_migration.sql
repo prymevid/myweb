@@ -313,6 +313,44 @@ BEGIN
 END;
 $$;
 
+-- DELETE SINGLE EXAM
+CREATE OR REPLACE FUNCTION roadrules_delete_exam(p_phone TEXT, p_exam_id BIGINT)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE v_uid UUID;
+BEGIN
+  p_phone := regexp_replace(p_phone, '[^0-9]', '', 'g');
+  SELECT id INTO v_uid FROM users WHERE phone = p_phone;
+  IF v_uid IS NOT NULL THEN
+    DELETE FROM exam_history WHERE user_id = v_uid AND id = p_exam_id;
+  END IF;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION roadrules_delete_exam TO anon;
+
+-- DELETE EXAM HISTORY
+CREATE OR REPLACE FUNCTION roadrules_delete_exam_history(p_phone TEXT)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE v_uid UUID;
+BEGIN
+  p_phone := regexp_replace(p_phone, '[^0-9]', '', 'g');
+  SELECT id INTO v_uid FROM users WHERE phone = p_phone;
+  IF v_uid IS NOT NULL THEN
+    DELETE FROM exam_history WHERE user_id = v_uid;
+  END IF;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION roadrules_delete_exam_history TO anon;
+
 -- DELETE USER
 CREATE OR REPLACE FUNCTION roadrules_admin_delete_user(p_admin_pwd TEXT, p_phone TEXT)
 RETURNS VOID
@@ -479,6 +517,7 @@ GRANT EXECUTE ON FUNCTION roadrules_admin_get_user TO anon;
 GRANT EXECUTE ON FUNCTION roadrules_admin_approve TO anon;
 GRANT EXECUTE ON FUNCTION roadrules_admin_reject TO anon;
 GRANT EXECUTE ON FUNCTION roadrules_admin_dismiss TO anon;
+GRANT EXECUTE ON FUNCTION roadrules_delete_exam TO anon;
 GRANT EXECUTE ON FUNCTION roadrules_admin_delete_user TO anon;
 GRANT EXECUTE ON FUNCTION roadrules_admin_post_announcement TO anon;
 GRANT EXECUTE ON FUNCTION roadrules_admin_edit_announcement TO anon;

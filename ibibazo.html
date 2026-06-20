@@ -383,9 +383,38 @@
       if (stat) stat.textContent = `${done}/20`;
       if (bar) bar.style.width = avg + '%';
     }
-    function resetAllProgress() {
-      if (!confirm('Urashaka gusiba ibyo wasomye?')) return;
+    async function resetAllProgress() {
+      if (!confirm("Urashaka gusiba ibyo wasomye n'amateka y'ibizamini byose? Iyi gikorwa ntigisubirwa.")) return;
+      
+      // Clear local progress
       localStorage.removeItem('ibibazoProgress');
+      
+      // Also delete exam history from the server (no admin password needed)
+      try {
+        const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+        if (user && user.phone && window.RoadRulesAuth && window.RoadRulesAuth.refreshMyData) {
+          // Use RoadRulesAuth namespace to call the RPC through available methods
+          // We'll use the sbRpc helper from auth.js directly for this user RPC
+          const raw = localStorage.getItem('roadRulesUser');
+          const u = raw ? JSON.parse(raw) : null;
+          if (u && u.phone) {
+            await window.RoadRulesAuth.refreshMyData();
+            // Delete exam history via direct RPC call using sbRpc pattern
+            // roadrules_delete_exam_history is a user-facing RPC, so we call it directly
+            const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpwbHpzZ3N5enhqcHZld3RqeWdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NTYyMTEsImV4cCI6MjA5NjUzMjIxMX0.WCpHnVfqmguQcD3AI_ryqx-njCqXIKoS3fz3sNCjkfE';
+            const RPC = 'https://zplzsgsyzxjpvewtjygd.supabase.co/rest/v1/rpc';
+            const HDR = { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}`, 'Content-Type': 'application/json', Prefer: 'return=representation' };
+            const res = await fetch(`${RPC}/roadrules_delete_exam_history`, {
+              method: 'POST',
+              headers: HDR,
+              body: JSON.stringify({ p_phone: u.phone })
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('[Reset] Could not delete exam history from server:', e.message);
+      }
+      
       filterAndRenderGroups();
       updateGlobalProgress();
     }

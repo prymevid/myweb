@@ -1011,25 +1011,64 @@
       } catch (e) {}
     }
 
-    function renderUserExamHistory() {
+    // Delete single exam from both localStorage and Supabase
+    async function deleteSingleExam(id) {
+      if (!confirm('Urakura gusiba iki kizamini mu mateka?')) return;
+
+      const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
+      if (!user || !user.phone) return;
+
+      // Clear from localStorage immediately
+      deleteExamFromHistory(id);
+
+      // Also delete from Supabase via user-facing RPC
+      try {
+        const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpwbHpzZ3N5enhqcHZld3RqeWdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NTYyMTEsImV4cCI6MjA5NjUzMjIxMX0.WCpHnVfqmguQcD3AI_ryqx-njCqXIKoS3fz3sNCjkfE';
+        const RPC = 'https://zplzsgsyzxjpvewtjygd.supabase.co/rest/v1/rpc';
+        const HDR = { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}`, 'Content-Type': 'application/json' };
+        await fetch(`${RPC}/roadrules_delete_exam`, {
+          method: 'POST',
+          headers: HDR,
+          body: JSON.stringify({ p_phone: user.phone, p_exam_id: id })
+        });
+      } catch (e) {
+        console.warn('[Delete] Could not delete exam from server:', e.message);
+      }
+
+      // Refresh the history list
+      renderUserExamHistory();
+      if (typeof renderExamSlots === 'function') renderExamSlots();
+    }
+
+    async function renderUserExamHistory() {
       const c = document.getElementById('history-list');
       if (!c) return;
 
-      // Try to load fresh from Drive if possible
       const user = JSON.parse(localStorage.getItem('roadRulesUser') || 'null');
-      if (user && user.phone && window.RoadRulesAdmin) {
-        window.RoadRulesAdmin.getUserData(user.phone).then(full => {
-          if (full && Array.isArray(full.exams) && full.exams.length > 0) {
-            renderHistoryCards(full.exams, c);
-          } else {
-            renderHistoryCards(loadUserExamHistory(), c);
-          }
-        }).catch(() => {
-          renderHistoryCards(loadUserExamHistory(), c);
-        });
-      } else {
-        renderHistoryCards(loadUserExamHistory(), c);
+      if (!user || !user.phone) {
+        renderHistoryCards([], c);
+        return;
       }
+
+      // Primary source: localStorage (always available for the logged-in user)
+      let list = loadUserExamHistory();
+
+      // Optional: try to enrich with Drive data in background (admin session may exist)
+      try {
+        if (window.RoadRulesAdmin && window.RoadRulesAdmin.getUserDataSilent) {
+          const full = await window.RoadRulesAdmin.getUserDataSilent(user.phone);
+          if (full && Array.isArray(full.exams) && full.exams.length > 0) {
+            // Merge Drive exams into localStorage list (avoid duplicates by id)
+            const driveIds = new Set(full.exams.map(e => e.id));
+            const localOnly = list.filter(e => !driveIds.has(e.id));
+            list = [...full.exams, ...localOnly];
+          }
+        }
+      } catch (e) {
+        // Drive sync failed — fall back to pure localStorage (no admin password needed)
+      }
+
+      renderHistoryCards(list, c);
     }
 
     function renderHistoryCards(list, container) {
@@ -1073,11 +1112,14 @@
               </div>
               <div class="text-xs text-emerald-600 mt-0.5">${ex.score}% • ${ex.correct}/${ex.total} • ${ex.timeUsed}</div>
             </div>
-            <div class="flex gap-2">
-              ${hasDetail 
-                ? `<button onclick="showExamReview(${ex.id})" class="text-sm px-4 py-1.5 rounded-2xl border border-emerald-600 text-emerald-600 hover:bg-emerald-50">Reba ibyo wasubije</button>`
-                : `<button onclick="viewSavedExam(${ex.id})" class="text-sm px-4 py-1.5 rounded-2xl border text-slate-600">Reba uko wakoze</button>`}
-            </div>
+             <div class="flex gap-2">
+               ${hasDetail 
+                 ? `<button onclick="showExamReview(${ex.id})" class="text-sm px-4 py-1.5 rounded-2xl border border-emerald-600 text-emerald-600 hover:bg-emerald-50">Reba ibyo wasubije</button>`
+                 : `<button onclick="viewSavedExam(${ex.id})" class="text-sm px-4 py-1.5 rounded-2xl border text-slate-600">Reba uko wakoze</button>`}
+               <button onclick="deleteSingleExam(${ex.id})" class="text-sm px-3 py-1.5 rounded-2xl border border-red-200 text-red-600 hover:bg-red-50" title="Siba iki kizamini">
+                 <i class="fa-solid fa-trash"></i>
+               </button>
+             </div>
           </div>`;
       });
       h += `</div>`;

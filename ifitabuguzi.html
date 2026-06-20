@@ -689,38 +689,14 @@
 
     // NEW: Silently pull latest subscription from Drive so users see their real active plan
     // even if they didn't log out/in after admin approval.
+    // Uses RoadRulesAuth.refreshMyData (no admin password needed) instead of the admin API.
     async function refreshLatestSubscriptionFromDrive() {
       try {
-        const raw = localStorage.getItem('roadRulesUser');
-        const user = raw ? JSON.parse(raw) : null;
-        if (!user || !user.phone || !window.RoadRulesAdmin || !window.RoadRulesAdmin.getUserData) return false;
-
-        const fresh = await (window.RoadRulesAdmin.getUserDataSilent || window.RoadRulesAdmin.getUserData)(user.phone);
-        if (!fresh) return false;
-
-        const localUser = JSON.parse(localStorage.getItem('roadRulesUser') || '{}');
-
-        let changed = false;
-
-        if (fresh.subscription && fresh.subscription.status === 'approved') {
-          localUser.subscription = fresh.subscription;
-          changed = true;
-        }
-
-        if (fresh.pendingUpgrade) {
-          localUser.pendingUpgrade = fresh.pendingUpgrade;
-          changed = true;
-        } else if (localUser.pendingUpgrade) {
-          delete localUser.pendingUpgrade;
-          changed = true;
-        }
-
-        if (changed) {
-          localStorage.setItem('roadRulesUser', JSON.stringify(localUser));
-        }
-        return changed;
+        if (!window.RoadRulesAuth || !window.RoadRulesAuth.refreshMyData) return false;
+        const result = await window.RoadRulesAuth.refreshMyData();
+        return !!result;
       } catch (e) {
-        console.warn('[Plan] Could not refresh subscription from Drive:', e);
+        console.warn('[Plan] Could not refresh subscription:', e);
         return false;
       }
     }
