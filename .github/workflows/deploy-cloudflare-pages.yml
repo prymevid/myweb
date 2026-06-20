@@ -1,20 +1,24 @@
-name: Deploy to Cloudflare Pages
+name: Build and test
 
 on:
   push:
     branches: [ main, master ]
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - uses: actions/setup-node@v4
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          # Optional: set projectName if different from repo
-          # projectName: ${{ secrets.CF_PROJECT_NAME }}
-          directory: './'
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci --progress=false
+
+      - run: npm run start &
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        timeout-minutes: 20
