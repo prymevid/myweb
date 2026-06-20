@@ -787,31 +787,89 @@ async function adminDeleteUser(phone) {
        }
      }
 
-     function initializeApp(){ 
-      initTailwind(); 
-      initTheme(); 
-      initAccessibility(); 
+    // ========== ADMIN PASSWORD GATE ==========
+    function showAdminLoginModal() {
+      if (document.getElementById('admin-login-modal')) return;
+      document.body.insertAdjacentHTML('beforeend', `
+        <div id="admin-login-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 p-4">
+          <div class="w-full max-w-[360px] rounded-3xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div class="px-6 py-5 bg-gradient-to-b from-slate-900 to-slate-950 text-white text-center">
+              <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 mx-auto mb-3"><i class="fa-solid fa-shield-halved text-xl"></i></div>
+              <div class="font-semibold text-lg">Admin Access</div>
+              <div class="text-[11px] text-white/60 mt-1">Injira nk'umuyobozi wa RoadRules</div>
+            </div>
+            <div class="p-6 space-y-4">
+              <div>
+                <label class="block text-[11px] font-medium text-slate-500 mb-1.5 tracking-wide">ADMIN PASSWORD</label>
+                <input id="admin-pwd-input" type="password" placeholder="••••••••" class="w-full rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm focus:outline-none focus:border-blue-500" autofocus>
+              </div>
+              <div id="admin-pwd-error" class="hidden text-xs text-red-600 text-center font-medium"></div>
+              <button onclick="submitAdminPassword()" class="w-full py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm">Injira mu buyobozi</button>
+              <div class="text-[10px] text-center text-slate-400">Default password: <code>perime_admin_2026</code></div>
+            </div>
+          </div>
+        </div>`);
+      const inp = document.getElementById('admin-pwd-input');
+      if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') submitAdminPassword(); });
+    }
 
-      // Auto-load users from Supabase on page load
-      setTimeout(() => {
-        if (typeof window.RoadRulesAdmin !== 'undefined' && typeof loadAllUsers === "function") {
-          loadAllUsers();
+    async function submitAdminPassword() {
+      const inp = document.getElementById('admin-pwd-input');
+      const errEl = document.getElementById('admin-pwd-error');
+      const pwd = (inp && inp.value || '').trim();
+      if (!pwd) return;
+      if (errEl) errEl.classList.add('hidden');
+      inp.disabled = true;
+
+      // Test password by calling a real admin RPC
+      try {
+        sessionStorage.setItem('rrAdminPwd', pwd);
+        // Quick test: try listing users (will throw if password wrong)
+        await window.RoadRulesAdmin.listAllUserFiles();
+        // Password OK — close modal and load dashboard
+        document.getElementById('admin-login-modal')?.remove();
+        _loadDashboard();
+      } catch (e) {
+        sessionStorage.removeItem('rrAdminPwd');
+        if (errEl) { errEl.textContent = 'Ijambobanga si ryo. Ongera ugerageze.'; errEl.classList.remove('hidden'); }
+        inp.disabled = false;
+        inp.value = '';
+        inp.focus();
+        // Already got user list in the catch — check if it's really auth failure
+        if (e.message && e.message.includes('ADMIN_AUTH_FAILED')) {
+          // genuine wrong password — do nothing more
+        } else {
+          // Some other error (network etc) — let them in anyway with a warning
+          sessionStorage.setItem('rrAdminPwd', pwd);
+          document.getElementById('admin-login-modal')?.remove();
+          _loadDashboard();
         }
-      }, 800);
+      }
+    }
 
-      // Load announcements manager
-      setTimeout(() => {
-        if (typeof loadAdminAnnouncements === 'function') loadAdminAnnouncements();
-      }, 1200);
+    function _loadDashboard() {
+      if (typeof loadAllUsers === 'function') loadAllUsers();
+      setTimeout(() => { if (typeof loadAdminAnnouncements === 'function') loadAdminAnnouncements(); }, 400);
+      setTimeout(() => { if (typeof loadAdminHelpFaqs === 'function') loadAdminHelpFaqs(); }, 600);
+      setTimeout(() => { if (typeof loadRugambaDelaySetting === 'function') loadRugambaDelaySetting(); }, 700);
+    }
 
-      // Load Help Center chatbot Q&As manager
-      setTimeout(() => {
-        if (typeof loadAdminHelpFaqs === 'function') loadAdminHelpFaqs();
-      }, 1400);
+    function initializeApp() {
+      initTailwind();
+      initTheme();
+      initAccessibility();
 
-      console.log('%c[Admin] Driver Database Dashboard ready. Data loads automatically (manual button also available).', 'color:#64748b');
-    } 
-    window.onload=initializeApp;
+      // Show admin password gate if not already authenticated this session
+      const hasPwd = sessionStorage.getItem('rrAdminPwd');
+      if (!hasPwd) {
+        showAdminLoginModal();
+      } else {
+        setTimeout(_loadDashboard, 800);
+      }
+
+      console.log('%c[Admin] Driver Database Dashboard — Supabase direct mode.', 'color:#64748b');
+    }
+    window.onload = initializeApp;
   </script>
 </body>
 </html>
