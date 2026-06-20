@@ -1,8 +1,8 @@
 import express from 'express';
-import fetch from 'node-fetch';
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname } from 'path';
 
 dotenv.config();
 
@@ -15,163 +15,396 @@ app.use(express.static(__dirname));
 
 const PORT = process.env.PORT || 5000;
 
-function requireEnv(name) {
-  if (!process.env[name]) {
-    console.error(`Missing env ${name}`);
-    process.exit(1);
-  }
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_KEY');
+  process.exit(1);
 }
 
-requireEnv('CLIENT_ID');
-requireEnv('CLIENT_SECRET');
-requireEnv('REFRESH_TOKEN');
+// ==============================
+// SUPABASE REST HELPERS
+// All DB access goes through the PostgREST REST API.
+// We never import @supabase/supabase-js on the server to avoid
+// the Node 20 WebSocket issue in the realtime module.
+// ==============================
+const DB = `${SUPABASE_URL}/rest/v1`;
+const HEADERS = {
+  apikey: SUPABASE_SERVICE_KEY,
+  Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+  'Content-Type': 'application/json',
+  Prefer: 'return=representation'
+};
 
-// Exchange refresh token for access token
-app.post('/api/token', async (req, res) => {
-  try {
-    const params = new URLSearchParams({
-      grant_type: 'refresh_token',
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-      refresh_token: process.env.REFRESH_TOKEN
-    });
-    const r = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params
-    });
-    if (!r.ok) {
-      const text = await r.text();
-      return res.status(502).send(text);
-    }
-    const data = await r.json();
-    res.json(data);
-  } catch (e) {
-    console.error(e);
-    res.status(500).send('token error');
-  }
-});
+async function dbGet(table, query = '') {
+  const res = await fetch(`${DB}/${table}${query ? '?' + query : ''}`, { headers: HEADERS });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
 
-// Helper: call Drive API with server-held credentials
-async function driveRequest(path, opts = {}) {
-  // Obtain access token
-  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+async function dbPost(table, body) {
+  const res = await fetch(`${DB}/${table}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-      refresh_token: process.env.REFRESH_TOKEN
-    })
+    headers: HEADERS,
+    body: JSON.stringify(body)
   });
-  if (!tokenRes.ok) throw new Error('token fetch failed');
-  const tokenData = await tokenRes.json();
-  const accessToken = tokenData.access_token;
-
-  const headers = Object.assign({}, opts.headers || {}, { Authorization: `Bearer ${accessToken}` });
-  const r = await fetch(`https://www.googleapis.com${path}`, Object.assign({}, opts, { headers }));
-  return r;
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
 }
 
-// GET folder by name
-app.get('/api/drive/folder', async (req, res) => {
-  const name = req.query.name;
-  if (!name) return res.status(400).send('missing name');
-  try {
-    const q = `name='${name}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
-    const r = await driveRequest(`/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id)`);
-    const data = await r.json();
-    const id = data.files && data.files.length ? data.files[0].id : null;
-    res.json({ id });
-  } catch (e) {
-    console.error(e);
-    res.status(500).send('drive error');
-  }
-});
+async function dbPatch(table, query, body) {
+  const res = await fetch(`${DB}/${table}?${query}`, {
+    method: 'PATCH',
+    headers: HEADERS,
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
 
-// POST create folder
-app.post('/api/drive/folder', async (req, res) => {
-  const name = req.body && req.body.name;
-  if (!name) return res.status(400).send('missing name');
+async function dbDelete(table, query) {
+  const res = await fetch(`${DB}/${table}?${query}`, {
+    method: 'DELETE',
+    headers: { ...HEADERS, Prefer: 'return=minimal' }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return true;
+}
+
+function normalizePhone(phone) {
+  return (phone || '').replace(/[^0-9]/g, '');
+}
+
+// ==============================
+// AUTH
+// ==============================
+app.post('/api/auth/signup', async (req, res) => {
+  const { name, phone, district, password } = req.body || {};
+  if (!name || !phone || !password) return res.status(400).json({ error: 'Missing fields' });
+  const cleanPhone = normalizePhone(phone);
   try {
-    const r = await driveRequest('/drive/v3/files', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, mimeType: 'application/vnd.google-apps.folder' })
+    const existing = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id`);
+    if (existing.length > 0) return res.status(409).json({ error: 'Iyi telefone irahari. Injira!' });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const rows = await dbPost('users', {
+      name: name.trim(),
+      phone: cleanPhone,
+      district: (district || 'Kigali').trim(),
+      password_hash: passwordHash,
+      subscription_plan: 'ubuntu',
+      subscription_plan_name: 'Ubuntu Free',
+      subscription_amount: 0,
+      subscription_status: 'approved',
+      subscription_paid_at: new Date().toISOString()
     });
-    const data = await r.json();
-    res.json({ id: data.id, raw: data });
-  } catch (e) {
-    console.error(e);
-    res.status(500).send('drive error');
-  }
-});
-
-// GET find file by name in folder
-app.get('/api/drive/find', async (req, res) => {
-  const { folderId, fileName } = req.query;
-  if (!folderId || !fileName) return res.status(400).send('missing params');
-  try {
-    const q = `name='${fileName}' and '${folderId}' in parents and trashed=false`;
-    const r = await driveRequest(`/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id)`);
-    const data = await r.json();
-    const id = data.files && data.files.length ? data.files[0].id : null;
-    res.json({ id });
-  } catch (e) {
-    console.error(e);
-    res.status(500).send('drive error');
-  }
-});
-
-// POST create file (JSON) in folder
-app.post('/api/drive/files', async (req, res) => {
-  const { folderId, userData } = req.body || {};
-  if (!folderId || !userData) return res.status(400).send('missing body');
-  try {
-    const fileName = `${(userData.phone || '').replace(/[^0-9]/g, '')}.json`;
-    // Use multipart upload
-    const metadata = { name: fileName, parents: [folderId], mimeType: 'application/json' };
-    const boundary = '-------nodemultipart' + Date.now();
-    const bodyParts = [];
-    bodyParts.push(`--${boundary}`);
-    bodyParts.push('Content-Type: application/json; charset=UTF-8');
-    bodyParts.push('');
-    bodyParts.push(JSON.stringify(metadata));
-    bodyParts.push(`--${boundary}`);
-    bodyParts.push('Content-Type: application/json');
-    bodyParts.push('');
-    bodyParts.push(JSON.stringify(userData));
-    bodyParts.push(`--${boundary}--`);
-    const body = bodyParts.join('\r\n');
-
-    const r = await driveRequest(`/upload/drive/v3/files?uploadType=multipart`, {
-      method: 'POST',
-      headers: { 'Content-Type': `multipart/related; boundary=${boundary}` },
-      body
+    const user = Array.isArray(rows) ? rows[0] : rows;
+    res.json({
+      user: {
+        id: user.id, name: user.name, phone: user.phone, district: user.district,
+        subscription: { plan: user.subscription_plan, planName: user.subscription_plan_name, amount: user.subscription_amount, status: user.subscription_status, paidAt: user.subscription_paid_at }
+      }
     });
-    const data = await r.json();
-    res.json(data);
   } catch (e) {
-    console.error(e);
-    res.status(500).send('drive error');
+    console.error('signup error', e.message);
+    res.status(500).json({ error: e.message || 'Signup failed' });
   }
 });
 
-// GET file content
-app.get('/api/drive/files/:fileId', async (req, res) => {
-  const fileId = req.params.fileId;
+app.post('/api/auth/login', async (req, res) => {
+  const { phone, password } = req.body || {};
+  if (!phone || !password) return res.status(400).json({ error: 'Missing fields' });
+  const cleanPhone = normalizePhone(phone);
   try {
-    const r = await driveRequest(`/drive/v3/files/${encodeURIComponent(fileId)}?alt=media`);
-    if (!r.ok) return res.status(r.status).send(await r.text());
-    const data = await r.json();
-    res.json(data);
+    const rows = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id,name,phone,district,password_hash,subscription_plan,subscription_plan_name,subscription_amount,subscription_status,subscription_paid_at,pending_upgrade`);
+    if (!rows.length) return res.status(401).json({ error: 'Konti ntabwo ibaho. Iyandikishe!' });
+    const user = rows[0];
+    const match = await bcrypt.compare(password, user.password_hash);
+    if (!match) return res.status(401).json({ error: 'Ijambobanga cyangwa nimero si byo.' });
+    const sessionUser = {
+      id: user.id, name: user.name, phone: user.phone, district: user.district,
+      subscription: { plan: user.subscription_plan, planName: user.subscription_plan_name, amount: user.subscription_amount, status: user.subscription_status, paidAt: user.subscription_paid_at }
+    };
+    if (user.pending_upgrade) sessionUser.pendingUpgrade = user.pending_upgrade;
+    res.json({ user: sessionUser });
   } catch (e) {
-    console.error(e);
-    res.status(500).send('drive error');
+    console.error('login error', e.message);
+    res.status(500).json({ error: e.message || 'Login failed' });
   }
 });
 
+app.post('/api/auth/refresh', async (req, res) => {
+  const { phone } = req.body || {};
+  if (!phone) return res.status(400).json({ error: 'Missing phone' });
+  const cleanPhone = normalizePhone(phone);
+  try {
+    const rows = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id,name,phone,district,subscription_plan,subscription_plan_name,subscription_amount,subscription_status,subscription_paid_at,pending_upgrade`);
+    if (!rows.length) return res.status(404).json({ error: 'User not found' });
+    const user = rows[0];
+    res.json({
+      user: {
+        id: user.id, name: user.name, phone: user.phone, district: user.district,
+        subscription: { plan: user.subscription_plan, planName: user.subscription_plan_name, amount: user.subscription_amount, status: user.subscription_status, paidAt: user.subscription_paid_at },
+        pendingUpgrade: user.pending_upgrade || null
+      }
+    });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==============================
+// EXAM HISTORY
+// ==============================
+app.post('/api/exams', async (req, res) => {
+  const { phone, score, total, timeTaken } = req.body || {};
+  if (!phone || score == null || !total) return res.status(400).json({ error: 'Missing fields' });
+  const cleanPhone = normalizePhone(phone);
+  try {
+    const users = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id`);
+    if (!users.length) return res.status(404).json({ error: 'User not found' });
+    const rows = await dbPost('exam_history', { user_id: users[0].id, score, total, time_taken: timeTaken || 0 });
+    res.json({ exam: Array.isArray(rows) ? rows[0] : rows });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/exams/:phone', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try {
+    const users = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id`);
+    if (!users.length) return res.json({ exams: [] });
+    const exams = await dbGet('exam_history', `user_id=eq.${users[0].id}&order=created_at.desc&limit=50`);
+    res.json({ exams: exams || [] });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==============================
+// ANNOUNCEMENTS
+// ==============================
+app.get('/api/announcements', async (req, res) => {
+  try {
+    const data = await dbGet('announcements', 'order=created_at.desc');
+    res.json(data || []);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/announcements', async (req, res) => {
+  const { title, content } = req.body || {};
+  if (!title || !content) return res.status(400).json({ error: 'Missing title or content' });
+  try {
+    const rows = await dbPost('announcements', { title: title.trim(), content: content.trim() });
+    res.json(Array.isArray(rows) ? rows[0] : rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/announcements/:id', async (req, res) => {
+  const { title, content } = req.body || {};
+  const updates = { updated_at: new Date().toISOString() };
+  if (title != null) updates.title = String(title).trim();
+  if (content != null) updates.content = String(content).trim();
+  try {
+    const rows = await dbPatch('announcements', `id=eq.${req.params.id}`, updates);
+    res.json(Array.isArray(rows) ? rows[0] : rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/announcements/:id', async (req, res) => {
+  try { await dbDelete('announcements', `id=eq.${req.params.id}`); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==============================
+// HELP FAQs
+// ==============================
+app.get('/api/help-faqs', async (req, res) => {
+  try {
+    const data = await dbGet('help_faqs', 'order=created_at.desc');
+    res.json(data || []);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/help-faqs', async (req, res) => {
+  const { question, answers } = req.body || {};
+  if (!question || !answers) return res.status(400).json({ error: 'Missing question or answers' });
+  const answersArr = Array.isArray(answers) ? answers : [String(answers)];
+  try {
+    const rows = await dbPost('help_faqs', { question: question.trim(), answers: answersArr });
+    res.json(Array.isArray(rows) ? rows[0] : rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/help-faqs/:id', async (req, res) => {
+  const { question, answers } = req.body || {};
+  const updates = { updated_at: new Date().toISOString() };
+  if (question != null) updates.question = String(question).trim();
+  if (answers != null) updates.answers = Array.isArray(answers) ? answers : [String(answers)];
+  try {
+    const rows = await dbPatch('help_faqs', `id=eq.${req.params.id}`, updates);
+    res.json(Array.isArray(rows) ? rows[0] : rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/help-faqs/:id', async (req, res) => {
+  try { await dbDelete('help_faqs', `id=eq.${req.params.id}`); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==============================
+// CHATBOT CONFIG
+// ==============================
+app.get('/api/chatbot-config', async (req, res) => {
+  try {
+    const rows = await dbGet('config', `key=eq.chatbot&select=value`);
+    res.json((rows[0] && rows[0].value) || { rugambaProactiveDelayMin: 5 });
+  } catch (e) { res.json({ rugambaProactiveDelayMin: 5 }); }
+});
+
+app.patch('/api/chatbot-config', async (req, res) => {
+  const partial = req.body || {};
+  try {
+    const rows = await dbGet('config', `key=eq.chatbot&select=value`);
+    const current = (rows[0] && rows[0].value) || { rugambaProactiveDelayMin: 5 };
+    const merged = { ...current, ...partial, updatedAt: new Date().toISOString() };
+    // Upsert via POST with onConflict
+    const upsertRes = await fetch(`${DB}/config?on_conflict=key`, {
+      method: 'POST',
+      headers: { ...HEADERS, Prefer: 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify({ key: 'chatbot', value: merged })
+    });
+    if (!upsertRes.ok) throw new Error(await upsertRes.text());
+    res.json(merged);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==============================
+// ADMIN — USER MANAGEMENT
+// ==============================
+app.get('/api/admin/users', async (req, res) => {
+  try {
+    const data = await dbGet('users', 'select=id,name,phone,district,subscription_plan,subscription_plan_name,subscription_amount,subscription_status,subscription_paid_at,pending_upgrade,created_at,updated_at&order=created_at.desc&limit=500');
+    const users = (data || []).map(u => ({
+      id: u.id, name: u.name, phone: u.phone, district: u.district,
+      createdAt: u.created_at, lastUpdated: u.updated_at,
+      subscription: { plan: u.subscription_plan, planName: u.subscription_plan_name, amount: u.subscription_amount, status: u.subscription_status, paidAt: u.subscription_paid_at },
+      pendingUpgrade: u.pending_upgrade || null
+    }));
+    res.json(users);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/admin/users/:phone', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try {
+    const rows = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id,name,phone,district,subscription_plan,subscription_plan_name,subscription_amount,subscription_status,subscription_paid_at,pending_upgrade,created_at,updated_at`);
+    if (!rows.length) return res.status(404).json({ error: 'Not found' });
+    const user = rows[0];
+    const exams = await dbGet('exam_history', `user_id=eq.${user.id}&order=created_at.desc`);
+    res.json({
+      id: user.id, name: user.name, phone: user.phone, district: user.district,
+      createdAt: user.created_at, lastUpdated: user.updated_at,
+      subscription: { plan: user.subscription_plan, planName: user.subscription_plan_name, amount: user.subscription_amount, status: user.subscription_status, paidAt: user.subscription_paid_at },
+      pendingUpgrade: user.pending_upgrade || null,
+      exams: exams || []
+    });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/admin/users/:phone/approve', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try {
+    const rows = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=pending_upgrade,subscription_plan,subscription_plan_name,subscription_amount`);
+    if (!rows.length) return res.status(404).json({ error: 'User not found' });
+    const user = rows[0];
+    const planData = user.pending_upgrade || { plan: user.subscription_plan, planName: user.subscription_plan_name, amount: user.subscription_amount };
+    await dbPatch('users', `phone=eq.${encodeURIComponent(cleanPhone)}`, {
+      subscription_plan: planData.plan,
+      subscription_plan_name: planData.planName,
+      subscription_amount: planData.amount || 0,
+      subscription_status: 'approved',
+      subscription_paid_at: new Date().toISOString(),
+      pending_upgrade: null
+    });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/admin/users/:phone/reject', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try {
+    await dbPatch('users', `phone=eq.${encodeURIComponent(cleanPhone)}`, { pending_upgrade: null });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/admin/users/:phone/dismiss', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try {
+    await dbPatch('users', `phone=eq.${encodeURIComponent(cleanPhone)}`, {
+      subscription_plan: 'ubuntu', subscription_plan_name: 'Ubuntu Free',
+      subscription_amount: 0, subscription_status: 'approved',
+      subscription_paid_at: new Date().toISOString(), pending_upgrade: null
+    });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/admin/users/:phone', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try { await dbDelete('users', `phone=eq.${encodeURIComponent(cleanPhone)}`); res.json({ ok: true }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/users/:phone/pending-upgrade', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  const { pendingUpgrade } = req.body || {};
+  try {
+    await dbPatch('users', `phone=eq.${encodeURIComponent(cleanPhone)}`, { pending_upgrade: pendingUpgrade || null });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==============================
+// SEEN ANNOUNCEMENTS
+// ==============================
+app.get('/api/users/:phone/seen-announcements', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try {
+    const rows = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=seen_announcement_ids`);
+    res.json({ ids: (rows[0] && rows[0].seen_announcement_ids) || [] });
+  } catch (e) { res.json({ ids: [] }); }
+});
+
+app.post('/api/users/:phone/seen-announcements', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  const { ids } = req.body || {};
+  try {
+    await dbPatch('users', `phone=eq.${encodeURIComponent(cleanPhone)}`, { seen_announcement_ids: ids || [] });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==============================
+// CHAT PROGRESS
+// ==============================
+app.get('/api/users/:phone/chat-progress', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try {
+    const rows = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=chat_progress`);
+    res.json({ progress: (rows[0] && rows[0].chat_progress) || {} });
+  } catch (e) { res.json({ progress: {} }); }
+});
+
+app.post('/api/users/:phone/chat-progress', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  const { progress } = req.body || {};
+  try {
+    await dbPatch('users', `phone=eq.${encodeURIComponent(cleanPhone)}`, { chat_progress: progress || {} });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==============================
+// START
+// ==============================
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server listening on ${PORT}`);
+  console.log(`RoadRules server (Supabase REST) listening on ${PORT}`);
 });
