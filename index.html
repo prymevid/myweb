@@ -493,7 +493,13 @@
   <script src="common.js"></script>
   <script>
     function setReturnTo() {
-      try { sessionStorage.setItem('roadRulesReturnTo', window.location.href); } catch(e){}
+      try {
+        const path = window.location.pathname;
+        const valid = ['/index.html', '/imyitozo.html', '/ibibazo.html', '/ifitabuguzi.html', 'index.html', 'imyitozo.html', 'ibibazo.html', 'ifitabuguzi.html'];
+        if (valid.some(p => path.includes(p))) {
+          sessionStorage.setItem('roadRulesReturnTo', path);
+        }
+      } catch(e){}
     }
     // Premium: Animated stats counters (index specific)
     function animateStats() {

@@ -570,14 +570,15 @@
     function goBack() {
       try {
         const ret = sessionStorage.getItem('roadRulesReturnTo');
-        if (ret) {
+        const validPages = ['/index.html', '/imyitozo.html', '/ibibazo.html', '/ifitabuguzi.html', 'index.html', 'imyitozo.html', 'ibibazo.html', 'ifitabuguzi.html'];
+        if (ret && validPages.some(p => ret.includes(p))) {
           sessionStorage.removeItem('roadRulesReturnTo');
           window.location.href = ret;
         } else {
-          window.history.back();
+          window.location.href = 'index.html';
         }
       } catch (e) {
-        window.history.back();
+        window.location.href = 'index.html';
       }
     }
   </script>

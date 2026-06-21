@@ -151,7 +151,7 @@
             const user = await sbRpc('roadrules_signup', { p_name: name, p_phone: phone, p_district: district, p_password: password });
             saveSession(user);
             showToast('Kwiyandikisha byagenze neza!');
-            if (window.location.pathname.includes('signup.html')) { setTimeout(() => location.replace('index.html'), 400); return; }
+            if (window.location.pathname.includes('signup.html')) { setTimeout(() => location.replace('login.html'), 400); return; }
             switchAuthTab('login');
             const lp = document.getElementById('login-phone'); if (lp) lp.value = phone;
         } catch (err) { showToast('Byanze: ' + err.message, 'error'); }
@@ -169,7 +169,14 @@
             const user = await sbRpc('roadrules_login', { p_phone: phone, p_password: password });
             saveSession(user);
             showToast(`Murakaza neza ${(user.name || '').split(' ')[0]}!`);
-            if (window.location.pathname.includes('login.html')) { setTimeout(() => location.replace('index.html'), 400); return; }
+            if (window.location.pathname.includes('login.html')) {
+                const ret = sessionStorage.getItem('roadRulesReturnTo');
+                const validPages = ['/index.html', '/imyitozo.html', '/ibibazo.html', '/ifitabuguzi.html', 'index.html', 'imyitozo.html', 'ibibazo.html', 'ifitabuguzi.html'];
+                let target = ret && validPages.includes(ret) ? ret : 'index.html';
+                sessionStorage.removeItem('roadRulesReturnTo');
+                setTimeout(() => location.replace(target), 400);
+                return;
+            }
             closeAuthModal();
             if (window.RoadRulesAuth?.updateAuthUI) window.RoadRulesAuth.updateAuthUI();
             setTimeout(() => location.reload(), 650);
