@@ -31,19 +31,16 @@
       font-family: 'Inter', system-ui, sans-serif;
     }
 
-    /* Premium split-layout auth page */
     .auth-page {
       min-height: 100vh;
       display: flex;
-      background: #0a0a0a;
       position: relative;
       overflow: hidden;
     }
 
-    /* LEFT SIDE - Branded visual */
     .auth-brand {
       flex: 1.2;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+      background: linear-gradient(160deg, #071a0f 0%, #0f3d1f 40%, #072814 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -51,17 +48,15 @@
       position: relative;
       overflow: hidden;
     }
-    .dark .auth-brand {
-      background: linear-gradient(135deg, #020617 0%, #0b1120 50%, #020617 100%);
-    }
 
     .auth-brand::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image: 
-        radial-gradient(ellipse at 40% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.10) 0%, transparent 50%);
+      background-image:
+        radial-gradient(ellipse at 30% 20%, rgba(34, 197, 94, 0.12) 0%, transparent 45%),
+        radial-gradient(ellipse at 70% 60%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(5, 150, 105, 0.1) 0%, transparent 50%);
       pointer-events: none;
     }
 
@@ -69,49 +64,58 @@
       content: '';
       position: absolute;
       inset: 0;
-      background-image: 
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 50px 50px;
+      opacity: 0.25;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08) 1px, transparent 2px),
+        radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 2px),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.06) 1px, transparent 2px);
+      background-size: 60px 60px, 80px 80px, 100px 100px;
       pointer-events: none;
     }
 
-    .brand-float {
+    .brand-glow {
       position: absolute;
       border-radius: 50%;
-      filter: blur(80px);
+      filter: blur(100px);
       pointer-events: none;
+      opacity: 0.4;
     }
-    .brand-float-1 {
-      width: 300px; height: 300px;
-      background: rgba(59, 130, 246, 0.3);
-      top: 10%; right: 10%;
-      animation: brandFloat 10s ease-in-out infinite alternate;
+    .brand-glow-1 {
+      width: 400px; height: 400px;
+      background: rgba(34, 197, 94, 0.35);
+      top: -10%; left: -5%;
+      animation: brandGlow 14s ease-in-out infinite alternate;
     }
-    .brand-float-2 {
+    .brand-glow-2 {
+      width: 350px; height: 350px;
+      background: rgba(5, 150, 105, 0.3);
+      bottom: -5%; right: 5%;
+      animation: brandGlow 18s ease-in-out infinite alternate-reverse;
+    }
+    .brand-glow-3 {
       width: 250px; height: 250px;
-      background: rgba(139, 92, 246, 0.2);
-      bottom: 15%; left: 5%;
-      animation: brandFloat 12s ease-in-out infinite alternate-reverse;
+      background: rgba(16, 185, 129, 0.25);
+      top: 50%; left: 40%;
+      animation: brandGlow 12s ease-in-out infinite alternate;
     }
-    @keyframes brandFloat {
+    @keyframes brandGlow {
       0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(20px, -20px) scale(1.1); }
+      100% { transform: translate(30px, -25px) scale(1.15); }
     }
 
     .brand-pill {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 1.1rem;
       border-radius: 100px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
       color: white;
       font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
 
     .brand-feature {
@@ -119,15 +123,10 @@
       align-items: flex-start;
       gap: 1rem;
       padding: 1.25rem;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      transition: transform 0.3s ease, background 0.3s ease;
-    }
-    .brand-feature:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
     }
     .brand-feature-icon {
       width: 40px;
@@ -139,32 +138,28 @@
       flex-shrink: 0;
     }
 
-    /* RIGHT SIDE - Modern form */
     .auth-form-side {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 2rem;
-      background: #ffffff;
+      background: #060e0a;
       position: relative;
-    }
-    .dark .auth-form-side {
-      background: #0f172a;
     }
 
     .auth-form-side::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image: 
-        radial-gradient(ellipse at 100% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+      background-image:
+        radial-gradient(ellipse at 50% 20%, rgba(34, 197, 94, 0.04) 0%, transparent 55%);
       pointer-events: none;
     }
 
     .form-container {
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
       position: relative;
       z-index: 1;
     }
@@ -173,128 +168,79 @@
       margin-bottom: 2.5rem;
     }
 
-    .modern-input-group {
-      margin-bottom: 1.5rem;
+    .underline-input-group {
+      margin-bottom: 1.75rem;
     }
 
-    .modern-label {
+    .underline-label {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      color: #475569;
-      margin-bottom: 0.5rem;
+      color: #6b7280;
+      margin-bottom: 0.6rem;
       letter-spacing: 0.02em;
     }
-    .dark .modern-label {
-      color: #94a3b8;
-    }
 
-    .modern-input {
+    .underline-input {
       width: 100%;
-      padding: 0.875rem 1rem;
-      border-radius: 14px;
-      border: 1.5px solid #e2e8f0;
-      background: #f8fafc;
+      padding: 0.7rem 0;
+      border: none;
+      border-bottom: 1.5px solid #333a35;
+      background: transparent;
       font-size: 0.95rem;
       transition: all 0.2s ease;
       outline: none;
-      color: #0f172a;
+      color: #e5e7eb;
+      border-radius: 0;
     }
-    .modern-input:focus {
-      border-color: #3b82f6;
-      background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
+    .underline-input:focus {
+      border-bottom-color: #22c55e;
+      box-shadow: 0 1px 0 0 #22c55e;
     }
-    .dark .modern-input {
-      background: #1e293b;
-      border-color: #334155;
-      color: #f1f5f9;
+    .underline-input::placeholder {
+      color: #6b7280;
     }
-    .dark .modern-input:focus {
-      border-color: #2563eb;
-      background: #1e293b;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-    }
-    .modern-input::placeholder {
-      color: #94a3b8;
-    }
-    .dark .modern-input::placeholder {
-      color: #64748b;
+    .underline-input:-webkit-autofill,
+    .underline-input:-webkit-autofill:hover,
+    .underline-input:-webkit-autofill:focus {
+      -webkit-text-fill-color: #e5e7eb;
+      -webkit-box-shadow: 0 0 0px 1000px #060e0a inset;
+      caret-color: #e5e7eb;
+      transition: background-color 5000s ease-in-out 0s;
     }
 
-    .modern-btn {
+    .green-btn {
       width: 100%;
-      padding: 1rem;
-      border-radius: 14px;
+      padding: 0.95rem;
+      border-radius: 10px;
       font-weight: 600;
       font-size: 0.95rem;
       border: none;
       cursor: pointer;
       transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    .modern-btn-primary {
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
       color: white;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+      box-shadow: 0 8px 24px rgba(22, 163, 74, 0.2);
+      margin-top: 1.5rem;
     }
-    .modern-btn-primary:hover {
+    .green-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.35);
+      box-shadow: 0 12px 32px rgba(22, 163, 74, 0.3);
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     }
-    .modern-btn-primary:active {
+    .green-btn:active {
       transform: translateY(0) scale(0.99);
     }
-    .modern-btn-primary::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 100%);
-      pointer-events: none;
-    }
 
-    .modern-divider {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 1.5rem 0;
-      color: #94a3b8;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    .modern-divider::before,
-    .modern-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e2e8f0;
-    }
-    .dark .modern-divider::before,
-    .dark .modern-divider::after {
-      background: #334155;
-    }
-
-    .modern-link {
-      color: #2563eb;
+    .auth-link {
+      color: #9ca3af;
       text-decoration: none;
       font-weight: 600;
       font-size: 0.875rem;
       transition: color 0.2s ease;
     }
-    .modern-link:hover {
-      color: #1d4ed8;
-      text-decoration: underline;
-    }
-    .dark .modern-link {
-      color: #60a5fa;
-    }
-    .dark .modern-link:hover {
-      color: #93c5fd;
+    .auth-link:hover {
+      color: #22c55e;
     }
 
     .back-home-btn {
@@ -305,37 +251,24 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.7rem 1.1rem;
-      border-radius: 100px;
+      padding: 0.6rem 1.1rem;
+      border-radius: 10px;
       font-weight: 600;
       font-size: 0.8rem;
       text-decoration: none;
       transition: all 0.2s ease;
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      background: #1f2937;
+      color: #f9fafb;
+      border: 1px solid #374151;
     }
-    .back-home-btn.light {
-      background: #1e40af;
-      color: #ffffff;
-      border-color: #1e3a8a;
-      box-shadow: 0 4px 16px rgba(30, 64, 175, 0.4);
-    }
-    .back-home-btn.light:hover {
-      background: #1d4ed8;
+    .back-home-btn:hover {
+      background: #111827;
       transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(30, 64, 175, 0.55);
     }
-    .back-home-btn.dark {
-      background: #1e40af;
-      color: #ffffff;
-      border-color: #3b82f6;
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
-    }
-    .back-home-btn.dark:hover {
-      background: #1d4ed8;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(59, 130, 246, 0.65);
+    .dark .back-home-btn {
+      background: #1f2937;
+      color: #f9fafb;
+      border-color: #4b5563;
     }
 
     .loading-spinner {
@@ -358,6 +291,7 @@
       }
       .auth-form-side {
         flex: 1;
+        background: #060e0a;
       }
     }
 
@@ -368,6 +302,10 @@
       .form-container {
         max-width: 100%;
       }
+      .back-home-btn {
+        top: 1rem;
+        right: 1rem;
+      }
     }
   </style>
 </head>
@@ -376,8 +314,9 @@
   <div class="auth-page">
     <!-- LEFT: Branded visual side -->
     <div class="auth-brand">
-      <div class="brand-float brand-float-1"></div>
-      <div class="brand-float brand-float-2"></div>
+      <div class="brand-glow brand-glow-1"></div>
+      <div class="brand-glow brand-glow-2"></div>
+      <div class="brand-glow brand-glow-3"></div>
 
       <div style="position: relative; z-index: 2;">
         <div class="brand-pill">
@@ -386,7 +325,7 @@
         </div>
       </div>
 
-      <div style="position: relative; z-index: 2; max-width: 400px;">
+      <div style="position: relative; z-index: 2; max-width: 420px;">
         <div class="mb-6">
           <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20">
             <i class="fa-solid fa-road text-2xl text-white"></i>
@@ -394,20 +333,20 @@
         </div>
 
         <h1 class="text-4xl font-bold text-white mb-3 tracking-tight">
-          Murakaza neza muguse
+          Murakaza neza
         </h1>
-        <p class="text-blue-100/80 text-base leading-relaxed">
+        <p class="text-green-100/70 text-base leading-relaxed">
           Injira kuri konti yawe ya perime.rw ukore imyitozo ya provisoir, urebe ibisubizo, kandi utsinde ikizamini.
         </p>
 
         <div class="mt-8 space-y-3">
           <div class="brand-feature">
-            <div class="brand-feature-icon bg-blue-500/20">
-              <i class="fa-solid fa-check text-blue-400"></i>
+            <div class="brand-feature-icon bg-green-500/20">
+              <i class="fa-solid fa-check text-green-400"></i>
             </div>
             <div>
               <div class="text-white font-semibold text-sm">Byaranamo 15,000+ abanyeshuri</div>
-              <div class="text-blue-200/70 text-xs mt-0.5">Batsinze ikizamini ku nshuro ya mbere</div>
+              <div class="text-green-200/60 text-xs mt-0.5">Batsinze ikizamini ku nshuro ya mbere</div>
             </div>
           </div>
 
@@ -417,75 +356,71 @@
             </div>
             <div>
               <div class="text-white font-semibold text-sm">Igipimo cyo gutsinda 94%</div>
-              <div class="text-blue-200/70 text-xs mt-0.5">Abakoresha urubuga rwacu</div>
+              <div class="text-green-200/60 text-xs mt-0.5">Abakoresha urubuga rwacu</div>
             </div>
           </div>
 
           <div class="brand-feature">
-            <div class="brand-feature-icon bg-violet-500/20">
-              <i class="fa-solid fa-star text-violet-400"></i>
+            <div class="brand-feature-icon bg-teal-500/20">
+              <i class="fa-solid fa-star text-teal-400"></i>
             </div>
             <div>
               <div class="text-white font-semibold text-sm">Imyitozo 28,000+ yakoze</div>
-              <div class="text-blue-200/70 text-xs mt-0.5">Ibisubizo bisobanurwa mu Kinyarwanda</div>
+              <div class="text-green-200/60 text-xs mt-0.5">Ibisubizo bisobanurwa mu Kinyarwanda</div>
             </div>
           </div>
         </div>
       </div>
 
       <div style="position: relative; z-index: 2;">
-        <div class="text-blue-300/60 text-xs">
+        <div class="text-green-300/50 text-xs">
           © 2026 RoadRules Ltd. • Kigali, Rwanda
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: Modern form side -->
+    <!-- RIGHT: Dark form side -->
     <div class="auth-form-side">
-      <button onclick="goBack()" id="back-home-btn" class="back-home-btn light">
+      <button onclick="goBack()" id="back-home-btn" class="back-home-btn">
         <i class="fa-solid fa-chevron-left text-xs"></i>
         <span>Subira inyuma</span>
       </button>
 
       <div class="form-container">
         <div class="form-header">
-          <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Injira</h2>
-          <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm">Injira ukore imyitozo yawe</p>
+          <h2 class="text-3xl font-bold text-white tracking-tight">Injira</h2>
+          <p class="text-gray-400 mt-2 text-sm">Injira ukore imyitozo yawe</p>
         </div>
 
-        <form id="login-form" class="space-y-5">
-          
-          <div class="modern-input-group">
-            <label class="modern-label">NIMERO YA TELEFONE</label>
-            <input id="login-phone" type="tel" placeholder="0788 123 456" autocomplete="tel" class="modern-input" />
+        <form id="login-form">
+          <div class="underline-input-group">
+            <label class="underline-label">NIMERO YA TELEFONE</label>
+            <input id="login-phone" type="tel" placeholder="0788 123 456" autocomplete="tel" class="underline-input" />
           </div>
 
-          <div class="modern-input-group">
-            <label class="modern-label">IJAMBOBANGA</label>
-            <input id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password" class="modern-input" />
+          <div class="underline-input-group">
+            <label class="underline-label">IJAMBOBANGA</label>
+            <input id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password" class="underline-input" />
           </div>
 
-          <button type="submit" class="modern-btn modern-btn-primary" id="login-btn">
+          <button type="submit" class="green-btn" id="login-btn">
             <span>Injira</span>
-            <i class="fa-solid fa-arrow-right"></i>
           </button>
 
-          <div class="modern-divider">cyangwa</div>
-
-          <div class="text-center">
-            <span class="text-sm text-slate-500 dark:text-slate-400">Ntabwo ufite konti?</span>
-            <a href="signup.html" class="modern-link ml-1">Iyandikishe</a>
+          <div class="mt-6 text-center">
+            <span class="text-sm text-gray-400">Ntabwo ufite konti? </span>
+            <a href="signup.html" class="auth-link">Iyandikishe</a>
           </div>
         </form>
 
-        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
-          <div class="flex items-center justify-center gap-6 text-xs text-slate-400">
+        <div class="mt-10 pt-6 border-t border-gray-800">
+          <div class="flex items-center justify-center gap-5 text-xs text-gray-500">
             <div class="flex items-center gap-1.5">
-              <i class="fa-solid fa-lock text-emerald-500"></i>
+              <i class="fa-solid fa-lock text-green-500"></i>
               <span>Amakuru arinzwe</span>
             </div>
             <div class="flex items-center gap-1.5">
-              <i class="fa-solid fa-check-circle text-blue-500"></i>
+              <i class="fa-solid fa-check-circle text-green-600"></i>
               <span>Verification</span>
             </div>
           </div>
@@ -498,7 +433,7 @@
     function goBack() {
       try {
         const ret = sessionStorage.getItem('roadRulesReturnTo');
-        const validPages = ['/index.html', '/imyitozo.html', '/ibibazo.html', '/ifitabuguzi.html', 'index.html', 'imyitozo.html', 'ibibazo.html', 'ifitabuguzi.html'];
+        const validPages = ['/index.html', '/imyitozo.html', '/ibibazo.html', '/ifitabuguzi.html', 'index.html', 'imyitozo.html', 'ibibazo.html', '/ifitabuguzi.html'];
         if (ret && validPages.some(p => ret.includes(p))) {
           sessionStorage.removeItem('roadRulesReturnTo');
           window.location.href = ret;
@@ -517,21 +452,9 @@
     (function() {
       const btn = document.getElementById('back-home-btn');
       if (!btn) return;
-
-      function applyTheme() {
-        try {
-          const saved = localStorage.getItem('roadRulesTheme');
-          const dark = saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          btn.classList.remove('light', 'dark');
-          btn.classList.add(dark ? 'dark' : 'light');
-        } catch (e) {
-          btn.classList.add('light');
-        }
-      }
-
-      applyTheme();
-      window.addEventListener('themechange', applyTheme);
-      window.addEventListener('storage', applyTheme);
+      btn.style.background = '#1f2937';
+      btn.style.color = '#f9fafb';
+      btn.style.borderColor = '#4b5563';
     })();
   </script>
 </body>
