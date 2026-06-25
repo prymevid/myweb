@@ -151,7 +151,14 @@
             const user = await sbRpc('roadrules_signup', { p_name: name, p_phone: phone, p_district: district, p_password: password });
             saveSession(user);
             showToast('Kwiyandikisha byagenze neza!');
-            if (window.location.pathname.includes('signup.html')) { setTimeout(() => location.replace('login.html'), 400); return; }
+            if (window.location.pathname.includes('signup.html')) {
+                const ret = sessionStorage.getItem('roadRulesReturnTo');
+                const validPages = ['/index.html', '/imyitozo.html', '/ibibazo.html', '/ifitabuguzi.html', 'index.html', 'imyitozo.html', 'ibibazo.html', '/signup.html', 'signup.html'];
+                const target = ret && validPages.some(p => ret.includes(p)) ? ret : 'index.html';
+                sessionStorage.removeItem('roadRulesReturnTo');
+                setTimeout(() => location.replace(target), 400);
+                return;
+            }
             switchAuthTab('login');
             const lp = document.getElementById('login-phone'); if (lp) lp.value = phone;
         } catch (err) { showToast('Byanze: ' + err.message, 'error'); }
@@ -357,32 +364,113 @@
         inshuro5: { maxExams: 5,   cooldownMs: 0,           singleAttempt: false },
         ukwezi:   { maxExams: 999, cooldownMs: 2*60*1000,   singleAttempt: false }
     };
+    function _normalizePlan(p) {
+        if (!p) return 'ubuntu';
+        if (p === 'icyumweru' || p === 'inshuro5') return 'inshuro5';
+        if (p === 'inshuro2') return 'inshuro2';
+        if (p === 'ukwezi') return 'ukwezi';
+        if (PLAN_LIMITS[p]) return p;
+        return 'ubuntu';
+    }
     function _getCurrentPlan() {
         try {
             const sub = getSession()?.subscription;
             if (sub?.status === 'approved' && sub?.plan) {
-                const p = sub.plan;
-                if (PLAN_LIMITS[p]) return p;
-                if (p === 'inshuro5' || p === 'icyumweru') return 'inshuro5';
-                if (p === 'ukwezi') return 'ukwezi';
-                if (p === 'inshuro2') return 'inshuro2';
+                return _normalizePlan(sub.plan);
             }
         } catch {}
         return 'ubuntu';
     }
     function _getPendingUpgrade() { try { const u = getSession(); return (u?.pendingUpgrade?.status === 'pending') ? u.pendingUpgrade : null; } catch { return null; } }
 
+    function _getRemainingExams() {
+        try { const u = getSession(); return typeof u?.remainingExams === 'number' ? u.remainingExams : null; } catch { return null; }
+    }
+    function _setRemainingExams(val) {
+        try {
+            const u = getSession() || {};
+            u.remainingExams = Math.max(0, val);
+            saveSession(u);
+        } catch {}
+    }
+    function _addRemainingExams(add) {
+        const cur = _getRemainingExams();
+        if (cur === null) return;
+        _setRemainingExams(cur + Math.max(0, add));
+    }
+    function _getEffectiveMax() {
+        const plan = _getCurrentPlan();
+        const info = PLAN_LIMITS[plan] || PLAN_LIMITS.ubuntu;
+        // ukwezi is effectively unlimited
+        if (info.maxExams >= 999) return 999;
+        // Use remainingExams as the source of truth when available (already includes stacked allowances)
+        const rem = _getRemainingExams();
+        if (typeof rem === 'number') return Math.max(0, rem);
+        return info.maxExams;
+    }
+    function refreshPlanStack() {
+        try {
+            const u = getSession() || {};
+            const sub = u.subscription;
+            if (sub?.status === 'approved' && sub?.plan) {
+                const plan = _normalizePlan(sub.plan);
+                const info = PLAN_LIMITS[plan] || PLAN_LIMITS.ubuntu;
+                const prevPlan = u.currentPlan || 'ubuntu';
+                const lastPaidAt = u.lastPaidAt ? Date.parse(u.lastPaidAt) : 0;
+                const currentPaidAt = sub.paidAt ? Date.parse(sub.paidAt) : 0;
+                const isNewPurchase = isNaN(currentPaidAt)
+                  ? sub.paidAt !== u.lastPaidAt
+                  : currentPaidAt > Math.max(0, lastPaidAt);
+
+                if (info.maxExams >= 999) {
+                    // ukwezi: unlimited; track plan + paidAt, ignore stacking
+                    u.remainingExams = 8888;
+                } else {
+                    const base = info.maxExams;
+                    let remaining = typeof u.remainingExams === 'number' ? u.remainingExams : null;
+
+                    if (remaining === null) {
+                        // First time seeding: base plan allowance minus completed exams
+                        const completed = window.RoadRulesAccess?.getCompletedExamCount ? window.RoadRulesAccess.getCompletedExamCount() : 0;
+                        remaining = Math.max(0, base - completed);
+                    } else if (isNewPurchase || plan !== prevPlan) {
+                        // New purchase or plan change: add the new plan's base allowance to existing remaining
+                        remaining = remaining + base;
+                    }
+                    // else: same plan, no new purchase detected -> keep existing remaining
+
+                    u.remainingExams = Math.max(0, remaining);
+                }
+                u.currentPlan = plan;
+                if (sub.paidAt) u.lastPaidAt = sub.paidAt;
+                saveSession(u);
+            }
+        } catch {}
+    }
+
     window.RoadRulesAccess = {
         getCurrentPlan: _getCurrentPlan,
         getPlanInfo: () => ({ plan: _getCurrentPlan(), ...(PLAN_LIMITS[_getCurrentPlan()] || PLAN_LIMITS.ubuntu) }),
-        getMaxExamsAllowed: () => (PLAN_LIMITS[_getCurrentPlan()] || PLAN_LIMITS.ubuntu).maxExams,
+        getMaxExamsAllowed: _getEffectiveMax,
+        getBaseMaxExamsAllowed: () => (PLAN_LIMITS[_getCurrentPlan()] || PLAN_LIMITS.ubuntu).maxExams,
         isSingleAttemptPlan: () => !!(PLAN_LIMITS[_getCurrentPlan()] || PLAN_LIMITS.ubuntu).singleAttempt,
         getLastExamCompletedAt: () => { try { const k = `roadRulesLastExamAt_${getSession()?.phone||'guest'}`; const v = localStorage.getItem(k); return v ? parseInt(v) : 0; } catch { return 0; } },
         setLastExamCompletedAt: (ts = Date.now()) => { try { localStorage.setItem(`roadRulesLastExamAt_${getSession()?.phone||'guest'}`, String(ts)); } catch {} },
         getCooldownRemainingMs: () => { const info = (PLAN_LIMITS[_getCurrentPlan()] || PLAN_LIMITS.ubuntu); if (!info.cooldownMs) return 0; const last = window.RoadRulesAccess.getLastExamCompletedAt(); return last ? Math.max(0, info.cooldownMs - (Date.now() - last)) : 0; },
         canStartExamNow: () => window.RoadRulesAccess.getCooldownRemainingMs() === 0,
         getCompletedExamCount: () => { try { const k = `roadRulesExamHistory_${getSession()?.phone||'guest'}`; const a = JSON.parse(localStorage.getItem(k)||'[]'); return Array.isArray(a) ? a.length : 0; } catch { return 0; } },
-        canStartMoreExams: () => { const max = window.RoadRulesAccess.getMaxExamsAllowed(); return max >= 999 || window.RoadRulesAccess.getCompletedExamCount() < max; },
+        canStartMoreExams: () => {
+            const max = window.RoadRulesAccess.getMaxExamsAllowed();
+            const rem = window.RoadRulesAccess.getRemainingExams ? window.RoadRulesAccess.getRemainingExams() : null;
+            if (typeof rem === 'number') {
+                return max >= 999 || rem > 0;
+            }
+            const done = window.RoadRulesAccess.getCompletedExamCount ? window.RoadRulesAccess.getCompletedExamCount() : 0;
+            return max >= 999 || done < max;
+        },
+        getRemainingExams: _getRemainingExams,
+        addRemainingExams: _addRemainingExams,
+        refreshPlanStack,
         getPendingUpgrade: _getPendingUpgrade,
         PLAN_LIMITS
     };
@@ -576,7 +664,11 @@
         if (!isStandaloneAuth) createAuthModal();
         _attachHandlers();
         const u = getSession();
-        if (u) setTimeout(() => window.RoadRulesAuth.updateAuthUI(), 300);
+        if (u) {
+            // Ensure plan stack/remaining exams is up-to-date on every load
+            try { window.RoadRulesAccess.refreshPlanStack(); } catch {}
+            setTimeout(() => window.RoadRulesAuth.updateAuthUI(), 300);
+        }
         console.log('%c[RoadRules] Direct Supabase mode — no server required.', 'color:#10b981');
         console.log('%c[RoadRules Admin] window.RoadRulesAdmin.* → Supabase RPCs', 'color:#f59e0b');
     }

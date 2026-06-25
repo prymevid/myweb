@@ -34,6 +34,11 @@ function applyTheme(dark) {
 function toggleTheme() {
   const isDark = document.documentElement.classList.contains('dark');
   applyTheme(!isDark);
+  const btn = document.getElementById('theme-toggle');
+  if (btn) {
+    btn.style.transform = 'scale(0.92)';
+    setTimeout(() => { btn.style.transform = ''; }, 120);
+  }
 }
 
 function initTheme() {
@@ -236,6 +241,16 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
     <span class="absolute -top-0.5 -right-0.5 h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-slate-900 animate-pulse"></span>
   `;
   document.body.appendChild(fab);
+  // FAB entry animation: slides up + fades in
+  fab.style.opacity = '0';
+  fab.style.transform = 'translateY(18px) scale(0.9)';
+  fab.style.transition = 'opacity 0.4s ease 0.6s, transform 0.4s cubic-bezier(0.23,1,0.32,1) 0.6s';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fab.style.opacity = '1';
+      fab.style.transform = 'translateY(0) scale(1)';
+    });
+  });
   // Force visible (defensive against visibility logic on imyitozo etc.)
   fab.style.display = 'flex';
   fab.style.pointerEvents = 'auto';
@@ -940,16 +955,22 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   }
 
   async function openPanel() {
-    if (isOpen) return;
-    isOpen = true;
+  if (isOpen) return;
+  isOpen = true;
 
-    // Force absolute maximum height instantly — fully expanded from the very first frame
-    // No compact state, no height transition or growth animation on any device
-    panel.style.transition = 'none';
-    panel.style.maxHeight = window.innerWidth <= 768 ? '92vh' : '85vh';
+  // Smooth open: start scaled down + faded, then pop in
+  panel.style.transition = 'none';
+  panel.style.transform = 'scale(0.94) translateY(12px)';
+  panel.style.opacity = '0';
+  panel.style.maxHeight = window.innerWidth <= 768 ? '92vh' : '85vh';
 
-    panel.classList.remove('hidden');
-    panel.classList.add('flex');
+  panel.classList.remove('hidden');
+  panel.classList.add('flex');
+
+  panel.offsetHeight; // force reflow
+  panel.style.transition = 'transform 0.22s cubic-bezier(0.23,1,0.32,1), opacity 0.18s ease';
+  panel.style.transform = 'scale(1) translateY(0)';
+  panel.style.opacity = '1';
 
     // Persist: remember panel is open so it doesn't auto-close on page reload / load
     try { sessionStorage.setItem('rrHelpPanelOpen', '1'); } catch (_) {}
@@ -1015,13 +1036,23 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
     scrollToBottom();
   }
 
-  function closePanel() {
-    // Save whatever the user was looking at before wiping everything
-    saveCurrentPersonaHistory();
+  async function closePanel() {
+  // Save whatever the user was looking at before wiping everything
+  saveCurrentPersonaHistory();
 
-    isOpen = false;
-    panel.classList.remove('flex');
-    panel.classList.add('hidden');
+  // Smooth close animation
+  panel.style.transition = 'transform 0.18s cubic-bezier(0.4,0,0.2,1), opacity 0.14s ease';
+  panel.style.transform = 'scale(0.94) translateY(10px)';
+  panel.style.opacity = '0';
+
+  await new Promise(r => setTimeout(r, 150));
+
+  isOpen = false;
+  panel.classList.remove('flex');
+  panel.classList.add('hidden');
+  panel.style.transform = '';
+  panel.style.opacity = '';
+  panel.style.transition = '';
 
     // Persist: only closed because user clicked close icon (or ESC). On next load it will stay closed.
     try { sessionStorage.setItem('rrHelpPanelOpen', '0'); } catch (_) {}

@@ -945,6 +945,18 @@
         window.RoadRulesAccess.setLastExamCompletedAt();
       }
 
+      // Decrement stacked remaining exams for non-ukwezi plans
+      try {
+        const planNow = window.RoadRulesAccess?.getCurrentPlan ? window.RoadRulesAccess.getCurrentPlan() : 'ubuntu';
+        const rem = window.RoadRulesAccess?._getRemainingExams ? window.RoadRulesAccess._getRemainingExams() : null;
+        if (planNow !== 'ukwezi' && typeof rem === 'number' && rem > 0) {
+          window.RoadRulesAccess._setRemainingExams(rem - 1);
+        }
+      } catch {}
+
+      // Refresh plan stack + UI after completion
+      try { if (window.RoadRulesAccess?.refreshPlanStack) window.RoadRulesAccess.refreshPlanStack(); } catch {}
+
       // Now show result (with Watsinze / Watsinzwe + possible celebration)
       showExamResult(result);
 
@@ -1223,7 +1235,7 @@
             </div>
             ${skipped ? '' : `
               <div class="ml-6 mt-2 text-[11px] ${userIdx === correctIdx ? 'text-emerald-600' : 'text-red-600'}">
-                ${userIdx === correctIdx ? 'Wahisemo icyiza!' : 'Wahisemo ikindi — icyiza cyari: ' + String.fromCharCode(65 + correctIdx)}
+                ${userIdx === correctIdx ? 'Wahisemo neza!' : 'Wahisemo nabi — igisubizo cyari: ' + String.fromCharCode(65 + correctIdx)}
               </div>`}
           </div>`;
 

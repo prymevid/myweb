@@ -26,7 +26,7 @@
     .logo-font { font-family: 'Poppins', 'Inter', system-ui, sans-serif; }
     .pro-grid { 
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      grid-template-columns: 1fr;
       gap: 14px; 
     }
     .empty-state { grid-column: 1 / -1; }
@@ -815,6 +815,17 @@ ${isLocked
 
     function escapeHtml(str) {
       return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m] || m));
+    }
+
+    function openRandomUnlocked() {
+      const total = (isuzumaGroups || []).length;
+      if (!total) return;
+      const access = (window.RoadRulesAccess && window.RoadRulesAccess.getMaxExamsAllowed) ? Math.min(window.RoadRulesAccess.getMaxExamsAllowed(), total) : 5;
+      const unlocked = [];
+      for (let i = 0; i < access; i++) unlocked.push(i);
+      if (!unlocked.length) return;
+      const pick = unlocked[Math.floor(Math.random() * unlocked.length)];
+      openIsuzumaPro(pick);
     }
 
     function initIbibazoPro() {
