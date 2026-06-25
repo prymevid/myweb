@@ -40,7 +40,7 @@
 
     .auth-brand {
       flex: 1.2;
-      background: linear-gradient(160deg, #071a0f 0%, #0f3d1f 40%, #072814 100%);
+      background: linear-gradient(160deg, #0f1a2e 0%, #1e3a5f 40%, #0f2847 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -54,9 +54,9 @@
       position: absolute;
       inset: 0;
       background-image:
-        radial-gradient(ellipse at 30% 20%, rgba(34, 197, 94, 0.12) 0%, transparent 45%),
-        radial-gradient(ellipse at 70% 60%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 90%, rgba(5, 150, 105, 0.1) 0%, transparent 50%);
+        radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
+        radial-gradient(ellipse at 70% 60%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(96, 165, 250, 0.12) 0%, transparent 50%);
       pointer-events: none;
     }
 
@@ -64,11 +64,11 @@
       content: '';
       position: absolute;
       inset: 0;
-      opacity: 0.25;
+      opacity: 0.3;
       background-image:
-        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08) 1px, transparent 2px),
-        radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 2px),
-        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.06) 1px, transparent 2px);
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 1px, transparent 2px),
+        radial-gradient(circle at 60% 70%, rgba(255,255,255,0.06) 1px, transparent 2px),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 1px, transparent 2px);
       background-size: 60px 60px, 80px 80px, 100px 100px;
       pointer-events: none;
     }
@@ -82,19 +82,19 @@
     }
     .brand-glow-1 {
       width: 400px; height: 400px;
-      background: rgba(34, 197, 94, 0.35);
+      background: rgba(59, 130, 246, 0.4);
       top: -10%; left: -5%;
       animation: brandGlow 14s ease-in-out infinite alternate;
     }
     .brand-glow-2 {
       width: 350px; height: 350px;
-      background: rgba(5, 150, 105, 0.3);
+      background: rgba(37, 99, 235, 0.35);
       bottom: -5%; right: 5%;
       animation: brandGlow 18s ease-in-out infinite alternate-reverse;
     }
     .brand-glow-3 {
       width: 250px; height: 250px;
-      background: rgba(16, 185, 129, 0.25);
+      background: rgba(96, 165, 250, 0.3);
       top: 50%; left: 40%;
       animation: brandGlow 12s ease-in-out infinite alternate;
     }
@@ -127,14 +127,22 @@
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+    }
+    .brand-feature:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateX(4px);
     }
     .brand-feature-icon {
-      width: 40px; height: 40px;
-      border-radius: 12px;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      background: rgba(59, 130, 246, 0.25);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
 
     .auth-form-side {
@@ -143,7 +151,7 @@
       align-items: center;
       justify-content: center;
       padding: 2rem;
-      background: #060e0a;
+      background: #f8fafc;
       position: relative;
     }
 
@@ -152,7 +160,7 @@
       position: absolute;
       inset: 0;
       background-image:
-        radial-gradient(ellipse at 50% 20%, rgba(34, 197, 94, 0.04) 0%, transparent 55%);
+        radial-gradient(ellipse at 50% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 55%);
       pointer-events: none;
     }
 
@@ -165,105 +173,226 @@
 
     .form-header {
       margin-bottom: 2.5rem;
+      position: relative;
+    }
+    .form-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+      border-radius: 100px;
+    }
+    .form-header h2 {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .form-header h2 i {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2rem;
     }
 
     .underline-input-group {
       margin-bottom: 1.5rem;
+      position: relative;
     }
 
     .underline-label {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       font-size: 0.78rem;
       font-weight: 600;
-      color: #6b7280;
+      color: #475569;
       margin-bottom: 0.6rem;
       letter-spacing: 0.02em;
     }
+    .underline-label i {
+      font-size: 0.85rem;
+      color: #2563eb;
+      opacity: 0.9;
+    }
 
-    .underline-input {
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 12px;
+      padding: 0.2rem 0.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1.5px solid #e2e8f0;
+    }
+    .input-wrapper:hover {
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12), 0 0 0 2px rgba(59, 130, 246, 0.15);
+      border-color: #93c5fd;
+      background: #fefefe;
+    }
+    .input-wrapper:focus-within {
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2), 0 0 0 3px rgba(59, 130, 246, 0.2);
+      background: #ffffff;
+      border-color: #3b82f6;
+    }
+    .input-icon {
+      position: absolute;
+      left: 0.75rem;
+      color: #64748b;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .input-wrapper input {
       width: 100%;
-      padding: 0.7rem 0;
+      padding: 0.85rem 3rem 0.85rem 2.75rem;
       border: none;
-      border-bottom: 1.5px solid #333a35;
       background: transparent;
       font-size: 0.95rem;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
       outline: none;
-      color: #e5e7eb;
-      border-radius: 0;
+      color: #1e293b;
+      border-radius: 10px;
+      position: relative;
+      z-index: 1;
     }
-    .underline-input:focus {
-      border-bottom-color: #22c55e;
-      box-shadow: 0 1px 0 0 #22c55e;
+    .input-wrapper input.has-toggle {
+      padding-right: 4.5rem;
     }
-    .underline-input::placeholder {
-      color: #6b7280;
+    .input-wrapper:hover .input-icon {
+      color: #2563eb;
+      transform: scale(1.15) rotate(5deg);
     }
-    .underline-input:-webkit-autofill,
-    .underline-input:-webkit-autofill:hover,
-    .underline-input:-webkit-autofill:focus {
-      -webkit-text-fill-color: #e5e7eb;
-      -webkit-box-shadow: 0 0 0px 1000px #060e0a inset;
-      caret-color: #e5e7eb;
-      transition: background-color 5000s ease-in-out 0s;
+    .input-wrapper:focus-within .input-icon {
+      color: #2563eb;
+      transform: scale(1.15) rotate(-5deg);
+    }
+    .password-toggle {
+      position: absolute;
+      right: 0.5rem;
+      background: rgba(59, 130, 246, 0.08);
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      z-index: 2;
+    }
+    .password-toggle:hover {
+      color: #2563eb;
+      background: rgba(59, 130, 246, 0.15);
+      transform: scale(1.1) rotate(10deg);
     }
 
     .underline-select {
       width: 100%;
-      padding: 0.7rem 0;
+      padding: 0.85rem 3rem 0.85rem 2.75rem;
       border: none;
-      border-bottom: 1.5px solid #333a35;
       background: transparent;
       font-size: 0.95rem;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
       outline: none;
-      color: #e5e7eb;
-      border-radius: 0;
+      color: #1e293b;
+      border-radius: 10px;
+      position: relative;
+      z-index: 1;
       appearance: none;
       -webkit-appearance: none;
       cursor: pointer;
     }
     .underline-select:focus {
-      border-bottom-color: #22c55e;
-      box-shadow: 0 1px 0 0 #22c55e;
+      color: #1e293b;
     }
     .underline-select option {
       background: #1f2937;
       color: #e5e7eb;
     }
 
-    .green-btn {
+    .blue-btn {
       width: 100%;
       padding: 0.95rem;
-      border-radius: 10px;
+      border-radius: 14px;
       font-weight: 600;
       font-size: 0.95rem;
       border: none;
       cursor: pointer;
-      transition: all 0.2s ease;
-      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: white;
-      box-shadow: 0 8px 24px rgba(22, 163, 74, 0.2);
+      box-shadow: 0 8px 28px rgba(37, 99, 235, 0.25);
       margin-top: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border: 2px solid transparent;
     }
-    .green-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 32px rgba(22, 163, 74, 0.3);
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    .blue-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
     }
-    .green-btn:active {
-      transform: translateY(0) scale(0.99);
+    .blue-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    .blue-btn:hover {
+      box-shadow: 0 14px 36px rgba(37, 99, 235, 0.35);
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .blue-btn:active {
+      transform: scale(0.98);
+    }
+    .blue-btn i {
+      font-size: 0.9rem;
     }
 
     .auth-link {
-      color: #9ca3af;
+      color: #64748b;
       text-decoration: none;
       font-weight: 600;
       font-size: 0.875rem;
-      transition: color 0.2s ease;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .auth-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #2563eb;
+      transition: width 0.2s ease;
+      border-radius: 100px;
     }
     .auth-link:hover {
-      color: #22c55e;
+      color: #2563eb;
+    }
+    .auth-link:hover::after {
+      width: 100%;
     }
 
     .back-home-btn {
@@ -274,19 +403,36 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.6rem 1.1rem;
-      border-radius: 10px;
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
       font-weight: 600;
       font-size: 0.8rem;
       text-decoration: none;
       transition: all 0.2s ease;
-      background: #1f2937;
-      color: #f9fafb;
-      border: 1px solid #374151;
+      background: white;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .back-home-btn i {
+      font-size: 0.75rem;
     }
     .back-home-btn:hover {
-      background: #111827;
-      transform: translateY(-2px);
+      background: #f1f5f9;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .dark .back-home-btn {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-color: #334155;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .dark .back-home-btn:hover {
+      background: #334155;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     .loading-spinner {
@@ -301,15 +447,102 @@
       to { transform: rotate(360deg); }
     }
 
+    /* Dark theme */
+    .dark .auth-form-side {
+      background: #0f172a;
+    }
+    .dark .auth-form-side::before {
+      background-image:
+        radial-gradient(ellipse at 50% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 55%);
+    }
+    .dark .input-wrapper {
+      background: #1e293b;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      border-color: #334155;
+    }
+    .dark .input-wrapper:hover {
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+      background: #263348;
+      border-color: #60a5fa;
+    }
+    .dark .input-wrapper:focus-within {
+      background: #1e293b;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+      border-color: #60a5fa;
+    }
+    .dark .input-wrapper input {
+      color: #f1f5f9;
+    }
+    .dark .input-wrapper input::placeholder {
+      color: #94a3b8;
+    }
+    .dark .input-icon {
+      color: #cbd5e1;
+    }
+    .dark .input-wrapper:hover .input-icon,
+    .dark .input-wrapper:focus-within .input-icon {
+      color: #60a5fa;
+    }
+    .dark .password-toggle {
+      color: #cbd5e1;
+      background: rgba(59, 130, 246, 0.15);
+    }
+    .dark .password-toggle:hover {
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.25);
+    }
+    .dark .underline-label {
+      color: #e2e8f0;
+    }
+    .dark .underline-select {
+      color: #f1f5f9;
+    }
+    .dark .underline-select option {
+      background: #1e293b;
+      color: #f1f5f9;
+    }
+    .dark .form-header h2 {
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .dark .form-container > p,
+    .dark .mt-6 span {
+      color: #94a3b8;
+    }
+    .dark .border-t {
+      border-color: #1e293b;
+    }
+    .dark .border-t .text-slate-500 {
+      color: #cbd5e1;
+    }
+
     /* Responsive */
     @media (max-width: 1024px) {
-      .auth-brand { display: none; }
-      .auth-form-side { flex: 1; background: #060e0a; }
+      .auth-brand {
+        display: none;
+      }
+      .auth-form-side {
+        flex: 1;
+        background: #f8fafc;
+      }
+      .dark .auth-form-side {
+        background: #0f172a;
+      }
     }
+
     @media (max-width: 640px) {
-      .auth-form-side { padding: 1.5rem; }
-      .form-container { max-width: 100%; }
-      .back-home-btn { top: 1rem; right: 1rem; }
+      .auth-form-side {
+        padding: 1.5rem;
+      }
+      .form-container {
+        max-width: 100%;
+      }
+      .back-home-btn {
+        top: 1rem;
+        right: 1rem;
+      }
     }
   </style>
 </head>
@@ -331,126 +564,158 @@
 
       <div style="position: relative; z-index: 2; max-width: 420px;">
         <div class="mb-6">
-          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20">
-            <i class="fa-solid fa-road text-2xl text-white"></i>
+          <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-md border-2 border-white/30 shadow-xl shadow-blue-900/40">
+            <i class="fa-solid fa-road text-3xl text-white drop-shadow-lg"></i>
           </div>
         </div>
 
         <h1 class="text-4xl font-bold text-white mb-3 tracking-tight">
           Umwitozo wawe utangire
         </h1>
-        <p class="text-green-100/70 text-base leading-relaxed">
+        <p class="text-blue-100/80 text-base leading-relaxed">
           Fata icyemezo cyawe cy'umuhanda. Injira kuri perime.rw ujye ukore imyitozo yuzuye, urebe ibisubizo bisobanurwa kandi utsinde ikizamini.
         </p>
 
         <div class="mt-8 space-y-3">
           <div class="brand-feature">
-            <div class="brand-feature-icon bg-green-500/20">
-              <i class="fa-solid fa-check text-green-400"></i>
+            <div class="brand-feature-icon">
+              <i class="fa-solid fa-user-graduate text-xl text-white"></i>
             </div>
             <div>
               <div class="text-white font-semibold text-sm">Byaranamo 15,000+ abanyeshuri</div>
-              <div class="text-green-200/60 text-xs mt-0.5">Batsindiye ikizamini ku nshuro ya mbere</div>
+              <div class="text-blue-200/60 text-xs mt-0.5">Batsindiye ikizamini ku nshuro ya mbere</div>
             </div>
           </div>
 
           <div class="brand-feature">
-            <div class="brand-feature-icon bg-emerald-500/20">
-              <i class="fa-solid fa-trophy text-emerald-400"></i>
+            <div class="brand-feature-icon">
+              <i class="fa-solid fa-trophy text-xl text-white"></i>
             </div>
             <div>
               <div class="text-white font-semibold text-sm">Igipimo cyo gutsinda 94%</div>
-              <div class="text-green-200/60 text-xs mt-0.5">Abakoresha urubuga rwacu</div>
+              <div class="text-blue-200/60 text-xs mt-0.5">Abakoresha urubuga rwacu</div>
             </div>
           </div>
 
           <div class="brand-feature">
-            <div class="brand-feature-icon bg-teal-500/20">
-              <i class="fa-solid fa-star text-teal-400"></i>
+            <div class="brand-feature-icon">
+              <i class="fa-solid fa-star text-xl text-white"></i>
             </div>
             <div>
               <div class="text-white font-semibold text-sm">Imyitozo 28,000+ yakoze</div>
-              <div class="text-green-200/60 text-xs mt-0.5">Ibisubizo bisobanurwa mu Kinyarwanda</div>
+              <div class="text-blue-200/60 text-xs mt-0.5">Ibisubizo bisobanurwa mu Kinyarwanda</div>
             </div>
           </div>
         </div>
       </div>
 
       <div style="position: relative; z-index: 2;">
-        <div class="text-green-300/50 text-xs">
-          © 2026 RoadRules Ltd. • Kigali, Rwanda
+        <div class="text-blue-300/60 text-xs flex items-center gap-2">
+          <i class="fa-solid fa-heart"></i>
+          <span>© 2026 RoadRules Ltd. • Kigali, Rwanda</span>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: Dark form side -->
+    <!-- RIGHT: Form side (light by default, dark when .dark is on html) -->
     <div class="auth-form-side">
       <button onclick="goBack()" id="back-home-btn" class="back-home-btn">
-        <i class="fa-solid fa-chevron-left text-xs"></i>
+        <i class="fa-solid fa-arrow-left"></i>
         <span>Subira inyuma</span>
       </button>
 
       <div class="form-container">
         <div class="form-header">
-          <h2 class="text-3xl font-bold text-white tracking-tight">Iyandikishe</h2>
-          <p class="text-gray-400 mt-2 text-sm">Fungura konti utangire kwihugura</p>
+          <h2 class="text-3xl font-bold tracking-tight">
+            <i class="fa-solid fa-user-plus"></i>
+            Iyandikishe
+          </h2>
+          <p class="text-slate-500 mt-3 text-sm">Fungura konti utangire kwihugura</p>
         </div>
 
         <form id="signup-form">
           <div class="underline-input-group">
-            <label class="underline-label">AMAZINA YAWE</label>
-            <input id="signup-name" type="text" placeholder="Amazina yawe" autocomplete="name" class="underline-input" />
+            <label class="underline-label">
+              <i class="fa-solid fa-user"></i>
+              AMAZINA YAWE
+            </label>
+            <div class="input-wrapper">
+              <input id="signup-name" type="text" placeholder="Amazina yawe" autocomplete="name" class="underline-input" />
+              <i class="fa-solid fa-user input-icon"></i>
+            </div>
           </div>
 
           <div class="underline-input-group">
-            <label class="underline-label">NIMERO YA TELEFONE</label>
-            <input id="signup-phone" type="tel" placeholder="0788 123 456" autocomplete="tel" class="underline-input" />
+            <label class="underline-label">
+              <i class="fa-solid fa-phone"></i>
+              NIMERO YA TELEFONE
+            </label>
+            <div class="input-wrapper">
+              <input id="signup-phone" type="tel" placeholder="0788 123 456" autocomplete="tel" class="underline-input" />
+              <i class="fa-solid fa-phone input-icon"></i>
+            </div>
           </div>
 
           <div class="underline-input-group">
-            <label class="underline-label">AKARERE (DISTRICT)</label>
-            <select id="signup-district" class="underline-select">
-              <option value="Kigali">Kigali</option>
-              <option value="Musanze">Musanze</option>
-              <option value="Rubavu">Rubavu</option>
-              <option value="Huye">Huye</option>
-              <option value="Nyagatare">Nyagatare</option>
-              <option value="Rusizi">Rusizi</option>
-              <option value="Rwamagana">Rwamagana</option>
-              <option value="Gicumbi">Gicumbi</option>
-              <option value="Muhanga">Muhanga</option>
-              <option value="Ruhango">Ruhango</option>
-              <option value="Nyamasheke">Nyamasheke</option>
-              <option value="Kayonza">Kayonza</option>
-              <option value="Karongi">Karongi</option>
-              <option value="Bugesera">Bugesera</option>
-              <option value="Nyanza">Nyanza</option>
-            </select>
+            <label class="underline-label">
+              <i class="fa-solid fa-location-dot"></i>
+              AKARERE (DISTRICT)
+            </label>
+            <div class="input-wrapper">
+              <select id="signup-district" class="underline-select">
+                <option value="Kigali">Kigali</option>
+                <option value="Musanze">Musanze</option>
+                <option value="Rubavu">Rubavu</option>
+                <option value="Huye">Huye</option>
+                <option value="Nyagatare">Nyagatare</option>
+                <option value="Rusizi">Rusizi</option>
+                <option value="Rwamagana">Rwamagana</option>
+                <option value="Gicumbi">Gicumbi</option>
+                <option value="Muhanga">Muhanga</option>
+                <option value="Ruhango">Ruhango</option>
+                <option value="Nyamasheke">Nyamasheke</option>
+                <option value="Kayonza">Kayonza</option>
+                <option value="Karongi">Karongi</option>
+                <option value="Bugesera">Bugesera</option>
+                <option value="Nyanza">Nyanza</option>
+              </select>
+              <i class="fa-solid fa-map input-icon"></i>
+            </div>
           </div>
 
           <div class="underline-input-group">
-            <label class="underline-label">IJAMBOBANGA</label>
-            <input id="signup-pass" type="password" placeholder="••••••••" autocomplete="new-password" class="underline-input" />
+            <label class="underline-label">
+              <i class="fa-solid fa-lock"></i>
+              IJAMBOBANGA
+            </label>
+            <div class="input-wrapper">
+              <input id="signup-pass" type="password" placeholder="••••••••" autocomplete="new-password" class="underline-input has-toggle" />
+              <button type="button" class="password-toggle" onclick="togglePassword('signup-pass', this)" aria-label="Toggle password visibility">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <i class="fa-solid fa-key input-icon"></i>
+            </div>
           </div>
 
-          <button type="submit" class="green-btn" id="signup-btn">
+          <button type="submit" class="blue-btn" id="signup-btn">
+            <i class="fa-solid fa-user-check"></i>
             <span>Iyandikishe</span>
           </button>
 
           <div class="mt-6 text-center">
-            <span class="text-sm text-gray-400">Usanzwe ufite konti? </span>
+            <span class="text-sm text-slate-500">Usanzwe ufite konti? </span>
             <a href="login.html" class="auth-link">Injira</a>
           </div>
         </form>
 
-        <div class="mt-10 pt-6 border-t border-gray-800">
-          <div class="flex items-center justify-center gap-5 text-xs text-gray-500">
+        <div class="mt-10 pt-6 border-t border-slate-200">
+          <div class="flex items-center justify-center gap-5 text-xs text-slate-500">
             <div class="flex items-center gap-1.5">
-              <i class="fa-solid fa-lock text-green-500"></i>
+              <i class="fa-solid fa-shield-halved text-blue-500"></i>
               <span>Amakuru arinzwe</span>
             </div>
             <div class="flex items-center gap-1.5">
-              <i class="fa-solid fa-check-circle text-green-600"></i>
+              <i class="fa-solid fa-circle-check text-blue-600"></i>
               <span>Verification</span>
             </div>
           </div>
@@ -474,6 +739,20 @@
         window.location.href = 'index.html';
       }
     }
+
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
   </script>
   <script src="auth.js"></script>
   <script src="common.js"></script>
@@ -481,9 +760,9 @@
     (function() {
       const btn = document.getElementById('back-home-btn');
       if (!btn) return;
-      btn.style.background = '#1f2937';
-      btn.style.color = '#f9fafb';
-      btn.style.borderColor = '#4b5563';
+      btn.style.background = '#ffffff';
+      btn.style.color = '#1e293b';
+      btn.style.borderColor = '#e2e8f0';
     })();
   </script>
 </body>

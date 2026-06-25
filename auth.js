@@ -152,11 +152,7 @@
             saveSession(user);
             showToast('Kwiyandikisha byagenze neza!');
             if (window.location.pathname.includes('signup.html')) {
-                const ret = sessionStorage.getItem('roadRulesReturnTo');
-                const validPages = ['/index.html', '/imyitozo.html', '/ibibazo.html', '/ifitabuguzi.html', 'index.html', 'imyitozo.html', 'ibibazo.html', '/signup.html', 'signup.html'];
-                const target = ret && validPages.some(p => ret.includes(p)) ? ret : 'index.html';
-                sessionStorage.removeItem('roadRulesReturnTo');
-                setTimeout(() => location.replace(target), 400);
+                setTimeout(() => location.replace('index.html'), 400);
                 return;
             }
             switchAuthTab('login');
