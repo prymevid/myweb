@@ -49,8 +49,182 @@
         if (_loader) return;
         _loader = document.createElement('div');
         _loader.id = 'roadrules-global-loader';
-        _loader.className = 'fixed inset-0 z-[9999] hidden bg-black/75 items-center justify-center';
-        _loader.innerHTML = `<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-2xl px-9 py-8 text-center min-w-[280px]"><div class="mb-5"><i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600"></i></div><div class="font-semibold text-[17px] tracking-tight">Tegereza Gato</div><div id="rr-loader-sub" class="text-[12.5px] text-slate-500 mt-1.5 min-h-[16px]"></div></div>`;
+        _loader.className = 'fixed inset-0 z-[9999] hidden items-center justify-center select-none';
+        _loader.innerHTML = `
+          <style>
+            .rr-loader-overlay {
+              position: fixed;
+              inset: 0;
+              z-index: 1000;
+              background: rgba(10, 10, 20, 0.12);
+              backdrop-filter: blur(3px);
+              -webkit-backdrop-filter: blur(3px);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+              gap: 32px;
+              pointer-events: auto;
+              animation: rrFadeInOverlay 0.45s ease-out;
+            }
+            @keyframes rrFadeInOverlay {
+              from { opacity: 0; backdrop-filter: blur(0px); }
+              to { opacity: 1; backdrop-filter: blur(3px); }
+            }
+            .rr-wrapper {
+              position: relative;
+              width: 180px;
+              height: 180px;
+              background-color: transparent;
+              border: none;
+              -webkit-user-select: none;
+              user-select: none;
+            }
+            .rr-wrapper .rr-box-wrap {
+              width: 70%;
+              height: 70%;
+              margin: calc((100% - 70%) / 2) calc((100% - 70%) / 2);
+              position: relative;
+              transform: rotate(-45deg);
+            }
+            .rr-wrapper .rr-box-wrap .rr-box {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              left: 0;
+              top: 0;
+              background: linear-gradient(to right, #141562, #486fbc, #eab5a1, #8dd6ff, #4973c9, #d07ca7, #f4915e, #f5919e, #b46f89, #141562, #486fbc);
+              background-position: 0% 50%;
+              background-size: 1000% 1000%;
+              visibility: hidden;
+              border-radius: 3px;
+            }
+            .rr-spinner-ring {
+              position: absolute;
+              inset: -10px;
+              border-radius: 50%;
+              border: 2px solid transparent;
+              border-top-color: rgba(255, 255, 255, 0.6);
+              border-right-color: rgba(255, 255, 255, 0.3);
+              border-bottom-color: rgba(255, 255, 255, 0.1);
+              border-left-color: rgba(255, 255, 255, 0.3);
+              animation: rrSpinRing 1.6s linear infinite;
+              pointer-events: none;
+              filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+            }
+            .rr-glow-ring {
+              position: absolute;
+              inset: -18px;
+              border-radius: 50%;
+              border: 1.5px solid transparent;
+              border-top-color: rgba(255, 255, 255, 0.12);
+              border-right-color: rgba(255, 255, 255, 0.06);
+              animation: rrSpinRing 3.2s linear infinite reverse;
+              pointer-events: none;
+            }
+            @keyframes rrSpinRing { to { transform: rotate(360deg); } }
+            .rr-loading-text {
+              font-size: 15px;
+              font-weight: 500;
+              letter-spacing: 5px;
+              text-transform: uppercase;
+              color: rgba(255, 255, 255, 0.75);
+              text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+              animation: rrSoftPulse 2.2s ease-in-out infinite;
+              z-index: 10;
+            }
+            @keyframes rrSoftPulse {
+              0%, 100% { opacity: 0.5; letter-spacing: 5px; }
+              50% { opacity: 0.95; letter-spacing: 6px; }
+            }
+            .rr-box.one { animation: rrMoveGradient 15s infinite, rrOneMove 3.5s infinite; }
+            .rr-box.two { animation: rrMoveGradient 15s infinite, rrTwoMove 3.5s 0.15s infinite; }
+            .rr-box.three { animation: rrMoveGradient 15s infinite, rrThreeMove 3.5s 0.3s infinite; }
+            .rr-box.four { animation: rrMoveGradient 15s infinite, rrFourMove 3.5s 0.575s infinite; }
+            .rr-box.five { animation: rrMoveGradient 15s infinite, rrFiveMove 3.5s 0.725s infinite; }
+            .rr-box.six { animation: rrMoveGradient 15s infinite, rrSixMove 3.5s 0.875s infinite; }
+            @keyframes rrMoveGradient { to { background-position: 100% 50%; } }
+            @keyframes rrOneMove {
+              0% { visibility: visible; clip-path: inset(0% 35% 70% round 5%); animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1); }
+              14.2857% { clip-path: inset(0% 35% 70% round 5%); }
+              28.5714% { clip-path: inset(35% round 5%); }
+              42.8571% { clip-path: inset(35% 70% 35% 0 round 5%); }
+              57.1428% { clip-path: inset(35% 70% 35% 0 round 5%); }
+              71.4285% { clip-path: inset(0% 70% 70% 0 round 5%); }
+              85.7142% { clip-path: inset(0% 70% 70% 0 round 5%); }
+              100% { clip-path: inset(0% 35% 70% round 5%); }
+            }
+            @keyframes rrTwoMove {
+              0% { visibility: visible; clip-path: inset(0% 70% 70% 0 round 5%); animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1); }
+              14.2857% { clip-path: inset(0% 70% 70% 0 round 5%); }
+              28.5714% { clip-path: inset(0% 35% 70% round 5%); }
+              42.8571% { clip-path: inset(0% 35% 70% round 5%); }
+              57.1428% { clip-path: inset(35% round 5%); }
+              71.4285% { clip-path: inset(35% 70% 35% 0 round 5%); }
+              85.7142% { clip-path: inset(35% 70% 35% 0 round 5%); }
+              100% { clip-path: inset(0% 70% 70% 0 round 5%); }
+            }
+            @keyframes rrThreeMove {
+              0% { visibility: visible; clip-path: inset(35% 70% 35% 0 round 5%); animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1); }
+              14.2857% { clip-path: inset(35% 70% 35% 0 round 5%); }
+              28.5714% { clip-path: inset(0% 70% 70% 0 round 5%); }
+              42.8571% { clip-path: inset(0% 70% 70% 0 round 5%); }
+              57.1428% { clip-path: inset(0% 35% 70% round 5%); }
+              71.4285% { clip-path: inset(0% 35% 70% round 5%); }
+              85.7142% { clip-path: inset(35% round 5%); }
+              100% { clip-path: inset(35% 70% 35% 0 round 5%); }
+            }
+            @keyframes rrFourMove {
+              0% { visibility: visible; clip-path: inset(35% 0% 35% 70% round 5%); animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1); }
+              14.2857% { clip-path: inset(35% 0% 35% 70% round 5%); }
+              28.5714% { clip-path: inset(35% round 5%); }
+              42.8571% { clip-path: inset(70% 35% 0% 35% round 5%); }
+              57.1428% { clip-path: inset(70% 35% 0% 35% round 5%); }
+              71.4285% { clip-path: inset(70% 0 0 70% round 5%); }
+              85.7142% { clip-path: inset(70% 0 0 70% round 5%); }
+              100% { clip-path: inset(35% 0% 35% 70% round 5%); }
+            }
+            @keyframes rrFiveMove {
+              0% { visibility: visible; clip-path: inset(70% 0 0 70% round 5%); animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1); }
+              14.2857% { clip-path: inset(70% 0 0 70% round 5%); }
+              28.5714% { clip-path: inset(35% 0% 35% 70% round 5%); }
+              42.8571% { clip-path: inset(35% 0% 35% 70% round 5%); }
+              57.1428% { clip-path: inset(35% round 5%); }
+              71.4285% { clip-path: inset(70% 35% 0% 35% round 5%); }
+              85.7142% { clip-path: inset(70% 35% 0% 35% round 5%); }
+              100% { clip-path: inset(70% 0 0 70% round 5%); }
+            }
+            @keyframes rrSixMove {
+              0% { visibility: visible; clip-path: inset(70% 35% 0% 35% round 5%); animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1); }
+              14.2857% { clip-path: inset(70% 35% 0% 35% round 5%); }
+              28.5714% { clip-path: inset(70% 0 0 70% round 5%); }
+              42.8571% { clip-path: inset(70% 0 0 70% round 5%); }
+              57.1428% { clip-path: inset(35% 0% 35% 70% round 5%); }
+              71.4285% { clip-path: inset(35% 0% 35% 70% round 5%); }
+              85.7142% { clip-path: inset(35% round 5%); }
+              100% { clip-path: inset(70% 35% 0% 35% round 5%); }
+            }
+            @media (max-width: 500px) {
+              .rr-wrapper { width: 140px; height: 140px; }
+              .rr-loading-text { font-size: 12px; letter-spacing: 3px; }
+            }
+          </style>
+          <div class="rr-loader-overlay">
+            <div class="rr-wrapper">
+              <div class="rr-spinner-ring"></div>
+              <div class="rr-glow-ring"></div>
+              <div class="rr-box-wrap">
+                <div class="rr-box one"></div>
+                <div class="rr-box two"></div>
+                <div class="rr-box three"></div>
+                <div class="rr-box four"></div>
+                <div class="rr-box five"></div>
+                <div class="rr-box six"></div>
+              </div>
+            </div>
+            <div class="rr-loading-text">Tegereza gato</div>
+          </div>
+        `;
         document.body.appendChild(_loader);
         _loaderSub = _loader.querySelector('#rr-loader-sub');
     }

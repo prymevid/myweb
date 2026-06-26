@@ -1,0 +1,235 @@
+/* RoadRules Creative Circling Loaders */
+
+/* ============================================
+   STYLE 1: Orbit Loader (planets around road icon)
+   ============================================ */
+.rr-loader-orbit {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 28px;
+}
+
+.rr-loader-orbit .orbit-center {
+  position: absolute;
+  inset: 30px;
+  background: linear-gradient(135deg, #2563eb, #4338ca);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 28px;
+  box-shadow: 0 20px 50px -12px rgba(37, 99, 235, 0.5);
+  z-index: 2;
+  animation: orbit-breathe 2.4s ease-in-out infinite;
+}
+
+.rr-loader-orbit .orbit-ring {
+  position: absolute;
+  inset: 0;
+  border: 1.5px dashed rgba(99, 102, 241, 0.25);
+  border-radius: 50%;
+  animation: orbit-spin 8s linear infinite;
+}
+
+.rr-loader-orbit .orbit-ring-2 {
+  inset: 8px;
+  border-style: dotted;
+  border-color: rgba(59, 130, 246, 0.3);
+  animation-duration: 6s;
+  animation-direction: reverse;
+}
+
+.rr-loader-orbit .orbit-dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  margin: -7px;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.rr-loader-orbit .orbit-dot.d1 {
+  background: #3b82f6;
+  color: #3b82f6;
+  animation: orbit-track1 3s linear infinite;
+}
+
+.rr-loader-orbit .orbit-dot.d2 {
+  background: #8b5cf6;
+  color: #8b5cf6;
+  width: 10px;
+  height: 10px;
+  margin: -5px;
+  animation: orbit-track2 4.5s linear infinite;
+}
+
+.rr-loader-orbit .orbit-dot.d3 {
+  background: #06b6d4;
+  color: #06b6d4;
+  width: 8px;
+  height: 8px;
+  margin: -4px;
+  animation: orbit-track3 5.5s linear infinite;
+}
+
+.rr-loader-orbit .orbit-dot.d4 {
+  background: #f59e0b;
+  color: #f59e0b;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px;
+  animation: orbit-track1 3s linear infinite reverse;
+  opacity: 0.8;
+}
+
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+@keyframes orbit-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+@keyframes orbit-track1 {
+  from { transform: rotate(0deg) translateX(54px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(54px) rotate(-360deg); }
+}
+@keyframes orbit-track2 {
+  from { transform: rotate(0deg) translateX(44px) rotate(0deg); }
+  to   { transform: rotate(-360deg) translateX(44px) rotate(360deg); }
+}
+@keyframes orbit-track3 {
+  from { transform: rotate(0deg) translateX(52px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(52px) rotate(-360deg); }
+}
+
+
+/* ============================================
+   STYLE 2: Cosmic Ring Loader (hula hoop style)
+   ============================================ */
+.rr-loader-cosmic {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 28px;
+}
+
+.rr-loader-cosmic .cosmic-center {
+  position: absolute;
+  inset: 38px;
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 26px;
+  box-shadow: 0 20px 60px -15px rgba(30, 27, 75, 0.6);
+  z-index: 2;
+  animation: cosmic-pulse 2s ease-in-out infinite;
+}
+
+.rr-loader-cosmic .cosmic-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.rr-loader-cosmic .ring-1 {
+  border-top-color: #6366f1;
+  border-right-color: #6366f1;
+  animation: cosmic-spin 1.6s cubic-bezier(0.68, -0.15, 0.27, 1.15) infinite;
+  filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
+}
+
+.rr-loader-cosmic .ring-2 {
+  inset: 10px;
+  border-bottom-color: #06b6d4;
+  border-left-color: #06b6d4;
+  animation: cosmic-spin 2.4s cubic-bezier(0.68, -0.15, 0.27, 1.15) infinite reverse;
+  filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.6));
+}
+
+.rr-loader-cosmic .ring-3 {
+  inset: 20px;
+  border-top-color: #f59e0b;
+  border-right-color: #f59e0b;
+  animation: cosmic-spin 3.2s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.5));
+}
+
+.rr-loader-cosmic .comet {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #fff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  margin: -2.5px;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.9);
+  animation: comet-orbit 1.6s linear infinite;
+}
+
+@keyframes cosmic-spin { to { transform: rotate(360deg); } }
+@keyframes cosmic-pulse {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  50% { transform: scale(1.05) rotate(2deg); }
+}
+@keyframes comet-orbit {
+  from { transform: rotate(0deg) translateX(66px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(66px) rotate(-360deg); }
+}
+
+
+/* ============================================
+   STYLE 3: Pulse Road Loader (expanding rings)
+   ============================================ */
+.rr-loader-pulse {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rr-loader-pulse .pulse-icon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 26px;
+  z-index: 2;
+  box-shadow: 0 20px 50px -12px rgba(37, 99, 235, 0.5);
+  animation: pulse-icon-bounce 1.8s ease-in-out infinite;
+}
+
+.rr-loader-pulse .pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(99, 102, 241, 0.35);
+  animation: pulse-expand 2.2s ease-out infinite;
+}
+.rr-loader-pulse .pulse-ring:nth-child(2) { animation-delay: 0.7s; }
+.rr-loader-pulse .pulse-ring:nth-child(3) { animation-delay: 1.4s; }
+
+@keyframes pulse-icon-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-8px) scale(1.04); }
+  70% { transform: translateY(0) scale(0.96); }
+}
+@keyframes pulse-expand {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2); opacity: 0; }
+}

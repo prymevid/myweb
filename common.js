@@ -412,6 +412,10 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   // Utility
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
+  function escHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   function scrollToBottom() {
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
@@ -446,7 +450,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
 
       const bubble = document.createElement('div');
       bubble.className = 'px-3.5 py-2.5 rounded-3xl rounded-bl-[6px] text-[14px] leading-[1.38] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-sm break-words';
-      bubble.textContent = text;
+      bubble.innerHTML = escHtml(text).replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
 
       // subtle left tail
       const tail = document.createElement('div');
@@ -468,7 +472,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
       // User (right)
       const bubble = document.createElement('div');
       bubble.className = 'flex-1 px-3.5 py-2.5 rounded-3xl rounded-br-[6px] text-[14px] leading-[1.38] bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-sm break-words';
-      bubble.textContent = text;
+      bubble.innerHTML = escHtml(text).replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
 
       const initials = currentUserName.slice(0, 2).toUpperCase();
       const avatar = document.createElement('div');
@@ -522,9 +526,20 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
 
   // Beautiful typewriter effect (slightly slower = more natural)
   async function typeWriter(bubble, fullText, speed = 29) {
-    bubble.textContent = '';
-    for (let i = 0; i < fullText.length; i++) {
-      bubble.textContent += fullText[i];
+    bubble.innerHTML = '';
+    let i = 0;
+    const len = fullText.length;
+    while (i < len) {
+      if (fullText[i] === '\n') {
+        bubble.insertAdjacentHTML('beforeend', '<br>');
+        i++;
+      } else if (fullText[i] === '\\' && i + 1 < len && fullText[i + 1] === 'n') {
+        bubble.insertAdjacentHTML('beforeend', '<br>');
+        i += 2;
+      } else {
+        bubble.insertAdjacentText('beforeend', fullText[i]);
+        i++;
+      }
       scrollToBottom();
       await sleep(speed + (Math.random() * 11));
     }
@@ -1009,7 +1024,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
         loadRugambaExperience(true);
       } else {
         const greet = addChatBubble('', false);
-        greet.textContent = MANZI_WELCOME_MESSAGE; // instant (no typing animation on restore)
+        greet.innerHTML = escHtml(MANZI_WELCOME_MESSAGE); // instant (no typing animation on restore)
         renderChips();
       }
     } else {
@@ -1183,7 +1198,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
       messagesEl.innerHTML = manziHistory || '';
       if (!messagesEl.children.length) {
         const g = addChatBubble('', false);
-        g.textContent = MANZI_WELCOME_MESSAGE;
+        g.innerHTML = escHtml(MANZI_WELCOME_MESSAGE);
       }
       hideChips();
       renderChips();
@@ -1312,7 +1327,7 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
     if (suggestionsWrap) suggestionsWrap.classList.remove('hidden');
     messagesEl.innerHTML = '';
     const g = addChatBubble('', false);
-    g.textContent = MANZI_WELCOME_MESSAGE;
+    g.innerHTML = escHtml(MANZI_WELCOME_MESSAGE);
     hideChips();
     renderChips();
     scrollToBottom();
