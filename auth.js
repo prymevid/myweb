@@ -33,6 +33,32 @@
     function getSession() { try { return JSON.parse(localStorage.getItem('roadRulesUser') || 'null'); } catch { return null; } }
     function saveSession(u) { try { localStorage.setItem('roadRulesUser', JSON.stringify(u)); } catch {} }
     function clearSession() { try { localStorage.removeItem('roadRulesUser'); } catch {} }
+    function _getSessionAccess() { try { return getSession()?.access || null; } catch { return null; } }
+    async function _fetchExamAccess(phone) {
+        if (!phone) throw new Error('Missing phone');
+        const res = await fetch(`/api/exam-access/${encodeURIComponent(phone)}`);
+        const data = await res.json().catch(() => null);
+        if (!res.ok) {
+            const message = data?.error || data?.message || `HTTP ${res.status}`;
+            throw new Error(message);
+        }
+        return data;
+    }
+
+    async function refreshExamAccess() {
+        const session = getSession();
+        if (!session || !session.phone) return null;
+        try {
+            const access = await _fetchExamAccess(session.phone);
+            if (access && access.phone === session.phone) {
+                window.currentExamAccess = access;
+                return access;
+            }
+        } catch (err) {
+            console.warn('[Auth] refreshExamAccess failed', err);
+        }
+        return null;
+    }
 
     // ========== TOAST ==========
     function showToast(msg, type = 'success') {
@@ -559,9 +585,8 @@
 
     function _getRemainingExams() {
         try {
-            const u = getSession();
-            if (typeof u?.remainingExams === 'number') return u.remainingExams;
-            if (typeof u?.access?.remainingExams === 'number') return u.access.remainingExams;
+            const access = _getSessionAccess();
+            if (typeof access?.remainingExams === 'number') return access.remainingExams;
             return null;
         } catch { return null; }
     }
@@ -588,21 +613,21 @@
     function refreshPlanStack() {
         try {
             const u = getSession() || {};
-            const sub = u.subscription;
-            if (sub?.status === 'approved' && sub?.plan) {
-                const plan = _normalizePlan(sub.plan);
-                const info = PLAN_LIMITS[plan] || PLAN_LIMITS.ubuntu;
-                if (info.maxExams >= 999) {
-                    u.remainingExams = 999;
-                } else if (typeof u?.access?.remainingExams === 'number') {
-                    u.remainingExams = Math.max(0, u.access.remainingExams);
-                } else {
-                    u.remainingExams = info.maxExams;
+            const access = _getSessionAccess();
+            if (access) {
+                u.currentPlan = access.plan || _normalizePlan(u.subscription?.plan);
+                if (typeof access.remainingExams === 'number') u.remainingExams = Math.max(0, access.remainingExams);
+                if (typeof access.cooldownRemainingMs === 'number') u.cooldownRemainingMs = access.cooldownRemainingMs;
+            } else {
+                const sub = u.subscription;
+                if (sub?.status === 'approved' && sub?.plan) {
+                    const plan = _normalizePlan(sub.plan);
+                    const info = PLAN_LIMITS[plan] || PLAN_LIMITS.ubuntu;
+                    u.currentPlan = plan;
+                    u.remainingExams = info.maxExams >= 999 ? 999 : info.maxExams;
                 }
-                u.currentPlan = plan;
-                if (sub.paidAt) u.lastPaidAt = sub.paidAt;
-                saveSession(u);
             }
+            saveSession(u);
         } catch {}
     }
 
@@ -612,20 +637,12 @@
         getMaxExamsAllowed: _getEffectiveMax,
         getBaseMaxExamsAllowed: () => (PLAN_LIMITS[_getCurrentPlan()] || PLAN_LIMITS.ubuntu).maxExams,
         isSingleAttemptPlan: () => !!(PLAN_LIMITS[_getCurrentPlan()] || PLAN_LIMITS.ubuntu).singleAttempt,
-        getLastExamCompletedAt: () => { try { const k = `roadRulesLastExamAt_${getSession()?.phone||'guest'}`; const v = localStorage.getItem(k); return v ? parseInt(v) : 0; } catch { return 0; } },
-        setLastExamCompletedAt: (ts = Date.now()) => { try { localStorage.setItem(`roadRulesLastExamAt_${getSession()?.phone||'guest'}`, String(ts)); } catch {} },
-        getCooldownRemainingMs: () => { const info = (PLAN_LIMITS[_getCurrentPlan()] || PLAN_LIMITS.ubuntu); if (!info.cooldownMs) return 0; const last = window.RoadRulesAccess.getLastExamCompletedAt(); return last ? Math.max(0, info.cooldownMs - (Date.now() - last)) : 0; },
-        canStartExamNow: () => window.RoadRulesAccess.getCooldownRemainingMs() === 0,
-        getCompletedExamCount: () => { try { const k = `roadRulesExamHistory_${getSession()?.phone||'guest'}`; const a = JSON.parse(localStorage.getItem(k)||'[]'); return Array.isArray(a) ? a.length : 0; } catch { return 0; } },
-        canStartMoreExams: () => {
-            const max = window.RoadRulesAccess.getMaxExamsAllowed();
-            const rem = window.RoadRulesAccess.getRemainingExams ? window.RoadRulesAccess.getRemainingExams() : null;
-            if (typeof rem === 'number') {
-                return max >= 999 || rem > 0;
-            }
-            const done = window.RoadRulesAccess.getCompletedExamCount ? window.RoadRulesAccess.getCompletedExamCount() : 0;
-            return max >= 999 || done < max;
-        },
+        getLastExamCompletedAt: () => _getSessionAccess()?.lastCompletedAt || 0,
+        setLastExamCompletedAt: (ts = Date.now()) => { try { const u = getSession() || {}; const access = _getSessionAccess() || {}; access.lastCompletedAt = ts; u.access = access; saveSession(u); } catch {} },
+        getCooldownRemainingMs: () => _getSessionAccess()?.cooldownRemainingMs || 0,
+        canStartExamNow: () => !!_getSessionAccess()?.canStartExamNow,
+        getCompletedExamCount: () => _getSessionAccess()?.completedExamCount || 0,
+        canStartMoreExams: () => !!_getSessionAccess()?.canStartMoreExams,
         getRemainingExams: _getRemainingExams,
         addRemainingExams: _addRemainingExams,
         refreshPlanStack,
@@ -762,6 +779,22 @@
                 local.access = fresh.access || null;
                 if (typeof fresh.access?.remainingExams === 'number') local.remainingExams = fresh.access.remainingExams;
                 saveSession(local); return local;
+            } catch { return null; }
+        },
+        refreshExamAccess: async () => {
+            try {
+                const u = getSession(); if (!u?.phone) return null;
+                const result = await _fetchExamAccess(u.phone);
+                if (!result?.access) return null;
+                const local = getSession() || {};
+                local.access = result.access;
+                if (result.subscription) local.subscription = result.subscription;
+                local.pendingUpgrade = result.pendingUpgrade || undefined;
+                saveSession(local);
+                if (typeof window !== 'undefined') {
+                    window.currentExamAccess = result.access;
+                }
+                return result.access;
             } catch { return null; }
         },
 

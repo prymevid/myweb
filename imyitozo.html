@@ -430,20 +430,30 @@
       const container = document.getElementById('exam-slots');
       if (!container) return;
 
-      const Access = window.RoadRulesAccess || {};
-      const max = Access.getMaxExamsAllowed ? Access.getMaxExamsAllowed() : 1;
-      const done = Access.getCompletedExamCount ? Access.getCompletedExamCount() : 0;
-      const currentPlan = Access.getCurrentPlan ? Access.getCurrentPlan() : 'ubuntu';
-      const cooldownLeft = Access.getCooldownRemainingMs ? Access.getCooldownRemainingMs() : 0;
-      const canStartNow = Access.canStartExamNow ? Access.canStartExamNow() : true;
-      const canMore = Access.canStartMoreExams ? Access.canStartMoreExams() : (done < max);
+      const access = window.currentExamAccess || null;
+      if (!access) {
+        container.innerHTML = `
+          <div class="rounded-3xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-6">
+            <div class="text-center text-sm text-amber-800 dark:text-amber-200 font-semibold">
+              Ntago twabashije kubona amakuru ya seriveri ajyanye n'ifatabuguzi ryawe. Ongera urupapuro cyangwa winjire muri konti.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const max = typeof access.maxExamsAllowed === 'number' ? access.maxExamsAllowed : 1;
+      const done = typeof access.completedExamCount === 'number' ? access.completedExamCount : 0;
+      const currentPlan = access.plan || 'ubuntu';
+      const cooldownLeft = access.cooldownRemainingMs || 0;
+      const canStartNow = access.canStartExamNow !== undefined ? access.canStartExamNow : true;
+      const canMore = access.canStartMoreExams !== undefined ? access.canStartMoreExams : true;
 
       let statusLine = '';
       let btnText = 'Tangira Ikizamini';
       let btnClass = 'bg-emerald-600 hover:bg-emerald-700 text-white';
       let disabled = false;
       let extraInfo = '';
-      let alwaysClickable = true; // user request: always allow click, show popup on limit
 
       if (!canStartNow && cooldownLeft > 0) {
         const mins = Math.ceil(cooldownLeft / 60000);
@@ -451,12 +461,10 @@
         btnText = 'Tegereza...';
         btnClass = 'bg-amber-500 text-white cursor-not-allowed';
         disabled = true;
-        alwaysClickable = false;
         extraInfo = `<div class="text-[11px] text-amber-600 mt-1">Cooldown ya 2 min irimo kugenda (Ukwezi)</div>`;
       } else if (!canMore) {
-        // Do NOT disable the button anymore — user can click and will see upgrade popup
-        statusLine = `Wageze ku mubare w’ibizamini wemerewe n’ifatabuguzi ry'ubuntu (${done}/${max}).`;
-        btnText = (max === 1 && currentPlan === 'ubuntu') ? 'Tangira Ikizamini' : 'Tangira Ikizamini';
+        statusLine = `Wageze ku mubare w’ibizamini wemerewe n’ifatabuguzi ryawe (${done}/${max}).`;
+        btnText = 'Tangira Ikizamini';
         btnClass = 'bg-emerald-600 hover:bg-emerald-700 text-white';
         disabled = false;
         extraInfo = `<div class="text-[11px] text-amber-600 mt-1">Gura Ifatabuguzi kugira ngo ukore ibindi bizamini</div>`;
@@ -494,11 +502,16 @@
       const el = document.getElementById('remaining-exams-stat');
       if (!el) return;
 
-      const Access = window.RoadRulesAccess || {};
-      const max = Access.getMaxExamsAllowed ? Access.getMaxExamsAllowed() : 1;
-      const done = Access.getCompletedExamCount ? Access.getCompletedExamCount() : 0;
+      const access = window.currentExamAccess || null;
+      if (!access) {
+        el.innerHTML = '<div class="text-sm text-slate-500">Ntabumenyi ya seriveri iboneka.</div>';
+        return;
+      }
+
+      const max = typeof access.maxExamsAllowed === 'number' ? access.maxExamsAllowed : 1;
+      const done = typeof access.completedExamCount === 'number' ? access.completedExamCount : 0;
       const remaining = Math.max(0, max - done);
-      const currentPlan = Access.getCurrentPlan ? Access.getCurrentPlan() : 'ubuntu';
+      const currentPlan = access.plan || 'ubuntu';
 
       let planLabel = 'Ubuntu';
       if (currentPlan === 'inshuro2') planLabel = 'Inshuro 2';
@@ -547,26 +560,31 @@
       startNewSimulation();
     }
 
-    function startNewSimulation() {
+    async function startNewSimulation() {
       if (!localStorage.getItem('roadRulesUser')) { window.location.href = 'login.html'; return; }
-      // Central guard using the plan limits (RoadRulesAccess)
-      const Access = window.RoadRulesAccess || {};
-      if (Access.canStartExamNow && !Access.canStartExamNow()) {
-        const left = Math.ceil((Access.getCooldownRemainingMs() || 0) / 60000);
+
+      const access = await window.RoadRulesAuth.refreshExamAccess();
+      if (!access) {
+        alert('Ntago twabashije kugenzura uburenganzira bwo gutangira ikizamini. Ongera ugerageze nyuma.');
+        return;
+      }
+
+      if (!access.canStartExamNow) {
+        const left = Math.ceil((access.cooldownRemainingMs || 0) / 60000);
         alert(`Tegereza iminota ${left} mbere yo gutangira ikizamini gishya (rate limit ya 2 min - Ukwezi plan gusa).`);
         return;
       }
-       if (Access.canStartMoreExams && !Access.canStartMoreExams()) {
+      if (!access.canStartMoreExams) {
          showLimitReachedModal();
          return;
-       }
+      }
 
-       // No more per-slot concept in UI — every run is a fresh random simulation
-       try { sessionStorage.removeItem('roadRulesCurrentExamSlot'); } catch(e){}
+      // No more per-slot concept in UI — every run is a fresh random simulation
+      try { sessionStorage.removeItem('roadRulesCurrentExamSlot'); } catch(e){}
 
-       // Go to instructions then the real random exam
-       startSimulation();
-     }
+      // Go to instructions then the real random exam
+      startSimulation();
+    }
     // Premium upgrade prompt when user hits exam limit on free / low plan
     function showLimitReachedModal() {
       // Remove any existing one
@@ -617,19 +635,22 @@
       const m = document.getElementById('exam-instructions-modal');
       if (m) { m.classList.remove('flex'); m.classList.add('hidden'); }
 
-      // Final guard (in case user bypassed slots)
-      const Access = window.RoadRulesAccess || {};
-      if (Access.canStartExamNow && !Access.canStartExamNow()) {
-        const left = Math.ceil((Access.getCooldownRemainingMs() || 0) / 60000);
+      const access = await window.RoadRulesAuth.refreshExamAccess();
+      if (!access) {
+        alert('Ntago twabashije kugenzura uburenganzira bwo gutangira ikizamini. Ongera ugerageze nyuma.');
+        return;
+      }
+      if (!access.canStartExamNow) {
+        const left = Math.ceil((access.cooldownRemainingMs || 0) / 60000);
         alert(`Cooldown ya Ukwezi irimo kugenda. Tegereza iminota ${left}.`);
         return;
       }
-       if (Access.canStartMoreExams && !Access.canStartMoreExams()) {
+      if (!access.canStartMoreExams) {
          showLimitReachedModal();
          return;
-       }
+      }
 
-       const mainArea = document.querySelector('main .max-w-5xl');
+      const mainArea = document.querySelector('main .max-w-5xl');
       if (!mainArea) return;
 
       // Load questions from embedded bank in questions.js
@@ -889,8 +910,8 @@
       const mins = Math.round((Date.now() - examStartTime) / 60000);
 
       // Capture plan at time of exam + full answers for review feature
-      const planAtTime = (window.RoadRulesAccess && window.RoadRulesAccess.getCurrentPlan)
-        ? window.RoadRulesAccess.getCurrentPlan() : 'ubuntu';
+      const access = window.currentExamAccess || {};
+      const planAtTime = access.plan || 'ubuntu';
 
       const answersDetail = currentExamQuestions.map((q, i) => ({
         question: q.question,
@@ -944,15 +965,6 @@
       if (window.RoadRulesAccess && window.RoadRulesAccess.setLastExamCompletedAt) {
         window.RoadRulesAccess.setLastExamCompletedAt();
       }
-
-      // Decrement stacked remaining exams for non-ukwezi plans
-      try {
-        const planNow = window.RoadRulesAccess?.getCurrentPlan ? window.RoadRulesAccess.getCurrentPlan() : 'ubuntu';
-        const rem = window.RoadRulesAccess?._getRemainingExams ? window.RoadRulesAccess._getRemainingExams() : null;
-        if (planNow !== 'ukwezi' && typeof rem === 'number' && rem > 0) {
-          window.RoadRulesAccess._setRemainingExams(rem - 1);
-        }
-      } catch {}
 
       // Refresh plan stack + UI after completion
       try { if (window.RoadRulesAccess?.refreshPlanStack) window.RoadRulesAccess.refreshPlanStack(); } catch {}
@@ -1292,9 +1304,13 @@
       startNewSimulation();
     }
 
-    function initializeApp() {
+    async function initializeApp() {
       initTailwind(); initTheme(); initAccessibility();
       const last = parseInt(localStorage.getItem('roadRulesImyitozoTab') || '0');
+      window.currentExamAccess = null;
+      if (localStorage.getItem('roadRulesUser') && window.RoadRulesAuth && typeof window.RoadRulesAuth.refreshExamAccess === 'function') {
+        window.currentExamAccess = await window.RoadRulesAuth.refreshExamAccess();
+      }
       showImyitozoTab(isNaN(last) ? 0 : last);
       // Preload embedded questions from questions.js
       loadQuestions();

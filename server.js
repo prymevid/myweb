@@ -186,6 +186,17 @@ app.get('/api/exams/:phone', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+app.get('/api/exam-access/:phone', async (req, res) => {
+  const cleanPhone = normalizePhone(req.params.phone);
+  try {
+    const users = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id,subscription_plan,subscription_plan_name,subscription_amount,subscription_status,subscription_paid_at,pending_upgrade`);
+    if (!users.length) return res.status(404).json({ error: 'User not found' });
+    const exams = await dbGet('exam_history', `user_id=eq.${users[0].id}&order=created_at.desc&limit=50`);
+    const access = buildAccessState({ user: users[0], exams, now: Date.now() });
+    res.json({ access });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // ==============================
 // ANNOUNCEMENTS
 // ==============================
