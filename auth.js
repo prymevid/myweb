@@ -544,9 +544,13 @@
     }
     function _getCurrentPlan() {
         try {
-            const sub = getSession()?.subscription;
+            const session = getSession();
+            const sub = session?.subscription;
             if (sub?.status === 'approved' && sub?.plan) {
                 return _normalizePlan(sub.plan);
+            }
+            if (session?.access?.plan) {
+                return _normalizePlan(session.access.plan);
             }
         } catch {}
         return 'ubuntu';
@@ -554,7 +558,12 @@
     function _getPendingUpgrade() { try { const u = getSession(); return (u?.pendingUpgrade?.status === 'pending') ? u.pendingUpgrade : null; } catch { return null; } }
 
     function _getRemainingExams() {
-        try { const u = getSession(); return typeof u?.remainingExams === 'number' ? u.remainingExams : null; } catch { return null; }
+        try {
+            const u = getSession();
+            if (typeof u?.remainingExams === 'number') return u.remainingExams;
+            if (typeof u?.access?.remainingExams === 'number') return u.access.remainingExams;
+            return null;
+        } catch { return null; }
     }
     function _setRemainingExams(val) {
         try {
@@ -571,9 +580,7 @@
     function _getEffectiveMax() {
         const plan = _getCurrentPlan();
         const info = PLAN_LIMITS[plan] || PLAN_LIMITS.ubuntu;
-        // ukwezi is effectively unlimited
         if (info.maxExams >= 999) return 999;
-        // Use remainingExams as the source of truth when available (already includes stacked allowances)
         const rem = _getRemainingExams();
         if (typeof rem === 'number') return Math.max(0, rem);
         return info.maxExams;
@@ -585,31 +592,12 @@
             if (sub?.status === 'approved' && sub?.plan) {
                 const plan = _normalizePlan(sub.plan);
                 const info = PLAN_LIMITS[plan] || PLAN_LIMITS.ubuntu;
-                const prevPlan = u.currentPlan || 'ubuntu';
-                const lastPaidAt = u.lastPaidAt ? Date.parse(u.lastPaidAt) : 0;
-                const currentPaidAt = sub.paidAt ? Date.parse(sub.paidAt) : 0;
-                const isNewPurchase = isNaN(currentPaidAt)
-                  ? sub.paidAt !== u.lastPaidAt
-                  : currentPaidAt > Math.max(0, lastPaidAt);
-
                 if (info.maxExams >= 999) {
-                    // ukwezi: unlimited; track plan + paidAt, ignore stacking
-                    u.remainingExams = 8888;
+                    u.remainingExams = 999;
+                } else if (typeof u?.access?.remainingExams === 'number') {
+                    u.remainingExams = Math.max(0, u.access.remainingExams);
                 } else {
-                    const base = info.maxExams;
-                    let remaining = typeof u.remainingExams === 'number' ? u.remainingExams : null;
-
-                    if (remaining === null) {
-                        // First time seeding: base plan allowance minus completed exams
-                        const completed = window.RoadRulesAccess?.getCompletedExamCount ? window.RoadRulesAccess.getCompletedExamCount() : 0;
-                        remaining = Math.max(0, base - completed);
-                    } else if (isNewPurchase || plan !== prevPlan) {
-                        // New purchase or plan change: add the new plan's base allowance to existing remaining
-                        remaining = remaining + base;
-                    }
-                    // else: same plan, no new purchase detected -> keep existing remaining
-
-                    u.remainingExams = Math.max(0, remaining);
+                    u.remainingExams = info.maxExams;
                 }
                 u.currentPlan = plan;
                 if (sub.paidAt) u.lastPaidAt = sub.paidAt;
@@ -771,6 +759,8 @@
                 const local = getSession() || {};
                 if (fresh.subscription) local.subscription = fresh.subscription;
                 local.pendingUpgrade = fresh.pendingUpgrade || undefined;
+                local.access = fresh.access || null;
+                if (typeof fresh.access?.remainingExams === 'number') local.remainingExams = fresh.access.remainingExams;
                 saveSession(local); return local;
             } catch { return null; }
         },

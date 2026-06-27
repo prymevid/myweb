@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { buildAccessState } from './access-control.js';
 
 dotenv.config();
 
@@ -142,11 +143,13 @@ app.post('/api/auth/refresh', async (req, res) => {
     const rows = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id,name,phone,district,subscription_plan,subscription_plan_name,subscription_amount,subscription_status,subscription_paid_at,pending_upgrade`);
     if (!rows.length) return res.status(404).json({ error: 'User not found' });
     const user = rows[0];
+    const access = buildAccessState({ user, exams: [], now: Date.now() });
     res.json({
       user: {
         id: user.id, name: user.name, phone: user.phone, district: user.district,
         subscription: { plan: user.subscription_plan, planName: user.subscription_plan_name, amount: user.subscription_amount, status: user.subscription_status, paidAt: user.subscription_paid_at },
-        pendingUpgrade: user.pending_upgrade || null
+        pendingUpgrade: user.pending_upgrade || null,
+        access
       }
     });
   } catch (e) { res.status(500).json({ error: e.message }); }
@@ -160,20 +163,26 @@ app.post('/api/exams', async (req, res) => {
   if (!phone || score == null || !total) return res.status(400).json({ error: 'Missing fields' });
   const cleanPhone = normalizePhone(phone);
   try {
-    const users = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id`);
+    const users = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id,subscription_plan,subscription_plan_name,subscription_amount,subscription_status,subscription_paid_at,pending_upgrade`);
     if (!users.length) return res.status(404).json({ error: 'User not found' });
-    const rows = await dbPost('exam_history', { user_id: users[0].id, score, total, time_taken: timeTaken || 0 });
-    res.json({ exam: Array.isArray(rows) ? rows[0] : rows });
+    const user = users[0];
+    const access = buildAccessState({ user, exams: [], now: Date.now() });
+    if (!access.canStartMoreExams) {
+      return res.status(403).json({ error: 'Exam limit reached for the current plan' });
+    }
+    const rows = await dbPost('exam_history', { user_id: user.id, score, total, time_taken: timeTaken || 0 });
+    res.json({ exam: Array.isArray(rows) ? rows[0] : rows, access: { ...access, completedExamCount: access.completedExamCount + 1 } });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.get('/api/exams/:phone', async (req, res) => {
   const cleanPhone = normalizePhone(req.params.phone);
   try {
-    const users = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id`);
+    const users = await dbGet('users', `phone=eq.${encodeURIComponent(cleanPhone)}&select=id,subscription_plan,subscription_plan_name,subscription_amount,subscription_status,subscription_paid_at,pending_upgrade`);
     if (!users.length) return res.json({ exams: [] });
     const exams = await dbGet('exam_history', `user_id=eq.${users[0].id}&order=created_at.desc&limit=50`);
-    res.json({ exams: exams || [] });
+    const access = buildAccessState({ user: users[0], exams, now: Date.now() });
+    res.json({ exams: exams || [], access });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -323,7 +332,7 @@ app.patch('/api/admin/users/:phone/approve', async (req, res) => {
       subscription_paid_at: new Date().toISOString(),
       pending_upgrade: null
     });
-    res.json({ ok: true });
+    res.json({ ok: true, access: buildAccessState({ user: { ...user, subscription_plan: planData.plan, subscription_plan_name: planData.planName, subscription_amount: planData.amount || 0, subscription_status: 'approved' }, exams: [], now: Date.now() }) });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
