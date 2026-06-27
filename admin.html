@@ -214,22 +214,22 @@
        </div>
      </div>
 
-     <!-- RUGAMBA PROACTIVE MESSAGE DELAY (admin sets time for auto "sent from support icon" notification) -->
-     <div class="mt-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
-       <div class="flex items-center gap-2 mb-3">
-         <i class="fa-solid fa-clock text-amber-600"></i>
-         <div class="font-semibold">Rugamba Proactive Message</div>
-         <div class="ml-auto text-[10px] px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300">Pops from support icon after delay</div>
-       </div>
-       <div class="flex flex-col sm:flex-row gap-3 items-end">
-         <div class="flex-1">
-           <label class="block text-xs text-slate-500 mb-1">Delay in minutes (users with Ukwezi plan will see Rugamba message sent from the headset icon)</label>
-           <input id="rugamba-delay-min" type="number" min="1" max="60" step="1" value="5" class="w-32 px-4 py-2 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">
-         </div>
-         <button onclick="saveRugambaDelayAdmin()" class="px-5 py-2.5 text-sm font-semibold rounded-2xl bg-amber-600 hover:bg-amber-700 text-white">Save Delay</button>
-       </div>
-       <div class="text-[10px] text-slate-400 mt-2">Default: 5 min. Message: “Ubu noneho ushobora kuvugana na mwarimu...” — closable, clicking opens Rugamba chat.</div>
-     </div>
+      <!-- PROACTIVE CHAT INVITATION DELAY (admin sets delay for teaser popup) -->
+      <div class="mt-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="fa-solid fa-comment-dots text-blue-600"></i>
+          <div class="font-semibold">Proactive Chat Invitation</div>
+          <div class="ml-auto text-[10px] px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">Teaser popup near chat icon</div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 items-end">
+          <div class="flex-1">
+            <label class="block text-xs text-slate-500 mb-1">Delay in seconds (2-5s recommended) before showing "Ubu noneho ushobora kuvugana na mwarimu.." teaser</label>
+            <input id="proactive-chat-delay" type="number" min="2" max="10" step="1" value="5" class="w-32 px-4 py-2 text-sm rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">
+          </div>
+          <button onclick="saveProactiveChatDelayAdmin()" class="px-5 py-2.5 text-sm font-semibold rounded-2xl bg-blue-600 hover:bg-blue-700 text-white">Save Delay</button>
+        </div>
+        <div class="text-[10px] text-slate-400 mt-2">Default: 5 seconds. Users see a dismissible teaser near the chat icon. Dismissed teasers don't reappear until next session.</div>
+      </div>
    </main>
 
   <!-- FOOTER -->
@@ -787,6 +787,48 @@ async function adminDeleteUser(phone) {
        }
      }
 
+     async function loadProactiveChatDelaySetting() {
+       const input = document.getElementById('proactive-chat-delay');
+       if (!input) return;
+       input.disabled = true;
+       try {
+         const cfg = await (window.RoadRulesAuth && window.RoadRulesAuth.getChatbotConfig ? window.RoadRulesAuth.getChatbotConfig() : {});
+         input.value = (cfg && typeof cfg.proactiveChatDelaySec === 'number') ? cfg.proactiveChatDelaySec : 5;
+       } catch (e) {
+         input.value = 5;
+       }
+       input.disabled = false;
+     }
+
+     async function saveProactiveChatDelayAdmin() {
+       const input = document.getElementById('proactive-chat-delay');
+       if (!input) return;
+       const val = parseInt(input.value, 10);
+       if (!val || val < 2 || val > 10) {
+         alert('Delay must be between 2 and 10 seconds');
+         return;
+       }
+       try {
+         if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.show === 'function') {
+           window.RoadRulesLoader.show('Saving proactive chat delay...');
+         }
+         await window.RoadRulesAdmin.updateChatbotConfig({ proactiveChatDelaySec: val });
+         if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.hide === 'function') {
+           window.RoadRulesLoader.hide();
+         }
+         const fb = document.createElement('div');
+         fb.className = 'fixed bottom-4 right-4 px-4 py-2 rounded-2xl bg-blue-600 text-white text-sm shadow z-[99999]';
+         fb.textContent = 'Proactive chat delay saved: ' + val + ' seconds';
+         document.body.appendChild(fb);
+         setTimeout(() => fb.remove(), 2600);
+       } catch (e) {
+         if (typeof window.RoadRulesLoader !== 'undefined' && typeof window.RoadRulesLoader.hide === 'function') {
+           window.RoadRulesLoader.hide();
+         }
+         alert('Failed to save: ' + (e.message || e));
+       }
+     }
+
     // ========== ADMIN PASSWORD GATE ==========
     function showAdminLoginModal() {
       if (document.getElementById('admin-login-modal')) return;
@@ -852,6 +894,7 @@ async function adminDeleteUser(phone) {
       setTimeout(() => { if (typeof loadAdminAnnouncements === 'function') loadAdminAnnouncements(); }, 400);
       setTimeout(() => { if (typeof loadAdminHelpFaqs === 'function') loadAdminHelpFaqs(); }, 600);
       setTimeout(() => { if (typeof loadRugambaDelaySetting === 'function') loadRugambaDelaySetting(); }, 700);
+      setTimeout(() => { if (typeof loadProactiveChatDelaySetting === 'function') loadProactiveChatDelaySetting(); }, 750);
     }
 
     function initializeApp() {

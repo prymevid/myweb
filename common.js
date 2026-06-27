@@ -255,6 +255,166 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   fab.style.display = 'flex';
   fab.style.pointerEvents = 'auto';
 
+  // After FAB settles, schedule proactive teaser if allowed
+  setTimeout(() => {
+    if (!isOpen && !proactiveTeaserDismissed) {
+      scheduleProactiveTeaser();
+    }
+  }, 800);
+
+  // ========== PROACTIVE CHAT INVITATION (TEASER) ==========
+  // Small dismissible popup that appears near the FAB after admin-set delay
+  let proactiveTeaser = null;
+  let proactiveTeaserDismissed = false;
+  let proactiveTeaserTimer = null;
+
+  function getProactiveChatDelay() {
+    try {
+      const cfg = window.RoadRulesAuth && window.RoadRulesAuth.getChatbotConfig 
+        ? window.RoadRulesAuth.getChatbotConfig() 
+        : {};
+      const val = cfg && typeof cfg.proactiveChatDelaySec === 'number' ? cfg.proactiveChatDelaySec : 5;
+      // Clamp between 2 and 10 seconds
+      return Math.max(2, Math.min(10, val));
+    } catch (_) {
+      return 5; // default 5 seconds
+    }
+  }
+
+  function createProactiveTeaser() {
+    if (proactiveTeaser) return;
+    if (proactiveTeaserDismissed) return;
+    if (isOpen) return; // don't show if chat is already open
+    if (document.getElementById('rr-proactive-teaser')) return;
+
+    const teaser = document.createElement('div');
+    teaser.id = 'rr-proactive-teaser';
+    teaser.className = 'fixed z-[9998] w-[85vw] max-w-[320px] sm:max-w-[340px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl p-4 flex items-start gap-3';
+    teaser.style.boxShadow = '0 20px 60px -12px rgb(15 23 42 / 0.25), 0 8px 16px -8px rgb(0 0 0 / 0.12)';
+    teaser.style.bottom = '80px';
+    teaser.style.right = '12px';
+    teaser.style.transformOrigin = 'bottom right';
+    
+    // Entry animation
+    teaser.style.opacity = '0';
+    teaser.style.transform = 'translateY(16px) scale(0.95)';
+    teaser.style.transition = 'opacity 0.25s ease, transform 0.3s cubic-bezier(0.23,1,0.32,1)';
+    
+    teaser.innerHTML = `
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white flex-shrink-0">
+            <i class="fa-solid fa-headset text-sm"></i>
+          </div>
+          <div class="font-semibold text-[13.5px] text-slate-800 dark:text-slate-100">Wibazeko ubufasha?</div>
+        </div>
+        <div class="text-[13px] text-slate-600 dark:text-slate-300 leading-snug mb-2.5">Ubu noneho ushobora kuvugana na mwarimu..</div>
+        <button id="rr-proactive-reply" class="px-4 py-[9px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-semibold transition active:scale-[0.97] shadow-sm">
+         Open Chat
+        </button>
+      </div>
+      <button id="rr-proactive-close" class="flex-shrink-0 w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" aria-label="Dismiss">
+        <i class="fa-solid fa-times text-sm"></i>
+      </button>
+    `;
+
+    document.body.appendChild(teaser);
+    proactiveTeaser = teaser;
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        teaser.style.opacity = '1';
+        teaser.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    // Wire close button
+    const closeBtn = teaser.querySelector('#rr-proactive-close');
+    if (closeBtn) {
+      closeBtn.onclick = (e) => {
+        e.stopPropagation();
+        dismissProactiveTeaser();
+      };
+    }
+
+    // Wire reply button - opens chat and switches to Rugamba
+    const replyBtn = teaser.querySelector('#rr-proactive-reply');
+    if (replyBtn) {
+      replyBtn.onclick = (e) => {
+        e.stopPropagation();
+        dismissProactiveTeaser();
+        // Open panel if not open
+        if (!isOpen) {
+          openPanel();
+        }
+        // Switch to Rugamba persona
+        if (currentPersona !== 'rugamba') {
+          setPersona('rugamba');
+        }
+        // Scroll to bottom
+        scrollToBottom();
+      };
+    }
+
+    // Click on teaser background also opens chat
+    teaser.addEventListener('click', (e) => {
+      if (e.target === teaser || e.target.closest('.flex-1')) {
+        dismissProactiveTeaser();
+        if (!isOpen) openPanel();
+        if (currentPersona !== 'rugamba') setPersona('rugamba');
+        scrollToBottom();
+      }
+    });
+  }
+
+  function dismissProactiveTeaser() {
+    if (proactiveTeaser) {
+      proactiveTeaser.style.opacity = '0';
+      proactiveTeaser.style.transform = 'translateY(12px) scale(0.95)';
+      const el = proactiveTeaser;
+      setTimeout(() => {
+        if (el.parentNode) el.remove();
+      }, 250);
+      proactiveTeaser = null;
+    }
+    proactiveTeaserDismissed = true;
+    try { sessionStorage.setItem('rrProactiveTeaserDismissed', '1'); } catch (_) {}
+    if (proactiveTeaserTimer) {
+      clearTimeout(proactiveTeaserTimer);
+      proactiveTeaserTimer = null;
+    }
+  }
+
+  function scheduleProactiveTeaser() {
+    // Don't show if already dismissed this session
+    try {
+      if (sessionStorage.getItem('rrProactiveTeaserDismissed') === '1') {
+        proactiveTeaserDismissed = true;
+        return;
+      }
+    } catch (_) {}
+
+    // Don't show if chat panel is already open
+    if (isOpen) return;
+
+    const delay = getProactiveChatDelay() * 1000; // convert to ms
+
+    proactiveTeaserTimer = setTimeout(() => {
+      // Re-check conditions before showing
+      if (!isOpen && !proactiveTeaserDismissed && !document.getElementById('rr-proactive-teaser')) {
+        createProactiveTeaser();
+      }
+    }, delay);
+  }
+
+  function hideProactiveTeaserImmediately() {
+    if (proactiveTeaser) {
+      proactiveTeaser.remove();
+      proactiveTeaser = null;
+    }
+  }
+
   // Create Chat Panel (ultra premium & professional)
   const panel = document.createElement('div');
   panel.id = 'rr-help-panel';
@@ -973,6 +1133,13 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
   if (isOpen) return;
   isOpen = true;
 
+  // Hide/clear proactive teaser when chat opens
+  hideProactiveTeaserImmediately();
+  if (proactiveTeaserTimer) {
+    clearTimeout(proactiveTeaserTimer);
+    proactiveTeaserTimer = null;
+  }
+
   // Smooth open: start scaled down + faded, then pop in
   panel.style.transition = 'none';
   panel.style.transform = 'scale(0.94) translateY(12px)';
@@ -1071,6 +1238,11 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
 
     // Persist: only closed because user clicked close icon (or ESC). On next load it will stay closed.
     try { sessionStorage.setItem('rrHelpPanelOpen', '0'); } catch (_) {}
+
+    // After explicit close, reset proactive teaser so it can show again next session
+    proactiveTeaserDismissed = false;
+    proactiveTeaser = null;
+    try { sessionStorage.removeItem('rrProactiveTeaserDismissed'); } catch (_) {}
 
     chatHasClosedOnce = true;
     try { sessionStorage.setItem('rrChatHasClosedOnce', '1'); } catch (_) {}
@@ -1410,8 +1582,21 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
         fab.style.display = 'none';
       } else {
         fab.style.display = 'flex';
+        // Schedule teaser after FAB is confirmed visible on non-exam pages
+        setTimeout(() => {
+          if (!isOpen && !proactiveTeaserDismissed) {
+            scheduleProactiveTeaser();
+          }
+        }, 1000);
       }
     }, 200);
+  } else {
+    // Not on exam/ibibazo page - schedule teaser normally on all other pages
+    setTimeout(() => {
+      if (!isOpen && !proactiveTeaserDismissed) {
+        scheduleProactiveTeaser();
+      }
+    }, 1000);
   }
 
   // Auto-load FAQs in background (non-blocking)
