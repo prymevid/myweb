@@ -523,14 +523,44 @@
     /* Responsive */
     @media (max-width: 1024px) {
       .auth-brand {
-        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        display: flex;
+        background-image: url('login.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .auth-brand::before,
+      .auth-brand::after {
+        display: none !important;
+      }
+      .brand-glow {
+        display: none !important;
       }
       .auth-form-side {
         flex: 1;
-        background: #f8fafc;
+        background: transparent;
+        z-index: 1;
+        position: relative;
       }
       .dark .auth-form-side {
-        background: #0f172a;
+        background: transparent;
+      }
+      .form-container {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        padding: 2.25rem;
+      }
+      .dark .form-container {
+        background: rgba(15, 23, 42, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
       }
     }
 
@@ -540,10 +570,94 @@
       }
       .form-container {
         max-width: 100%;
+        padding: 1.75rem;
+      }
+      .dark .form-container {
+        padding: 1.75rem;
       }
       .back-home-btn {
         top: 1rem;
         right: 1rem;
+        background: rgba(255, 255, 255, 0.95) !important;
+        color: #0f172a !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        font-weight: 700;
+      }
+      .dark .back-home-btn {
+        background: rgba(30, 41, 59, 0.95) !important;
+        color: #f8fafc !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      }
+      .input-wrapper {
+        transition: none !important;
+        transform: none !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02) !important;
+        border-color: #e2e8f0 !important;
+        background: white !important;
+      }
+      .dark .input-wrapper {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+      }
+      .input-wrapper:hover,
+      .input-wrapper:focus-within {
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02) !important;
+        border-color: #e2e8f0 !important;
+        background: white !important;
+        transform: none !important;
+      }
+      .dark .input-wrapper:hover,
+      .dark .input-wrapper:focus-within {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+      }
+      .input-icon {
+        transition: none !important;
+        transform: none !important;
+      }
+      .input-wrapper:hover .input-icon,
+      .input-wrapper:focus-within .input-icon {
+        color: #64748b !important;
+        transform: none !important;
+      }
+      .dark .input-wrapper:hover .input-icon,
+      .dark .input-wrapper:focus-within .input-icon {
+        color: #cbd5e1 !important;
+      }
+      .password-toggle {
+        transition: none !important;
+        transform: none !important;
+      }
+      .password-toggle:hover {
+        background: rgba(59, 130, 246, 0.08) !important;
+        color: #64748b !important;
+        transform: none !important;
+      }
+      .dark .password-toggle:hover {
+        background: rgba(59, 130, 246, 0.15) !important;
+        color: #cbd5e1 !important;
+      }
+      .blue-btn {
+        transition: none !important;
+        transform: none !important;
+      }
+      .blue-btn::before {
+        display: none !important;
+      }
+      .blue-btn:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        box-shadow: 0 8px 28px rgba(37, 99, 235, 0.25) !important;
+        border-color: transparent !important;
+        transform: none !important;
+      }
+      .blue-btn:active {
+        transform: scale(0.98) !important;
       }
     }
 
