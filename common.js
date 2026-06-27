@@ -306,11 +306,11 @@ window.RoadRulesCommon = { initTailwind, initTheme, toggleTheme, toggleMobileMen
           <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white flex-shrink-0">
             <i class="fa-solid fa-headset text-sm"></i>
           </div>
-          <div class="font-semibold text-[13.5px] text-slate-800 dark:text-slate-100">Wibazeko ubufasha?</div>
+          <div class="font-semibold text-[13.5px] text-slate-800 dark:text-slate-100">Rugamba Mwarimu</div>
         </div>
-        <div class="text-[13px] text-slate-600 dark:text-slate-300 leading-snug mb-2.5">Ubu noneho ushobora kuvugana na mwarimu..</div>
+        <div class="text-[13px] text-slate-600 dark:text-slate-300 leading-snug mb-2.5">Hello ubu noneho kubantu bafite ifatabuguzi ry'ukwezi bashobora kuvugana na Mwarimu Rugamba akabafasha kumenya uko bahagaze mu myitozo</div>
         <button id="rr-proactive-reply" class="px-4 py-[9px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-semibold transition active:scale-[0.97] shadow-sm">
-         Open Chat
+         Vugana na Mwarimu
         </button>
       </div>
       <button id="rr-proactive-close" class="flex-shrink-0 w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" aria-label="Dismiss">

@@ -40,7 +40,9 @@
 
     .auth-brand {
       flex: 1.2;
-      background: linear-gradient(160deg, #0f1a2e 0%, #1e3a5f 40%, #0f2847 100%);
+      background:
+        linear-gradient(160deg, rgba(15, 26, 46, 0.75) 0%, rgba(30, 58, 95, 0.65) 40%, rgba(15, 40, 71, 0.75) 100%),
+        url('login.png') center/cover no-repeat;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -53,10 +55,10 @@
       content: '';
       position: absolute;
       inset: 0;
-      background-image:
-        radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
-        radial-gradient(ellipse at 70% 60%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 90%, rgba(96, 165, 250, 0.12) 0%, transparent 50%);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       pointer-events: none;
     }
 
@@ -64,11 +66,11 @@
       content: '';
       position: absolute;
       inset: 0;
-      opacity: 0.3;
+      opacity: 0.25;
       background-image:
-        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 1px, transparent 2px),
-        radial-gradient(circle at 60% 70%, rgba(255,255,255,0.06) 1px, transparent 2px),
-        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 1px, transparent 2px);
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.12) 1px, transparent 2px),
+        radial-gradient(circle at 60% 70%, rgba(255,255,255,0.08) 1px, transparent 2px),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 2px);
       background-size: 60px 60px, 80px 80px, 100px 100px;
       pointer-events: none;
     }
@@ -544,6 +546,99 @@
         right: 1rem;
       }
     }
+
+    /* Orbit Loader Animation */
+    .rr-loader-orbit {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto;
+    }
+    .rr-loader-orbit .orbit-center {
+      position: absolute;
+      inset: 30px;
+      background: linear-gradient(135deg, #2563eb, #4338ca);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 28px;
+      box-shadow: 0 20px 50px -12px rgba(37, 99, 235, 0.5);
+      z-index: 2;
+      animation: orbit-breathe 2.4s ease-in-out infinite;
+    }
+    .rr-loader-orbit .orbit-ring {
+      position: absolute;
+      inset: 0;
+      border: 1.5px dashed rgba(99, 102, 241, 0.25);
+      border-radius: 50%;
+      animation: orbit-spin 8s linear infinite;
+    }
+    .rr-loader-orbit .orbit-ring-2 {
+      inset: 8px;
+      border-style: dotted;
+      border-color: rgba(59, 130, 246, 0.3);
+      animation-duration: 6s;
+      animation-direction: reverse;
+    }
+    .rr-loader-orbit .orbit-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      margin: -7px;
+      box-shadow: 0 0 12px currentColor;
+    }
+    .rr-loader-orbit .orbit-dot.d1 {
+      background: #3b82f6;
+      color: #3b82f6;
+      animation: orbit-track1 3s linear infinite;
+    }
+    .rr-loader-orbit .orbit-dot.d2 {
+      background: #8b5cf6;
+      color: #8b5cf6;
+      width: 10px;
+      height: 10px;
+      margin: -5px;
+      animation: orbit-track2 4.5s linear infinite;
+    }
+    .rr-loader-orbit .orbit-dot.d3 {
+      background: #06b6d4;
+      color: #06b6d4;
+      width: 8px;
+      height: 8px;
+      margin: -4px;
+      animation: orbit-track3 5.5s linear infinite;
+    }
+    .rr-loader-orbit .orbit-dot.d4 {
+      background: #f59e0b;
+      color: #f59e0b;
+      width: 11px;
+      height: 11px;
+      margin: -5.5px;
+      animation: orbit-track1 3s linear infinite reverse;
+      opacity: 0.8;
+    }
+    @keyframes orbit-spin { to { transform: rotate(360deg); } }
+    @keyframes orbit-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    @keyframes orbit-track1 {
+      from { transform: rotate(0deg) translateX(54px) rotate(0deg); }
+      to   { transform: rotate(360deg) translateX(54px) rotate(-360deg); }
+    }
+    @keyframes orbit-track2 {
+      from { transform: rotate(0deg) translateX(44px) rotate(0deg); }
+      to   { transform: rotate(-360deg) translateX(44px) rotate(360deg); }
+    }
+    @keyframes orbit-track3 {
+      from { transform: rotate(0deg) translateX(52px) rotate(0deg); }
+      to   { transform: rotate(360deg) translateX(52px) rotate(-360deg); }
+    }
   </style>
 </head>
 <body class="antialiased">
@@ -555,64 +650,17 @@
       <div class="brand-glow brand-glow-2"></div>
       <div class="brand-glow brand-glow-3"></div>
 
-      <div style="position: relative; z-index: 2;">
-        <div class="brand-pill">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span>100% SECURE</span>
-        </div>
-      </div>
-
-      <div style="position: relative; z-index: 2; max-width: 420px;">
-        <div class="mb-6">
-          <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-md border-2 border-white/30 shadow-xl shadow-blue-900/40">
-            <i class="fa-solid fa-road text-3xl text-white drop-shadow-lg"></i>
+      <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; height: 100%;">
+        <div class="rr-loader-orbit">
+          <div class="orbit-ring"></div>
+          <div class="orbit-ring orbit-ring-2"></div>
+          <div class="orbit-center">
+            <i class="fa-solid fa-road"></i>
           </div>
-        </div>
-
-        <h1 class="text-4xl font-bold text-white mb-3 tracking-tight">
-          Umwitozo wawe utangire
-        </h1>
-        <p class="text-blue-100/80 text-base leading-relaxed">
-          Fata icyemezo cyawe cy'umuhanda. Injira kuri perime.rw ujye ukore imyitozo yuzuye, urebe ibisubizo bisobanurwa kandi utsinde ikizamini.
-        </p>
-
-        <div class="mt-8 space-y-3">
-          <div class="brand-feature">
-            <div class="brand-feature-icon">
-              <i class="fa-solid fa-user-graduate text-xl text-white"></i>
-            </div>
-            <div>
-              <div class="text-white font-semibold text-sm">Byaranamo 15,000+ abanyeshuri</div>
-              <div class="text-blue-200/60 text-xs mt-0.5">Batsindiye ikizamini ku nshuro ya mbere</div>
-            </div>
-          </div>
-
-          <div class="brand-feature">
-            <div class="brand-feature-icon">
-              <i class="fa-solid fa-trophy text-xl text-white"></i>
-            </div>
-            <div>
-              <div class="text-white font-semibold text-sm">Igipimo cyo gutsinda 94%</div>
-              <div class="text-blue-200/60 text-xs mt-0.5">Abakoresha urubuga rwacu</div>
-            </div>
-          </div>
-
-          <div class="brand-feature">
-            <div class="brand-feature-icon">
-              <i class="fa-solid fa-star text-xl text-white"></i>
-            </div>
-            <div>
-              <div class="text-white font-semibold text-sm">Imyitozo 28,000+ yakoze</div>
-              <div class="text-blue-200/60 text-xs mt-0.5">Ibisubizo bisobanurwa mu Kinyarwanda</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style="position: relative; z-index: 2;">
-        <div class="text-blue-300/60 text-xs flex items-center gap-2">
-          <i class="fa-solid fa-heart"></i>
-          <span>© 2026 RoadRules Ltd. • Kigali, Rwanda</span>
+          <div class="orbit-dot d1"></div>
+          <div class="orbit-dot d2"></div>
+          <div class="orbit-dot d3"></div>
+          <div class="orbit-dot d4"></div>
         </div>
       </div>
     </div>
