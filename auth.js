@@ -36,7 +36,7 @@
     function _getSessionAccess() { try { return getSession()?.access || null; } catch { return null; } }
     async function _fetchExamAccess(phone) {
         if (!phone) throw new Error('Missing phone');
-        const res = await fetch(`/api/exam-access/${encodeURIComponent(phone)}`);
+        const res = await fetch(`/api/exam-access/${encodeURIComponent(phone)}`, { credentials: 'same-origin' });
         const data = await res.json().catch(() => null);
         if (!res.ok) {
             const message = data?.error || data?.message || `HTTP ${res.status}`;
@@ -348,7 +348,15 @@
         if (!name || !phone || !password) { showToast('Nyamuneka uzuza amazina, nimero, n\'ijambobanga', 'error'); return; }
         showLoading('Kwiyandikisha...');
         try {
-            const user = await sbRpc('roadrules_signup', { p_name: name, p_phone: phone, p_district: district, p_password: password });
+            const res = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ name, phone, district, password })
+            });
+            const data = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(data?.error || 'Signup failed');
+            const user = data.user;
             saveSession(user);
             showToast('Kwiyandikisha byagenze neza!');
             if (window.location.pathname.includes('signup.html')) {
@@ -369,7 +377,15 @@
         if (!phone || !password) { showToast('Uzuza nimero n\'ijambobanga', 'error'); return; }
         showLoading('Injira...');
         try {
-            const user = await sbRpc('roadrules_login', { p_phone: phone, p_password: password });
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ phone, password })
+            });
+            const data = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(data?.error || 'Login failed');
+            const user = data.user;
             saveSession(user);
             showToast(`Murakaza neza ${(user.name || '').split(' ')[0]}!`);
             if (window.location.pathname.includes('login.html')) {
@@ -551,7 +567,14 @@
         }
     };
     window.closeKontePanel = function () { const p = document.getElementById('konte-panel'); if (p) { p.classList.remove('flex'); p.classList.add('hidden'); } };
-    window.logoutKonte = function () { clearSession(); if (window.closeKontePanel) window.closeKontePanel(); setTimeout(() => location.reload(), 80); };
+    window.logoutKonte = async function () {
+        try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+        } catch {}
+        clearSession();
+        if (window.closeKontePanel) window.closeKontePanel();
+        setTimeout(() => location.reload(), 80);
+    };
 
     // ========== ACCESS CONTROL ==========
     const PLAN_LIMITS = {
@@ -771,11 +794,18 @@
         refreshMyData: async () => {
             try {
                 const u = getSession(); if (!u?.phone) return null;
-                const fresh = await sbRpc('roadrules_refresh', { p_phone: u.phone });
-                if (!fresh) return null;
+                const res = await fetch('/api/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ phone: u.phone })
+                });
+                const fresh = await res.json().catch(() => null);
+                if (!res.ok || !fresh?.user) return null;
                 const local = getSession() || {};
-                if (fresh.subscription) local.subscription = fresh.subscription;
-                local.pendingUpgrade = fresh.pendingUpgrade || undefined;
+                Object.assign(local, fresh.user);
+                if (fresh.user.subscription) local.subscription = fresh.user.subscription;
+                local.pendingUpgrade = fresh.user.pendingUpgrade || undefined;
                 local.access = fresh.access || null;
                 if (typeof fresh.access?.remainingExams === 'number') local.remainingExams = fresh.access.remainingExams;
                 saveSession(local); return local;
@@ -815,7 +845,12 @@
                 arr.unshift({ ...examResult, date: new Date().toISOString() });
                 localStorage.setItem(k, JSON.stringify(arr.slice(0, 100)));
             } catch {}
-            sbRpc('roadrules_save_exam', { p_phone: u.phone, p_score: examResult.score, p_total: examResult.total || 20, p_time_taken: examResult.timeTaken || 0 }).catch(() => {});
+            fetch('/api/exams', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ phone: u.phone, score: examResult.score, total: examResult.total || 20, timeTaken: examResult.timeTaken || 0 })
+            }).catch(() => {});
         },
 
         updateAuthUI: function () {
